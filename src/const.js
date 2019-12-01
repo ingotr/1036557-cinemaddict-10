@@ -17,13 +17,13 @@ export const NameItems = [
 ];
 
 export const PosterItems = [
-  `made-for-each-other`,
-  `popeye-meets-sinbad`,
-  `sagebrush-trail`,
-  `santa-claus-conquers-the-martians`,
-  `the-dance-of-life`,
-  `the-great-flamarion`,
-  `the-man-with-the-golden-arm`,
+  `made-for-each-other.png`,
+  `popeye-meets-sinbad.png`,
+  `sagebrush-trail.jpg`,
+  `santa-claus-conquers-the-martians.jpg`,
+  `the-dance-of-life.jpg`,
+  `the-great-flamarion.jpg`,
+  `the-man-with-the-golden-arm.jpg`,
 ];
 
 export const DescriptionItems = [
@@ -37,5 +37,43 @@ export const DescriptionItems = [
   `Sed sed nisi sed augue convallis suscipit in sed felis.`,
   `Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`,
+];
+
+export const GenreItems = [
+  `Action`,
+  `Adventure`,
+  `Animation`,
+  `Biography`,
+  `Comedy`,
+  `Crime`,
+  `Drama`,
+  `Family`,
+  `Fantasy`,
+  `Film-noir`,
+  `History`,
+  `Horror`,
+  `Music`,
+  `Mystery`,
+  `Romance`,
+  `Sci-Fi`,
+  `Sport`,
+  `Thriller`,
+  `War`,
+  `Western`,
+];
+
+export const MonthNames = [
+  `January`,
+  `February`,
+  `March`,
+  `April`,
+  `May`,
+  `June`,
+  `July`,
+  `August`,
+  `September`,
+  `October`,
+  `November`,
+  `December`,
 ];
 
