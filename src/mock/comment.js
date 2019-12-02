@@ -10,11 +10,11 @@ const TextBlocks = [
   `Too long to see after work`,
 ];
 
-const Emojis = new Map([
-  [`sleeping`, `sleeping`],
-  [`neutral-face`, `smile`],
-  [`grinning`, `smile`],
-]);
+const Emojis = [
+  `sleeping`,
+  `smile`,
+  `angry`,
+];
 
 const Autors = [
   `Frank`,

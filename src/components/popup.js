@@ -1,5 +1,5 @@
-const createCommentMarkup = (comments) => {
-  const {text, emoji, autor, date} = comments;
+export const createCommentMarkup = (comment) => {
+  const {text, emoji, autor, date} = comment;
   return (
     `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -38,11 +38,18 @@ export const createPopUpTemplate = (popup) => {
     country,
     genres,
     age,
-    comments,
   } = popup;
 
-  const commentList = createCommentMarkup(Array.from(comments));
+  const LONG_GENRES_LIST_TITLE = `Genres`;
+  const SHORT_GENRES_LIST_TITLE = `Genre`;
   const genresList = createGenresMarkup(genres);
+
+  let genreListTitle = SHORT_GENRES_LIST_TITLE;
+  if (genres.length > 1) {
+    genreListTitle = LONG_GENRES_LIST_TITLE;
+  } else {
+    genreListTitle = SHORT_GENRES_LIST_TITLE;
+  }
 
   return (
     `<section class="film-details">
@@ -96,7 +103,7 @@ export const createPopUpTemplate = (popup) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genreListTitle}</td>
                   <td class="film-details__cell">
                     ${genresList}
                   </td>
@@ -126,7 +133,6 @@ export const createPopUpTemplate = (popup) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
             <ul class="film-details__comments-list">
-              ${commentList}
             </ul>
 
             <div class="film-details__new-comment">

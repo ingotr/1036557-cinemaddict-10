@@ -1,24 +1,24 @@
-const getUserRank = (numbWatchedFilms) => {
-  const rank = 0;
-  switch (numbWatchedFilms) {
-    case 0:
-      rank = ``;
-      return rank;
-    case ((numbWatchedFilms > 1) && (numbWatchedFilms <= 10)):
-      rank = `novice`;
-      return rank;
-    case ((numbWatchedFilms >= 11) && (numbWatchedFilms <= 20)):
-      rank = `fan`;
-      return rank;
-    case (numbWatchedFilms >= 21):
-      rank = `movie buff`;
-      return rank;
+import {getRandomUserRank} from '../mock/userRank.js';
+
+const getUserRank = () => {
+  const count = getRandomUserRank();
+  let rank = ``;
+
+  if ((count >= 1) && (count <= 10)) {
+    rank = `novice`;
   }
+  if ((count >= 11) && (count <= 20)) {
+    rank = `fan`;
+  }
+  if (count >= 21) {
+    rank = `movie buff`;
+  }
+
   return rank;
 };
 
-export const createUserRankTemplate = (number) => {
-  const rank = getUserRank(number);
+export const createUserRankTemplate = () => {
+  const rank = getUserRank();
 
   return (
     `<section class="header__profile profile">

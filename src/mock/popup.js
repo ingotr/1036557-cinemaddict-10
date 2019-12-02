@@ -61,6 +61,7 @@ const getRandomGenres = () => {
 };
 
 const generatePopup = () => {
+  const commCount = getRandomCommentsNumber();
   return {
     title: getRandomElement(NameItems),
     rating: getRandomRating(),
@@ -68,14 +69,14 @@ const generatePopup = () => {
     duration: getRandomDuration(),
     poster: getRandomElement(PosterItems),
     description: getRandomDescription(),
-    commentsNumber: getRandomCommentsNumber(),
+    commentsNumber: commCount,
     director: getRandomElement(NameOfDirectors),
     writers: getRandomElement(NameOfWriters),
     actors: getRandomElement(NameOfActors),
     country: getRandomElement(Country),
     genres: getRandomGenres(),
     age: getRandomElement(AgeCertificats),
-    comments: generateComments(getRandomCommentsNumber()),
+    comments: generateComments(commCount),
   };
 };
 
