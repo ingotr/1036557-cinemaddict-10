@@ -1,13 +1,15 @@
-import {createMainMenuTemplate} from "./components/mainMenu.js";
-import {createFiltersTemplate} from "./components/filters.js";
-import {createUserRankTemplate} from "./components/userRank.js";
-import {createFilmsTemplate} from "./components/films.js";
-import {createFilmsListTemplate} from "./components/filmsList";
-import {createDefaultCardTemplate} from "./components/defaultCard.js";
-import {createPopUpTemplate, createCommentMarkup} from "./components/popup.js";
-import {createShowMoreButton} from "./components/showMoreButton.js";
-import {generateCards} from "./mock/card.js";
-import {generatePopup} from "./mock/popup.js";
+import MainMenuComponent from './components/mainMenu.js';
+import FiltersComponent from './components/filters.js';
+import UserRankComponent from './components/userRank.js';
+import FilmsComponent from './components/films.js';
+import FilmsListComponent from './components/filmsList';
+import CardComponent from './components/defaultCard.js';
+import CommentComponent from './components/comment.js';
+import PopupComponent from './components/popup.js';
+import ShowMoreButtonComponent from './components/showMoreButton.js';
+import {generateCards} from './mock/card.js';
+import {generatePopup} from './mock/popup.js';
+import {render, RenderPosition} from './utils.js'
 
 const CARD_COUNT = 22;
 const CARD_IN_FILMS_COUNT = 5;
@@ -20,14 +22,12 @@ const topRated = `<h2 class="films-list__title">Top rated</h2>`;
 const mostCommented = `<h2 class="films-list__title">Most commented</h2>`;
 const filmsSectionClassExtra = `films-list--extra`;
 
-const render = (container, template, place = `beforeEnd`) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
 render(mainElement, createMainMenuTemplate(CARD_IN_FILMS_COUNT));
+// render(mainElement, new MainMenuComponent(CARD_IN_FILMS_COUNT), RenderPosition.BEFOREEND)
+
 render(mainElement, createFiltersTemplate());
 render(mainElement, createFilmsTemplate());
 render(headerElement, createUserRankTemplate());

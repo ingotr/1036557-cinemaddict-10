@@ -1,24 +1,7 @@
+import {createElement} from '../utils.js';
+
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
-
-export const createCommentMarkup = (comment) => {
-  const {text, emoji, autor, date} = comment;
-  return (
-    `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${text}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${autor}</span>
-          <span class="film-details__comment-day">${date}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
-  );
-};
 
 const createGenresMarkup = (genre) => {
   return (
@@ -26,7 +9,7 @@ const createGenresMarkup = (genre) => {
   );
 };
 
-export const createPopUpTemplate = (popup) => {
+const createPopUpTemplate = (popup) => {
   const {
     title,
     rating,
@@ -166,3 +149,27 @@ export const createPopUpTemplate = (popup) => {
   </section>`
   );
 };
+
+export default class Popup {
+  constructor(popup) {
+    this._popup = popup;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopUpTemplate(this._popup);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

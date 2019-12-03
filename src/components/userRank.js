@@ -1,4 +1,5 @@
 import {getRandomUserRank} from '../mock/userRank.js';
+import {createElement} from '../utils.js';
 
 const getUserRank = () => {
   const count = getRandomUserRank();
@@ -17,7 +18,7 @@ const getUserRank = () => {
   return rank;
 };
 
-export const createUserRankTemplate = () => {
+const createUserRankTemplate = () => {
   const rank = getUserRank();
 
   return (
@@ -27,3 +28,25 @@ export const createUserRankTemplate = () => {
     </section>`
   );
 };
+
+export default class UserRank {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserRankTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
