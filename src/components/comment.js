@@ -32,7 +32,7 @@ export default class Comment {
 
   getElement() {
     if (!this._elment) {
-      this._element = createElement(this.geteTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

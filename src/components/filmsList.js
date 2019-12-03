@@ -12,12 +12,15 @@ const createFilmsListTemplate = (classTitle = filmsSectionClass, title = filmLis
 );
 
 export default class FilmsList {
-  constructor() {
+  constructor(classTitle = filmsSectionClass, title = filmListVisuallyHidden) {
+    this._classTitle = classTitle;
+    this._title = title;
+
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsListTemplate();
+    return createFilmsListTemplate(this._classTitle, this._title);
   }
 
   getElement() {

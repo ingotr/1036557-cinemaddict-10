@@ -31,7 +31,7 @@ export default class MainMenu {
     return this._element;
   }
 
-  removeElemen() {
+  removeElement() {
     this._element = null;
   }
 }
