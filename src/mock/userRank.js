@@ -1,7 +1,7 @@
-const getRandomIntegerNumber = (min, max) => {
-  return min + Math.floor(max * Math.random());
-};
+import {getRandomIntegerNumber} from '../utils.js';
+
+const MAX_USER_RANK = 100;
 
 export const getRandomUserRank = () => {
-  return getRandomIntegerNumber(0, 100);
+  return getRandomIntegerNumber(0, MAX_USER_RANK);
 };

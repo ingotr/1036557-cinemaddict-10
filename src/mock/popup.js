@@ -2,6 +2,7 @@ import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDat
 import {NameItems, PosterItems, GenreItems} from '../const.js';
 import {generateComments} from './comment.js';
 
+const MAX_GENRES_NUMBER = 3;
 const NameOfDirectors = [
   `Frank Darabont`,
   `Francis Ford Coppola`,
@@ -49,7 +50,6 @@ const AgeCertificats = [
 ];
 
 const getRandomGenres = () => {
-  const MAX_GENRES_NUMBER = 3;
   const maxNumberOfGenres = getRandomIntegerNumber(1, MAX_GENRES_NUMBER);
   const genres = new Array(maxNumberOfGenres).fill(``);
 

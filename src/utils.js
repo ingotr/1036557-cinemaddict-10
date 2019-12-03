@@ -1,5 +1,11 @@
 import {DescriptionItems, MonthNames} from './const.js';
 
+const MAX_DESCRIPTION_LENGTH = 3;
+const MAX_RATING = 9;
+const MAX_HOURS_RUNTIME = 4;
+const MAX_MINUTES_RUNTIME = 59;
+const MAX_COMMENTS_NUMBER = 9;
+
 const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
 };
@@ -9,8 +15,6 @@ const getRandomElement = (arr) => {
 };
 
 const getRandomDescription = () => {
-  const MAX_DESCRIPTION_LENGTH = 3;
-
   const currentLength = getRandomIntegerNumber(1, MAX_DESCRIPTION_LENGTH);
   let description = [];
   for (let i = 0; i < currentLength; i++) {
@@ -21,7 +25,6 @@ const getRandomDescription = () => {
 };
 
 const getRandomRating = () => {
-  const MAX_RATING = 9;
   return Math.fround(Math.random() * MAX_RATING).toFixed(1);
 };
 
@@ -47,9 +50,6 @@ const getReleaseDate = () => {
 };
 
 const getRandomDuration = () => {
-  const MAX_HOURS_RUNTIME = 4;
-  const MAX_MINUTES_RUNTIME = 59;
-
   const hours = getRandomIntegerNumber(0, MAX_HOURS_RUNTIME);
   const minutes = getRandomIntegerNumber(0, MAX_MINUTES_RUNTIME);
   const duration = `${hours}h ${minutes}m`;
@@ -58,7 +58,6 @@ const getRandomDuration = () => {
 };
 
 const getRandomCommentsNumber = () => {
-  const MAX_COMMENTS_NUMBER = 9;
   const commentsNumber = getRandomIntegerNumber(0, MAX_COMMENTS_NUMBER);
   return commentsNumber;
 };

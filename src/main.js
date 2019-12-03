@@ -13,6 +13,8 @@ const CARD_COUNT = 22;
 const CARD_IN_FILMS_COUNT = 5;
 const CARD_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
+const TOPRATED_LIST_LENGTH = 2;
+const MOSTCOMMENTED_LIST_LENGTH = 2;
 
 const topRated = `<h2 class="films-list__title">Top rated</h2>`;
 const mostCommented = `<h2 class="films-list__title">Most commented</h2>`;
@@ -63,7 +65,6 @@ const compareRating = (b, a) => {
 };
 
 const filterTopRatedFilms = (films) => {
-  const TOPRATED_LIST_LENGTH = 2;
   let topRatedList = films.sort(compareRating);
   topRatedList = topRatedList.slice(0, TOPRATED_LIST_LENGTH);
 
@@ -71,14 +72,7 @@ const filterTopRatedFilms = (films) => {
 };
 
 const getTopRatedFilms = (films) => {
-  const isFilmsPositiveRating = isPositiveRating(films);
-  let topRatedList = [];
-
-  if (isFilmsPositiveRating) {
-    topRatedList = filterTopRatedFilms(films);
-  }
-
-  return topRatedList;
+  return isPositiveRating(films) ? filterTopRatedFilms(films) : [];
 };
 
 const topRatedList = getTopRatedFilms(cards);
@@ -106,7 +100,6 @@ const compareCommentsNumber = (b, a) => {
 };
 
 const filterMostCommentedFilms = (films) => {
-  const MOSTCOMMENTED_LIST_LENGTH = 2;
   let mostCommentedList = films.sort(compareCommentsNumber);
   mostCommentedList = mostCommentedList.slice(0, MOSTCOMMENTED_LIST_LENGTH);
 
@@ -114,14 +107,7 @@ const filterMostCommentedFilms = (films) => {
 };
 
 const getMostCommentedFilms = (films) => {
-  const isFilmsPositiveCommentsNumber = isPositiveCommentsNumber(films);
-  let mostCommentedList = [];
-
-  if (isFilmsPositiveCommentsNumber) {
-    mostCommentedList = filterMostCommentedFilms(films);
-  }
-
-  return mostCommentedList;
+  return isPositiveCommentsNumber(films) ? filterMostCommentedFilms(films) : [];
 };
 
 const mostCommentedList = getMostCommentedFilms(cards);

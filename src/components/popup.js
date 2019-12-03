@@ -1,3 +1,6 @@
+const LONG_GENRES_LIST_TITLE = `Genres`;
+const SHORT_GENRES_LIST_TITLE = `Genre`;
+
 export const createCommentMarkup = (comment) => {
   const {text, emoji, autor, date} = comment;
   return (
@@ -40,16 +43,9 @@ export const createPopUpTemplate = (popup) => {
     age,
   } = popup;
 
-  const LONG_GENRES_LIST_TITLE = `Genres`;
-  const SHORT_GENRES_LIST_TITLE = `Genre`;
   const genresList = createGenresMarkup(genres);
 
-  let genreListTitle = SHORT_GENRES_LIST_TITLE;
-  if (genres.length > 1) {
-    genreListTitle = LONG_GENRES_LIST_TITLE;
-  } else {
-    genreListTitle = SHORT_GENRES_LIST_TITLE;
-  }
+  let genreListTitle = genres.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
 
   return (
     `<section class="film-details">
