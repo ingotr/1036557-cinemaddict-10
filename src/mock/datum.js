@@ -60,7 +60,7 @@ const getRandomGenres = () => {
   return genres;
 };
 
-const generatePopup = () => {
+const generateData = () => {
   const commCount = getRandomCommentsNumber();
   return {
     title: getRandomElement(NameItems),
@@ -80,4 +80,10 @@ const generatePopup = () => {
   };
 };
 
-export {generatePopup};
+const generateDatum = (count) => {
+  return new Array(count)
+  .fill(``)
+  .map(generateData);
+};
+
+export {generateDatum};
