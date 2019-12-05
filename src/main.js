@@ -62,6 +62,7 @@ const addEventListenerToComponent = (card, popup, data) => {
       document.removeEventListener(`keydown`, onEscKeyPress);
     }
   };
+
   const popupOnOpen = () => {
     render(filmsElement, popup.getElement(), RenderPosition.BEFOREEND);
     const popupElement = filmsElement.querySelector(`.film-details`);
