@@ -1,4 +1,4 @@
-import {DescriptionItems, MonthNames} from '../../const.js';
+import {DescriptionItems, MonthNames} from '../const.js';
 
 const MAX_DESCRIPTION_LENGTH = 3;
 const MAX_RATING = 9;

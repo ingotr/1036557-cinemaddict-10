@@ -13,6 +13,12 @@ const createMainMenuTemplate = (count) => {
 };
 
 export default class MainMenu extends AbstractComponent {
+  constructor(count) {
+    super();
+
+    this._count = count;
+  }
+
   getTemplate() {
     return createMainMenuTemplate(this._count);
   }

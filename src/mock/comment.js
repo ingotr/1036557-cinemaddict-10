@@ -1,4 +1,4 @@
-import {getRandomElement, getReleaseDate} from '../components/utils/common.js';
+import {getRandomElement, getReleaseDate} from '../utils/common.js';
 
 
 const TextBlocks = [
