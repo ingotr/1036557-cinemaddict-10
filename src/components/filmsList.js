@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstractComponent.js';
 
 const filmListVisuallyHidden = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
 const filmsSectionClass = `films-list`;
@@ -11,27 +11,15 @@ const createFilmsListTemplate = (classTitle = filmsSectionClass, title = filmLis
   </section>`
 );
 
-export default class FilmsList {
+export default class FilmsList extends AbstractComponent {
   constructor(classTitle = filmsSectionClass, title = filmListVisuallyHidden) {
+    super();
+
     this._classTitle = classTitle;
     this._title = title;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmsListTemplate(this._classTitle, this._title);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

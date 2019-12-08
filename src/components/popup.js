@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstractComponent.js';
 
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
@@ -150,26 +150,13 @@ const createPopUpTemplate = (popup) => {
   );
 };
 
-export default class Popup {
+export default class Popup extends AbstractComponent {
   constructor(popup) {
+    super();
     this._popup = popup;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createPopUpTemplate(this._popup);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
