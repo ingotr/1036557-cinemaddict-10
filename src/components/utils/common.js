@@ -1,15 +1,10 @@
-import {DescriptionItems, MonthNames} from './const.js';
+import {DescriptionItems, MonthNames} from '../../const.js';
 
 const MAX_DESCRIPTION_LENGTH = 3;
 const MAX_RATING = 9;
 const MAX_HOURS_RUNTIME = 4;
 const MAX_MINUTES_RUNTIME = 59;
 const MAX_COMMENTS_NUMBER = 9;
-
-const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-};
 
 const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
@@ -67,22 +62,4 @@ const getRandomCommentsNumber = () => {
   return commentsNumber;
 };
 
-const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-export {getRandomIntegerNumber, getRandomElement, getRandomRating, getRandomYear, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber, RenderPosition, createElement, render};
+export {getRandomIntegerNumber, getRandomElement, getRandomRating, getRandomYear, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber};

@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber} from '../utils.js';
+import {getRandomIntegerNumber} from '../components/utils/common.js';
 
 const MAX_USER_RANK = 100;
 
