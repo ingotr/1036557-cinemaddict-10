@@ -1,3 +1,5 @@
+export const CARD_COUNT = 22;
+
 export const NameItems = [
   `Побег из Шоушенка`,
   `Крестный отец`,

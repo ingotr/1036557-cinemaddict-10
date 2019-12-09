@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber} from '../utils.js';
+import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber} from '../utils/common.js';
 import {NameItems, PosterItems, GenreItems} from '../const.js';
 import {generateComments} from './comment.js';
 

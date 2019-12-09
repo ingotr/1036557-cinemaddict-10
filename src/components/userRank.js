@@ -1,5 +1,5 @@
 import {getRandomUserRank} from '../mock/userRank.js';
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstractComponent.js';
 
 const getUserRank = () => {
   const count = getRandomUserRank();
@@ -29,24 +29,8 @@ const createUserRankTemplate = () => {
   );
 };
 
-export default class UserRank {
-  constructor() {
-    this._element = null;
-  }
-
+export default class UserRank extends AbstractComponent {
   getTemplate() {
     return createUserRankTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
