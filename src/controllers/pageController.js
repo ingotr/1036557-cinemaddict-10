@@ -6,7 +6,7 @@ import CardComponent from '../components/card.js';
 import CommentComponent from '../components/comment.js';
 import PopupComponent from '../components/popup.js';
 import ShowMoreButtonComponent from '../components/showMoreButton.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, remove, RenderPosition} from '../utils/render.js';
 import {CARD_COUNT} from '../const.js';
 
 const CARD_ON_START = 5;
@@ -55,30 +55,13 @@ const addEventListenerToComponent = (popContainer, card, popup, data) => {
 let showingCardCount = CARD_ON_START;
 
 const renderFilmCards = (datum, container, popContainer) => {
-  datum.slice(0, showingCardCount)
+  datum.slice()
     .forEach((data) => {
       const currentCardComponent = new CardComponent(data);
       render(container, currentCardComponent.getElement(), RenderPosition.AFTERBEGIN);
       const currentPopupComponent = new PopupComponent(data);
       addEventListenerToComponent(popContainer, currentCardComponent, currentPopupComponent, data);
     });
-};
-
-const renderShowMoreButton = (datum, container) => {
-  const showMoreButtonComponent = new ShowMoreButtonComponent();
-  render(container, showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-  showMoreButtonComponent.setClickHandler(() => {
-    const prevCardCount = showingCardCount;
-    showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
-
-    datum.slice(prevCardCount, showingCardCount)
-      .forEach((card) => render(container, new CardComponent(card).getElement(), RenderPosition.AFTERBEGIN));
-
-    if (showingCardCount >= datum.length) {
-      showMoreButtonComponent.getElement().remove();
-      showMoreButtonComponent.removeElement();
-    }
-  });
 };
 
 const isPositiveRating = (films) => {
@@ -166,6 +149,7 @@ export default class PageController {
     this._filtersComponent = new FiltersComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
+    this._showMoreButtonComponent = new ShowMoreButtonComponent();
   }
 
   render(datum) {
@@ -186,9 +170,29 @@ export default class PageController {
     const topRatedList = getTopRatedFilms(datum);
     const mostCommentedList = getMostCommentedFilms(datum);
 
+    const renderShowMoreButton = () => {
+      if (showingCardCount >= datum.length) {
+        return;
+      }
+
+      render(filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+
+      this._showMoreButtonComponent.setClickHandler(() => {
+        const prevCardCount = showingCardCount;
+        showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+        datum.slice(prevCardCount, showingCardCount)
+          .forEach((card) => render(filmListContainerElement, new CardComponent(card).getElement(), RenderPosition.AFTERBEGIN));
+
+        if (showingCardCount >= datum.length) {
+          remove(this._showMoreButtonComponent);
+        }
+      });
+    };
+
     if (CARD_COUNT > 0) {
-      renderFilmCards(datum, filmListContainerElement, filmsElement);
-      renderShowMoreButton(datum, filmListContainerElement);
+      renderFilmCards(datum.slice(0, showingCardCount), filmListContainerElement, filmsElement);
+      renderShowMoreButton();
       renderTopRatedFilms(topRatedList, filmTopRatedElement, filmsElement);
       renderMostCommentedFilms(mostCommentedList, filmMostCommentedElement, filmsElement);
 
@@ -212,7 +216,9 @@ export default class PageController {
         renderFilmCards(sortedFilms, filmListContainerElement, filmsElement);
 
         if (sortType === SortType.DEFAULT) {
-          renderShowMoreButton(datum, filmListContainerElement);
+          renderShowMoreButton(sortedFilms, this._showMoreButtonComponent, filmListContainerElement);
+        } else {
+          remove(this._showMoreButtonComponent);
         }
       });
 
