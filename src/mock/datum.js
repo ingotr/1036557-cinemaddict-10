@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber} from '../utils/common.js';
+import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber, getRandomYear} from '../utils/common.js';
 import {NameItems, PosterItems, GenreItems} from '../const.js';
 import {generateComments} from './comment.js';
 
@@ -62,10 +62,12 @@ const getRandomGenres = () => {
 
 const generateData = () => {
   const commCount = getRandomCommentsNumber();
+  const filmYear = getRandomYear();
   return {
     title: getRandomElement(NameItems),
     rating: getRandomRating(),
-    year: getReleaseDate(),
+    year: filmYear,
+    releaseDate: getReleaseDate(filmYear),
     duration: getRandomDuration(),
     poster: getRandomElement(PosterItems),
     description: getRandomDescription(),

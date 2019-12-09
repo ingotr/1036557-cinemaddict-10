@@ -39,11 +39,11 @@ const getRandomYear = () => {
   return targetYear;
 };
 
-const getReleaseDate = () => {
+const getReleaseDate = (year) => {
   const targetDate = getRandomDate(new Date(1900, 1, 1), new Date());
   const targetDay = targetDate.getDay();
   const targetMonth = MonthNames[targetDate.getMonth()];
-  const targetYear = targetDate.getFullYear();
+  const targetYear = year;
   const releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
 
   return releaseDate;
