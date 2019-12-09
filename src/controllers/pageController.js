@@ -1,4 +1,4 @@
-import FiltersComponent, {SortType} from './components/filters.js';
+import FiltersComponent, {SortType} from '../components/filters.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/filmsList';
 import NoFilmsComponent from '../components/no-films';
@@ -191,6 +191,31 @@ export default class PageController {
       renderShowMoreButton(datum, filmListContainerElement);
       renderTopRatedFilms(topRatedList, filmTopRatedElement, filmsElement);
       renderMostCommentedFilms(mostCommentedList, filmMostCommentedElement, filmsElement);
+
+      this._filtersComponent.setSortTypeChangeHandler((sortType) => {
+        let sortedFilms = [];
+
+        switch (sortType) {
+          case SortType.DATE_DOWN:
+            sortedFilms = datum.slice().sort((a, b) => a.year - b.year);
+            break;
+          case SortType.RATING_DOWN:
+            sortedFilms = datum.slice().sort((a, b) => a.rating - b.rating);
+            break;
+          case SortType.DEFAULT:
+            sortedFilms = datum.slice(0, showingCardCount);
+            break;
+        }
+
+        filmListContainerElement.innerHTML = ``;
+
+        renderFilmCards(sortedFilms, filmListContainerElement, filmsElement);
+
+        if (sortType === SortType.DEFAULT) {
+          renderShowMoreButton(datum, filmListContainerElement);
+        }
+      });
+
     } else {
       render(filmListContainerElement, this._noFilmsComponent, RenderPosition.BEFOREEND);
     }
