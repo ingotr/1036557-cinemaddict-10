@@ -1,3 +1,4 @@
+import FiltersComponent, {SortType} from './components/filters.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/filmsList';
 import NoFilmsComponent from '../components/no-films';
@@ -162,6 +163,7 @@ export default class PageController {
   constructor(container) {
     this._container = container;
 
+    this._filtersComponent = new FiltersComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
   }
@@ -169,6 +171,7 @@ export default class PageController {
   render(datum) {
     const container = this._container;
 
+    render(container, this._filtersComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
     const filmsElement = container.querySelector(`.films`);
 

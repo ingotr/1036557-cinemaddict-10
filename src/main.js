@@ -1,5 +1,4 @@
 import MainMenuComponent from './components/mainMenu.js';
-import FiltersComponent from './components/filters.js';
 import UserRankComponent from './components/userRank.js';
 
 import PageControllerComponent from './controllers/pageController.js';
@@ -18,7 +17,6 @@ const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
 render(mainElement, new MainMenuComponent(CARD_IN_FILMS_COUNT).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new FiltersComponent().getElement(), RenderPosition.BEFOREEND);
 render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
 
 
