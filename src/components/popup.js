@@ -13,7 +13,7 @@ const createPopUpTemplate = (popup) => {
   const {
     title,
     rating,
-    year,
+    releaseDate,
     duration,
     poster,
     description,
@@ -71,7 +71,7 @@ const createPopUpTemplate = (popup) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${year}</td>
+                  <td class="film-details__cell">${releaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
