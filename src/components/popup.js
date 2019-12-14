@@ -155,10 +155,32 @@ export default class Popup extends AbstractSmartComponent {
     super();
 
     this._popup = popup;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createPopUpTemplate(this._popup);
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  reset() {
+    const popup = this._popup;
+
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    setAddToWatchlistButtonCLickHandler();
+    setMarkAsWatchedButtonClickHandler();
+    setFavoriteButtonClickHandler();
   }
 
   setCloseButtonClickHandler(handler) {
