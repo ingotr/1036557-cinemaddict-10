@@ -155,8 +155,6 @@ export default class Popup extends AbstractSmartComponent {
     super();
 
     this._popup = popup;
-
-    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -172,15 +170,7 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   reset() {
-    const popup = this._popup;
-
     this.rerender();
-  }
-
-  _subscribeOnEvents() {
-    setAddToWatchlistButtonCLickHandler();
-    setMarkAsWatchedButtonClickHandler();
-    setFavoriteButtonClickHandler();
   }
 
   setCloseButtonClickHandler(handler) {
@@ -197,5 +187,11 @@ export default class Popup extends AbstractSmartComponent {
 
   setFavoriteButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, handler);
+  }
+
+  _subscribeOnEvents() {
+    this.setAddToWatchlistButtonCLickHandler();
+    this.setMarkAsWatchedButtonClickHandler();
+    this.setFavoriteButtonClickHandler();
   }
 }
