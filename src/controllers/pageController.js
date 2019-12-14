@@ -77,8 +77,10 @@ const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange
 };
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, filters) {
     this._container = container;
+
+    this._filters = filters;
 
     this._films = [];
     this._showedMovieControllers = [];
