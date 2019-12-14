@@ -21,6 +21,15 @@ export const render = (container, element, place) => {
   }
 };
 
+export const renderFilter = (filters, currentType, filterContainer, additive) => {
+  if (additive) {
+    filters[currentType].count -= 1;
+  } else {
+    filters[currentType].count += 1;
+  }
+  filterContainer.innerHTML = filters[currentType].count;
+};
+
 export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
