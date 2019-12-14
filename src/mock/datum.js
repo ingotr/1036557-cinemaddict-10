@@ -79,6 +79,8 @@ const generateData = () => {
     genres: getRandomGenres(),
     age: getRandomElement(AgeCertificats),
     comments: generateComments(commCount),
+    isWatched: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
   };
 };
 
