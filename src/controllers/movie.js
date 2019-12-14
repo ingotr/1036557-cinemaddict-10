@@ -36,9 +36,11 @@ const addEventListenerToComponent = (popContainer, card, popup, data) => {
 };
 
 export default class MovieController {
-  constructor(container, popupContainer) {
+  constructor(container, popupContainer, onDataChange) {
     this._container = container;
     this._popupContainer = popupContainer;
+
+    this._onDataChange = onDataChange;
   }
 
   render(data, container = this._container) {
