@@ -68,11 +68,17 @@ const getMostCommentedFilms = (films) => {
   return isPositiveCommentsNumber(films) ? filterMostCommentedFilms(films) : [];
 };
 
+const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange) => {
+  return films.map((film) => {
+    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange);
+    movieController.render(film);
+    return movieController;
+  });
+};
+
 export default class PageController {
-  constructor(container, filmsContainer, filmsListContainer) {
+  constructor(container) {
     this._container = container;
-    this._filmsContainer = filmsContainer;
-    this._filmsListContainer = filmsListContainer;
 
     this._filtersComponent = new FiltersComponent();
     this._filmsComponent = new FilmsComponent();
@@ -87,19 +93,18 @@ export default class PageController {
     render(container, this._filtersComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
 
-    render(this._filmsContainer, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);
-    render(this._filmsContainer, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, MOST_COMMENTED_MARKUP).getElement(), RenderPosition.BEFOREEND);
+    const filmsElement = this._container.querySelector(`.films`);
 
-    const filmTopRatedElement = this._filmsContainer.querySelector(`.films-list--extra .films-list__container`);
-    const filmMostCommentedElement = this._filmsContainer.querySelector(`.films-list--extra:last-child .films-list__container`);
+    render(filmsElement, new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
+    render(filmsElement, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);
+    render(filmsElement, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, MOST_COMMENTED_MARKUP).getElement(), RenderPosition.BEFOREEND);
+
+    const filmListContainerElement = filmsElement.querySelector(`.films-list__container`);
+    const filmTopRatedElement = filmsElement.querySelector(`.films-list--extra .films-list__container`);
+    const filmMostCommentedElement = filmsElement.querySelector(`.films-list--extra:last-child .films-list__container`);
 
     const topRatedList = getTopRatedFilms(datum);
     const mostCommentedList = getMostCommentedFilms(datum);
-
-    const renderFilmCards = (films) => {
-      films.slice()
-        .forEach((film) => this._moviewControllerComponent.render(film));
-    };
 
     const renderTopRatedFilms = (filmList, topRatedContainer) => {
       if (filmList.length > 0) {
@@ -141,7 +146,7 @@ export default class PageController {
     };
 
     if (CARD_COUNT > 0) {
-      renderFilmCards(datum.slice(0, showingCardCount));
+      renderFilmCards(datum.slice(0, showingCardCount), filmListContainerElement, filmsElement, this._onDataChange);
       renderShowMoreButton();
       renderTopRatedFilms(topRatedList, filmTopRatedElement);
       renderMostCommentedFilms(mostCommentedList, filmMostCommentedElement);
