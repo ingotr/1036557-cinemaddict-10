@@ -32,22 +32,48 @@ const addEventListenerToComponent = (popContainer, card, popup, data) => {
   };
 
   card.setCardElementsClickHandler(onPopupOpen);
+
   popup.setCloseButtonClickHandler(onPopUpClose);
 };
 
 export default class MovieController {
-  constructor(container, popupContainer, onDataChange) {
+  constructor(container, popupContainer, onDataChange, onFiltersChange) {
     this._container = container;
     this._popupContainer = popupContainer;
 
+    this._cardComponent = null;
+    this._popupComponent = null;
     this._onDataChange = onDataChange;
+    this._onFiltersChange = onFiltersChange;
   }
 
   render(data, container = this._container) {
-    const currentCardComponent = new CardComponent(data);
-    render(container, currentCardComponent.getElement(), RenderPosition.AFTERBEGIN);
+    this._cardComponent = new CardComponent(data);
+    render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
 
-    const currentPopupComponent = new PopupComponent(data);
-    addEventListenerToComponent(this._popupContainer, currentCardComponent, currentPopupComponent, data);
+    this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
+      if (data.isOnWatchList) {
+        this._onFiltersChange(`watchlist`, true);
+      } else {
+        this._onFiltersChange(`watchlist`, false);
+      }
+    });
+    this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
+      if (data.isWatched) {
+        this._onFiltersChange(`history`, true);
+      } else {
+        this._onFiltersChange(`history`, false);
+      }
+    });
+    this._cardComponent.setFavoriteButtonClickHandler(() => {
+      if (data.isFavorite) {
+        this._onFiltersChange(`favorites`, true);
+      } else {
+        this._onFiltersChange(`favorites`, false);
+      }
+    });
+
+    this._popupComponent = new PopupComponent(data);
+    addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
   }
 }

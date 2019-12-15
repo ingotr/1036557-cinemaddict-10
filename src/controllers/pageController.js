@@ -122,9 +122,8 @@ export default class PageController {
     });
   }
 
-  render(films, filters) {
+  render(films) {
     this._films = films;
-    this._filters = filters;
 
     const container = this._container;
 
@@ -175,9 +174,9 @@ export default class PageController {
   }
 
   _onFiltersChange(filterType, filterChanged) {
-    const filterWatchlistCount = document.querySelector(`a[href="#watchlist"] span`).innerHTML;
-    const filterHistoryCount = document.querySelector(`a[href="#history"] span`).innerHTML;
-    const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`).innerHTML;
+    const filterWatchlistCount = document.querySelector(`a[href="#watchlist"] span`);
+    const filterHistoryCount = document.querySelector(`a[href="#history"] span`);
+    const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`);
 
     const FilterNamesIndex = {
       WATCHLIST: 0,
@@ -241,7 +240,7 @@ export default class PageController {
 
     const newFilms = renderFilmCards(sortedFilms, this._filmListContainerElement,
         this._filmsComponent, this._onDataChange, this._onFiltersChange);
-    this._showedMovieControllers = newFilms;
+    this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
     if (sortType === SortType.DEFAULT) {
       this._renderShowMoreButton(sortedFilms, this._showMoreButtonComponent, this._filmListContainerElement);
