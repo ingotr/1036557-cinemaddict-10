@@ -14,15 +14,15 @@ const addEventListenerToComponent = (popContainer, card, popup, data) => {
   };
 
   const onPopUpClose = () => {
-    const filmPopUp = popContainer.querySelector(`.film-details`);
+    const filmPopUp = popContainer.getElement().querySelector(`.film-details`);
     filmPopUp.remove();
     popup.getElement().remove();
     popup.removeElement();
   };
 
   const onPopupOpen = () => {
-    render(popContainer, popup.getElement(), RenderPosition.BEFOREEND);
-    const popupElement = popContainer.querySelector(`.film-details`);
+    render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
+    const popupElement = popContainer.getElement().querySelector(`.film-details`);
     const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
     const popupCommentsList = data.comments;
     popupCommentsList.slice(0, popupCommentsList.length)

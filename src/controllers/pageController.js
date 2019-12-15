@@ -4,7 +4,7 @@ import FilmsListComponent from '../components/filmsList';
 import NoFilmsComponent from '../components/no-films';
 import ShowMoreButtonComponent from '../components/showMoreButton.js';
 import MovieControllerComponent from './movie.js';
-import {render, remove, RenderPosition} from '../utils/render.js';
+import {render, remove, renderFilter, RenderPosition} from '../utils/render.js';
 import {CARD_COUNT} from '../const.js';
 
 const CARD_ON_START = 5;
@@ -68,9 +68,9 @@ const getMostCommentedFilms = (films) => {
   return isPositiveCommentsNumber(films) ? filterMostCommentedFilms(films) : [];
 };
 
-const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange) => {
+const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange, onFiltersChange) => {
   return films.map((film) => {
-    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange);
+    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange, onFiltersChange);
     movieController.render(film);
     return movieController;
   });
@@ -89,8 +89,7 @@ export default class PageController {
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._movieControllerComponent = new MovieControllerComponent(this._filmsListContainer, this._filmsContainer);
-    this._filmsComponent = this._container.querySelector(`.films`);
-    this._filmListContainerElement = this._filmsComponent.querySelector(`.films-list__container`);
+    this._filmListContainerElement = new FilmsListComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -103,7 +102,7 @@ export default class PageController {
       return;
     }
 
-    render(this._filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+    render(this._filmListContainerElement.getElement(), this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
     this._showMoreButtonComponent.setClickHandler(() => {
       const prevCardCount = showingCardCount;
@@ -128,13 +127,13 @@ export default class PageController {
     render(container, this._filtersComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
 
-    render(this._filmsComponent, new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
-    render(this._filmsComponent, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);
-    render(this._filmsComponent, new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, MOST_COMMENTED_MARKUP).getElement(), RenderPosition.BEFOREEND);
+    render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
+    render(this._filmsComponent.getElement(), new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);
+    render(this._filmsComponent.getElement(), new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, MOST_COMMENTED_MARKUP).getElement(), RenderPosition.BEFOREEND);
 
-    const filmListContainerElement = this._filmsComponent.querySelector(`.films-list__container`);
-    const filmTopRatedElement = this._filmsComponent.querySelector(`.films-list--extra .films-list__container`);
-    const filmMostCommentedElement = this._filmsComponent.querySelector(`.films-list--extra:last-child .films-list__container`);
+    const filmListContainerElement = this._filmsComponent.getElement().querySelector(`.films-list__container`);
+    const filmTopRatedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra .films-list__container`);
+    const filmMostCommentedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra:last-child .films-list__container`);
 
     const topRatedList = getTopRatedFilms(films);
     const mostCommentedList = getMostCommentedFilms(films);
@@ -159,9 +158,8 @@ export default class PageController {
 
     if (CARD_COUNT > 0) {
       const newFilms = renderFilmCards(films.slice(0, showingCardCount), filmListContainerElement, this._filmsComponent, this._onDataChange);
-      this._showedMovieControllers = this.__showedMovieControllers.concat(newFilms);
+      this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
-      renderFilmCards(films.slice(0, showingCardCount), filmListContainerElement, this._filmsComponent, this._onDataChange);
       this._renderShowMoreButton();
       renderTopRatedFilms(topRatedList, filmTopRatedElement);
       renderMostCommentedFilms(mostCommentedList, filmMostCommentedElement);
