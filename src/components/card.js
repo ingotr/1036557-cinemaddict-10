@@ -10,9 +10,9 @@ const createButtonMarkup = (name, description, isActive) => {
 const createDefaultCardTemplate = (card) => {
   const {title, rating, year, duration, genres, poster, description, commentsNumber} = card;
 
-  const addToWatchlistButton = createButtonMarkup(`Add to watchlist`, false);
-  const markAsWatchedButton = createButtonMarkup(`Add to watchlist`, card.isWatched);
-  const markAsFavoriteButton = createButtonMarkup(`Add to watchlist`, card.isFavorite);
+  const addToWatchlistButton = createButtonMarkup(`add-to-watchlist`, `Add to watchlist`, true);
+  const markAsWatchedButton = createButtonMarkup(`mark-as-watched`, `Mark as watched`, card.isWatched);
+  const markAsFavoriteButton = createButtonMarkup(`favorite`, `Mark as favorite`, card.isFavorite);
 
   return (
     `<article class="film-card">
