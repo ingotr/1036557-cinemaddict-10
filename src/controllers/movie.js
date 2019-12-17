@@ -55,24 +55,30 @@ export default class MovieController {
       event.preventDefault();
       if (data.isOnWatchList) {
         this._onFiltersChange(`watchlist`, false);
+        data.isOnWatchList = !data.isOnWatchList;
       } else {
         this._onFiltersChange(`watchlist`, true);
+        data.isOnWatchList = !data.isOnWatchList;
       }
     });
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
       if (data.isWatched) {
         this._onFiltersChange(`history`, false);
+        data.isWatched = !data.isWatched;
       } else {
         this._onFiltersChange(`history`, true);
+        data.isWatched = !data.isWatched;
       }
     });
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
       if (data.isFavorite) {
         this._onFiltersChange(`favorites`, false);
+        data.isFavorite = !data.isFavorite;
       } else {
         this._onFiltersChange(`favorites`, true);
+        data.isFavorite = !data.isFavorite;
       }
     });
 
