@@ -112,6 +112,11 @@ export default class MovieController {
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
     });
 
+    this._popupComponent.setUserRatingChangeHandler((evt) => {
+      data.userRating = evt.target.value;
+      // console.log(`current user rating is ` + evt.target.value);
+    });
+
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
   }
 }
