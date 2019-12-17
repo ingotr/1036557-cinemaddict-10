@@ -37,7 +37,7 @@ const addEventListenerToComponent = (popContainer, card, popup, data) => {
 };
 
 export default class MovieController {
-  constructor(container, popupContainer, onDataChange, onFiltersChange) {
+  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange) {
     this._container = container;
     this._popupContainer = popupContainer;
 
@@ -45,6 +45,7 @@ export default class MovieController {
     this._popupComponent = null;
     this._onDataChange = onDataChange;
     this._onFiltersChange = onFiltersChange;
+    this._onUserRatingChange = onUserRatingChange;
   }
 
   _watchListButtonClickHandler(data) {
@@ -83,7 +84,6 @@ export default class MovieController {
 
     this._popupComponent = new PopupComponent(data);
     const popupMiddleContainer = this._popupComponent.getElement().querySelector(`.form-details__middle-container`);
-    const popupUserRatingPanel = this._popupComponent.getElement().querySelector(`.film-details__user-rating-score`);
 
     const popupUserRating = this._popupComponent.getElement().querySelector(`.film-details__user-rating`);
 
@@ -104,9 +104,15 @@ export default class MovieController {
       this._watchListButtonClickHandler(data);
       popupMiddleContainer.classList.toggle(`visually-hidden`);
 
-      if (data.userRating) {
-        popupUserRating.classList.toggle(`visually-hidden`);
+      if (!data.isOnWatchList) {
+        data.userRating = null;
       }
+
+      if (data.userRating) {
+        popupUserRating.classList.remove(`visually-hidden`);
+      }
+
+      data.isOnWatchList = !data.isOnWatchList;
     });
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
@@ -114,7 +120,8 @@ export default class MovieController {
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
       data.userRating = evt.target.value;
-      // console.log(`current user rating is ` + evt.target.value);
+      this._onUserRatingChange(popupUserRating, data.userRating);
+      popupUserRating.classList.remove(`visually-hidden`);
     });
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
