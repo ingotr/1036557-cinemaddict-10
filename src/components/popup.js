@@ -13,6 +13,7 @@ const createPopUpTemplate = (popup) => {
   const {
     title,
     rating,
+    userRating,
     releaseDate,
     duration,
     poster,
@@ -53,6 +54,7 @@ const createPopUpTemplate = (popup) => {
 
                 <div class="film-details__rating">
                   <p class="film-details__total-rating">${rating}</p>
+                  <p class="film-details__user-rating visually-hidden">Your rate ${userRating}</p>
                 </div>
               </div>
 

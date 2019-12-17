@@ -82,6 +82,10 @@ export default class MovieController {
     render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
 
     this._popupComponent = new PopupComponent(data);
+    const popupMiddleContainer = this._popupComponent.getElement().querySelector(`.form-details__middle-container`);
+    const popupUserRatingPanel = this._popupComponent.getElement().querySelector(`.film-details__user-rating-score`);
+
+    const popupUserRating = this._popupComponent.getElement().querySelector(`.film-details__user-rating`);
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
@@ -94,6 +98,18 @@ export default class MovieController {
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
       this._setFavoriteButtonClickHandler(data);
+    });
+
+    this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
+      this._watchListButtonClickHandler(data);
+      popupMiddleContainer.classList.toggle(`visually-hidden`);
+
+      if (data.userRating) {
+        popupUserRating.classList.toggle(`visually-hidden`);
+      }
+    });
+
+    this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
     });
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);

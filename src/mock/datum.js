@@ -66,6 +66,7 @@ const generateData = () => {
   return {
     title: getRandomElement(NameItems),
     rating: getRandomRating(),
+    userRating: null,
     year: filmYear,
     releaseDate: getReleaseDate(filmYear),
     duration: getRandomDuration(),
