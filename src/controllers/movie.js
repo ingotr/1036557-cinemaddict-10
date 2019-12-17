@@ -47,42 +47,55 @@ export default class MovieController {
     this._onFiltersChange = onFiltersChange;
   }
 
+  _watchListButtonClickHandler(data) {
+    if (data.isOnWatchList) {
+      this._onFiltersChange(`watchlist`, false);
+      data.isOnWatchList = !data.isOnWatchList;
+    } else {
+      this._onFiltersChange(`watchlist`, true);
+      data.isOnWatchList = !data.isOnWatchList;
+    }
+  }
+
+  _markWatchedButtonClickHandler(data) {
+    if (data.isWatched) {
+      this._onFiltersChange(`history`, false);
+      data.isWatched = !data.isWatched;
+    } else {
+      this._onFiltersChange(`history`, true);
+      data.isWatched = !data.isWatched;
+    }
+  }
+
+  _setFavoriteButtonClickHandler(data) {
+    if (data.isFavorite) {
+      this._onFiltersChange(`favorites`, false);
+      data.isFavorite = !data.isFavorite;
+    } else {
+      this._onFiltersChange(`favorites`, true);
+      data.isFavorite = !data.isFavorite;
+    }
+  }
+
   render(data, container = this._container) {
     this._cardComponent = new CardComponent(data);
     render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
 
+    this._popupComponent = new PopupComponent(data);
+
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
-      if (data.isOnWatchList) {
-        this._onFiltersChange(`watchlist`, false);
-        data.isOnWatchList = !data.isOnWatchList;
-      } else {
-        this._onFiltersChange(`watchlist`, true);
-        data.isOnWatchList = !data.isOnWatchList;
-      }
+      this._watchListButtonClickHandler(data);
     });
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
-      if (data.isWatched) {
-        this._onFiltersChange(`history`, false);
-        data.isWatched = !data.isWatched;
-      } else {
-        this._onFiltersChange(`history`, true);
-        data.isWatched = !data.isWatched;
-      }
+      this._markWatchedButtonClickHandler(data);
     });
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
-      if (data.isFavorite) {
-        this._onFiltersChange(`favorites`, false);
-        data.isFavorite = !data.isFavorite;
-      } else {
-        this._onFiltersChange(`favorites`, true);
-        data.isFavorite = !data.isFavorite;
-      }
+      this._setFavoriteButtonClickHandler(data);
     });
 
-    this._popupComponent = new PopupComponent(data);
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
   }
 }
