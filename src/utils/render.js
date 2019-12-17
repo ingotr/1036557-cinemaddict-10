@@ -22,10 +22,11 @@ export const render = (container, element, place) => {
 };
 
 export const renderFilter = (filters, currentType, filterContainer, additive) => {
+  const additiveValue = 1;
   if (additive) {
-    filters[currentType].count -= 1;
+    filters[currentType].count -= additiveValue;
   } else {
-    filters[currentType].count += 1;
+    filters[currentType].count += additiveValue;
   }
   filterContainer.innerHTML = filters[currentType].count;
 };

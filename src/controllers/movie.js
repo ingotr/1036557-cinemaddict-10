@@ -52,24 +52,27 @@ export default class MovieController {
     render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
+      event.preventDefault();
       if (data.isOnWatchList) {
-        this._onFiltersChange(`watchlist`, true);
-      } else {
         this._onFiltersChange(`watchlist`, false);
+      } else {
+        this._onFiltersChange(`watchlist`, true);
       }
     });
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
+      event.preventDefault();
       if (data.isWatched) {
-        this._onFiltersChange(`history`, true);
-      } else {
         this._onFiltersChange(`history`, false);
+      } else {
+        this._onFiltersChange(`history`, true);
       }
     });
     this._cardComponent.setFavoriteButtonClickHandler(() => {
+      event.preventDefault();
       if (data.isFavorite) {
-        this._onFiltersChange(`favorites`, true);
-      } else {
         this._onFiltersChange(`favorites`, false);
+      } else {
+        this._onFiltersChange(`favorites`, true);
       }
     });
 
