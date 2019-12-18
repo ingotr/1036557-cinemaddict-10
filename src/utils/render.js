@@ -43,6 +43,18 @@ export const replace = (newComponent, oldComponent) => {
   }
 };
 
+export const replacePopupToCard = (newComponent, oldComponent, target) => {
+  const parentElement = oldComponent.getElement().parentElement;
+  const newElement = newComponent.getElement();
+  const oldElement = oldComponent.getElement();
+
+  const isExistElements = !!(parentElement && newElement && oldElement);
+
+  if (isExistElements && parentElement.contains(oldElement)) {
+    target.prepend(newElement);
+  }
+};
+
 export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
