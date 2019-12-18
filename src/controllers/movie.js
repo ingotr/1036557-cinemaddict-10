@@ -1,7 +1,7 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, replace, RenderPosition} from '../utils/render.js';
 
 const addEventListenerToComponent = (popContainer, card, popup, data) => {
   const onEscKeyPress = (evt) => {
@@ -133,7 +133,7 @@ export default class MovieController {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
     } else {
-      render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+      render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
     }
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);

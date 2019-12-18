@@ -88,7 +88,7 @@ export default class PageController {
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
-    this._movieControllerComponent = new MovieControllerComponent(this._filmsListContainer, this._filmsComponent, this._onDataChange, this._onFiltersChange);
+    this._movieControllerComponent = new MovieControllerComponent(this._filmsListContainer, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
     this._filmListContainerElement = null;
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -136,7 +136,7 @@ export default class PageController {
     const filmTopRatedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra .films-list__container`);
     const filmMostCommentedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra:last-child .films-list__container`);
 
-    const topRatedList = getTopRatedFilms(films);
+    const topRatedList = getTopRatedFilms(this._films);
     const mostCommentedList = getMostCommentedFilms(films);
 
     const renderTopRatedFilms = (filmList, topRatedContainer) => {
@@ -162,7 +162,10 @@ export default class PageController {
           this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
+      // console.log("top rated list: " + topRatedList);
+      // console.log("most commented list: " + mostCommentedList);
       this._renderShowMoreButton();
+
       renderTopRatedFilms(topRatedList, filmTopRatedElement);
       renderMostCommentedFilms(mostCommentedList, filmMostCommentedElement);
     } else {
@@ -187,6 +190,7 @@ export default class PageController {
         if (filterChanged) {
           renderFilter(this._filters, FilterNamesIndex.WATCHLIST, filterWatchlistCount, true);
         } else {
+          // console.log(this._filters);
           renderFilter(this._filters, FilterNamesIndex.WATCHLIST, filterWatchlistCount, false);
         }
         break;
