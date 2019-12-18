@@ -1,51 +1,26 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
-import {render, replace, RenderPosition} from '../utils/render.js';
+import {render, replace, replacePopupToCard, RenderPosition} from '../utils/render.js';
 
-const addEventListenerToComponent = (popContainer, card, popup, data) => {
-  const onEscKeyPress = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      onPopUpClose(popup);
-      document.removeEventListener(`keydown`, onEscKeyPress);
-    }
-  };
-
-  const onPopUpClose = () => {
-    const filmPopUp = popContainer.getElement().querySelector(`.film-details`);
-    filmPopUp.remove();
-    popup.getElement().remove();
-    popup.removeElement();
-  };
-
-  const onPopupOpen = () => {
-    render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
-    const popupElement = popContainer.getElement().querySelector(`.film-details`);
-    const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
-    const popupCommentsList = data.comments;
-    popupCommentsList.slice(0, popupCommentsList.length)
-      .forEach((comment) => render(commentsListElement, new CommentComponent(comment).getElement(), RenderPosition.BEFOREEND));
-
-    document.addEventListener(`keydown`, onEscKeyPress);
-  };
-
-  card.setCardElementsClickHandler(onPopupOpen);
-
-  popup.setCloseButtonClickHandler(onPopUpClose);
+const Mode = {
+  DEFAULT: `default`,
+  POPUP: `popup`,
 };
 
 export default class MovieController {
-  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange) {
+  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange) {
     this._container = container;
     this._popupContainer = popupContainer;
+
+    this._mode = Mode.DEFAULT;
 
     this._cardComponent = null;
     this._popupComponent = null;
     this._onDataChange = onDataChange;
     this._onFiltersChange = onFiltersChange;
     this._onUserRatingChange = onUserRatingChange;
+    this._onViewChange = onViewChange;
   }
 
   _watchListButtonClickHandler(data) {
@@ -89,6 +64,42 @@ export default class MovieController {
     const popupMiddleContainer = this._popupComponent.getElement().querySelector(`.form-details__middle-container`);
 
     const popupUserRating = this._popupComponent.getElement().querySelector(`.film-details__user-rating`);
+
+    const addEventListenerToComponent = (popContainer, card, popup) => {
+      const onEscKeyPress = (evt) => {
+        const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+        if (isEscKey) {
+          this._replacePopupToCard();
+
+          popup.getElement().remove();
+          popup.removeElement();
+
+          document.removeEventListener(`keydown`, onEscKeyPress);
+        }
+      };
+
+      card.setCardElementsClickHandler(() => {
+        this._replaceCardToPopup();
+
+        render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
+        const popupElement = popContainer.getElement().querySelector(`.film-details`);
+        const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
+        const popupCommentsList = data.comments;
+        popupCommentsList.slice(0, popupCommentsList.length)
+          .forEach((comment) => render(commentsListElement, new CommentComponent(comment).getElement(), RenderPosition.BEFOREEND));
+
+        document.addEventListener(`keydown`, onEscKeyPress);
+      });
+
+      popup.setCloseButtonClickHandler(() => {
+        this._replacePopupToCard();
+
+        popup.getElement().remove();
+        popup.removeElement();
+      });
+    };
+
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
@@ -145,6 +156,26 @@ export default class MovieController {
       render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
     }
 
-    addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
+    addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
+  }
+
+  _replaceCardToPopup() {
+    this._onViewChange();
+
+    replace(this._popupComponent, this._cardComponent);
+    this._mode = Mode.POPUP;
+  }
+
+  _replacePopupToCard() {
+    // this._cardComponent.reset();
+
+    replacePopupToCard(this._cardComponent, this._popupComponent, this._container);
+    this._mode = Mode.DEFAULT;
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replacePopupToCard();
+    }
   }
 }
