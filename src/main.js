@@ -1,6 +1,6 @@
 import MainMenuComponent from './components/mainMenu.js';
 import UserRankComponent from './components/userRank.js';
-import PageControllerComponent from './controllers/pageController.js';
+import PageControllerComponent from './controllers/page.js';
 import {generateDatum} from './mock/datum.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';

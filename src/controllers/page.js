@@ -88,7 +88,6 @@ export default class PageController {
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
-    this._movieControllerComponent = new MovieControllerComponent(this._filmsListContainer, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
     this._filmListContainerElement = null;
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -137,24 +136,29 @@ export default class PageController {
     const filmMostCommentedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra:last-child .films-list__container`);
 
     const topRatedList = getTopRatedFilms(this._films);
-    const mostCommentedList = getMostCommentedFilms(films);
+    const mostCommentedList = getMostCommentedFilms(this._films);
 
-    const renderTopRatedFilms = (filmList, topRatedContainer) => {
+    const renderCustomFilmList = (filmList, filmListContainer) => {
       if (filmList.length > 0) {
         filmList.slice(0, filmList.length)
-          .forEach((film) => this._movieControllerComponent.render(film, topRatedContainer));
+          .forEach((film) => {
+            const movieController = new MovieControllerComponent(this._filmListContainerElement,
+                this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
+
+            movieController.render(film, filmListContainer);
+            return movieController;
+          });
       } else {
         container.parentElement.remove();
       }
     };
 
+    const renderTopRatedFilms = (filmList, topRatedContainer) => {
+      renderCustomFilmList(filmList, topRatedContainer);
+    };
+
     const renderMostCommentedFilms = (filmList, mostCommentedContainer) => {
-      if (filmList.length > 0) {
-        filmList.slice(0, filmList.length)
-          .forEach((film) => this._movieControllerComponent.render(film, mostCommentedContainer));
-      } else {
-        container.parentElement.remove();
-      }
+      renderCustomFilmList(filmList, mostCommentedContainer);
     };
 
     if (CARD_COUNT > 0) {
@@ -162,8 +166,6 @@ export default class PageController {
           this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
-      // console.log("top rated list: " + topRatedList);
-      // console.log("most commented list: " + mostCommentedList);
       this._renderShowMoreButton();
 
       renderTopRatedFilms(topRatedList, filmTopRatedElement);
