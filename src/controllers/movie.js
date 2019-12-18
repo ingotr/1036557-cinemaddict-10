@@ -106,21 +106,30 @@ export default class MovieController {
     });
 
     this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
-      this._watchListButtonClickHandler(data);
-      popupMiddleContainer.classList.toggle(`visually-hidden`);
-
-      if (!data.isOnWatchList) {
-        data.userRating = null;
-      }
-
-      if (data.userRating) {
-        popupUserRating.classList.remove(`visually-hidden`);
-      }
-
       data.isOnWatchList = !data.isOnWatchList;
+      this._onDataChange(this, oldPopupComponent, this._popupComponent);
     });
 
+
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
+      data.isOnWatchList = !data.isOnWatchList;
+
+      popupUserRating.classList.add(`visually-hidden`);
+      if (data.userRating !== null) {
+        data.userRating = null;
+        this._onUserRatingChange(popupUserRating, data.userRating);
+      } else {
+        popupUserRating.classList.add(`visually-hidden`);
+      }
+
+      popupMiddleContainer.classList.toggle(`visually-hidden`);
+
+      this._onDataChange(this, oldPopupComponent, this._popupComponent);
+    });
+
+    this._popupComponent.setFavoriteButtonClickHandler(() => {
+      data.isFavorite = !data.isFavorite;
+      this._onDataChange(this, oldPopupComponent, this._popupComponent);
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
