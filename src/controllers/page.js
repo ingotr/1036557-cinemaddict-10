@@ -68,9 +68,9 @@ const getMostCommentedFilms = (films) => {
   return isPositiveCommentsNumber(films) ? filterMostCommentedFilms(films) : [];
 };
 
-const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange) => {
+const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange) => {
   return films.map((film) => {
-    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange);
+    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange);
     movieController.render(film);
     return movieController;
   });
@@ -94,6 +94,7 @@ export default class PageController {
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFiltersChange = this._onFiltersChange.bind(this);
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._filtersComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
@@ -110,7 +111,7 @@ export default class PageController {
       showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
       const newFilms = renderFilmCards(this._films.slice(prevCardCount, showingCardCount),
-          this._filmListContainerElement, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
+          this._filmListContainerElement, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
       if (showingCardCount >= this._films.length) {
@@ -163,7 +164,7 @@ export default class PageController {
 
     if (CARD_COUNT > 0) {
       const newFilms = renderFilmCards(films.slice(0, showingCardCount), this._filmListContainerElement,
-          this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
+          this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
       this._renderShowMoreButton();
@@ -243,7 +244,7 @@ export default class PageController {
     this._filmListContainerElement.innerHTML = ``;
 
     const newFilms = renderFilmCards(sortedFilms, this._filmListContainerElement,
-        this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
+        this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
     this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
     if (sortType === SortType.DEFAULT) {
@@ -255,5 +256,9 @@ export default class PageController {
 
   _onUserRatingChange(userRatingField, userRatingValue) {
     userRatingField.innerHTML = `Your rate ${userRatingValue}`;
+  }
+
+  _onViewChange() {
+    this._showedMovieControllers.forEach((it) => it.setDefaultView());
   }
 }
