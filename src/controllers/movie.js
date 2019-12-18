@@ -79,6 +79,9 @@ export default class MovieController {
   }
 
   render(data, container = this._container) {
+    const oldCardComponent = this._cardComponent;
+    const oldPopupComponent = this._popupComponent;
+
     this._cardComponent = new CardComponent(data);
     render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
 
@@ -91,10 +94,12 @@ export default class MovieController {
       event.preventDefault();
       this._watchListButtonClickHandler(data);
     });
+
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
       this._markWatchedButtonClickHandler(data);
     });
+
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
       this._setFavoriteButtonClickHandler(data);
@@ -123,6 +128,13 @@ export default class MovieController {
       this._onUserRatingChange(popupUserRating, data.userRating);
       popupUserRating.classList.remove(`visually-hidden`);
     });
+
+    if (oldCardComponent && oldPopupComponent) {
+      replace(this._cardComponent, oldCardComponent);
+      replace(this._popupComponent, oldPopupComponent);
+    } else {
+      render(this._container, this._cardComponent, RenderPosition.BEFOREEND);
+    }
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent, data);
   }
