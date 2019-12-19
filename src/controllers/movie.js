@@ -1,7 +1,7 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
-import {render, replace, replacePopupToCard, RenderPosition} from '../utils/render.js';
+import {render, replace, replaceElementToTargetContainer, RenderPosition} from '../utils/render.js';
 
 const Mode = {
   DEFAULT: `default`,
@@ -21,6 +21,8 @@ export default class MovieController {
     this._onFiltersChange = onFiltersChange;
     this._onUserRatingChange = onUserRatingChange;
     this._onViewChange = onViewChange;
+
+    this._setDefaultView = this._setDefaultView;
   }
 
   _watchListButtonClickHandler(data) {
@@ -79,8 +81,9 @@ export default class MovieController {
         }
       };
 
-      card.setCardElementsClickHandler(() => {
-        this._replaceCardToPopup();
+      card.setCardElementsClickHandler((evt) => {
+        const cardParentElementContainer = evt.target.parentElement.parentElement.parentElement;
+        this._replaceCardToPopup(cardParentElementContainer);
 
         render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
         const popupElement = popContainer.getElement().querySelector(`.film-details`);
@@ -159,22 +162,24 @@ export default class MovieController {
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
   }
 
-  _replaceCardToPopup() {
+  _replaceCardToPopup(targetContainer) {
     this._onViewChange();
 
-    replace(this._popupComponent, this._cardComponent);
+    replaceElementToTargetContainer(this._popupComponent, this._cardComponent, targetContainer);
     this._mode = Mode.POPUP;
   }
 
   _replacePopupToCard() {
     // this._cardComponent.reset();
-
-    replacePopupToCard(this._cardComponent, this._popupComponent, this._container);
+    replaceElementToTargetContainer(this._cardComponent, this._popupComponent, this._container);
     this._mode = Mode.DEFAULT;
   }
 
-  setDefaultView() {
+  _setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._popupComponent.getElement().remove();
+      this._popupComponent.removeElement();
+
       this._replacePopupToCard();
     }
   }
