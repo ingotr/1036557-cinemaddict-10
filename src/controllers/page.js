@@ -144,7 +144,7 @@ export default class PageController {
         filmList.slice(0, filmList.length)
           .forEach((film) => {
             const movieController = new MovieControllerComponent(this._filmListContainerElement,
-                this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange);
+                this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
 
             movieController.render(film, filmListContainer);
             return movieController;
@@ -259,6 +259,9 @@ export default class PageController {
   }
 
   _onViewChange() {
-    this._showedMovieControllers.forEach((it) => it.setDefaultView());
+    this._showedMovieControllers.forEach((it) => {
+      it._setDefaultView();
+    });
+
   }
 }
