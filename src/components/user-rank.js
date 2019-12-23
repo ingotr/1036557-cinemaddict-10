@@ -1,5 +1,5 @@
-import {getRandomUserRank} from '../mock/userRank.js';
-import AbstractComponent from './abstractComponent.js';
+import {getRandomUserRank} from '../mock/user-rank.js';
+import AbstractComponent from './abstract-component.js';
 
 const getUserRank = () => {
   const count = getRandomUserRank();
