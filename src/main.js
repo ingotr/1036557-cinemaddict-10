@@ -1,12 +1,10 @@
-import MainMenuComponent from './components/mainMenu.js';
-import UserRankComponent from './components/userRank.js';
+import MainMenuComponent from './components/main-menu.js';
+import UserRankComponent from './components/user-rank.js';
 import PageControllerComponent from './controllers/page.js';
 import {generateDatum} from './mock/datum.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import {CARD_COUNT} from './const.js';
-
-// const CARD_IN_FILMS_COUNT = 5;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);

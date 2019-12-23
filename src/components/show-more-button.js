@@ -1,4 +1,4 @@
-import AbstractComponent from './abstractComponent.js';
+import AbstractComponent from './abstract-component.js';
 
 const createShowMoreButton = () => `<button class="films-list__show-more">Show more</button>`;
 

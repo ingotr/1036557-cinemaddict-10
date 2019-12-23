@@ -1,4 +1,4 @@
-import AbstractComponent from './abstractComponent.js';
+import AbstractComponent from './abstract-component.js';
 
 const createMainMenuTemplate = (filters) => {
   const [watchlist, history, favorites] = filters;

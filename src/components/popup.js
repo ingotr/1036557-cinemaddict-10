@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstractSmartComponent';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;

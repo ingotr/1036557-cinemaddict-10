@@ -26,33 +26,18 @@ export default class MovieController {
   }
 
   _watchListButtonClickHandler(data) {
-    if (data.isOnWatchList) {
-      this._onFiltersChange(`watchlist`, false);
-      data.isOnWatchList = !data.isOnWatchList;
-    } else {
-      this._onFiltersChange(`watchlist`, true);
-      data.isOnWatchList = !data.isOnWatchList;
-    }
+    this._onFiltersChange(`watchlist`, !data.isOnWatchList);
+    data.isOnWatchList = !data.isOnWatchList;
   }
 
   _markWatchedButtonClickHandler(data) {
-    if (data.isWatched) {
-      this._onFiltersChange(`history`, false);
-      data.isWatched = !data.isWatched;
-    } else {
-      this._onFiltersChange(`history`, true);
-      data.isWatched = !data.isWatched;
-    }
+    this._onFiltersChange(`history`, !data.isWatched);
+    data.isWatched = !data.isWatched;
   }
 
   _setFavoriteButtonClickHandler(data) {
-    if (data.isFavorite) {
-      this._onFiltersChange(`favorites`, false);
-      data.isFavorite = !data.isFavorite;
-    } else {
-      this._onFiltersChange(`favorites`, true);
-      data.isFavorite = !data.isFavorite;
-    }
+    this._onFiltersChange(`favorites`, !data.isFavorite);
+    data.isFavorite = !data.isFavorite;
   }
 
   render(data, container = this._container) {

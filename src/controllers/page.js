@@ -1,8 +1,8 @@
 import FiltersComponent, {SortType} from '../components/filters.js';
 import FilmsComponent from '../components/films.js';
-import FilmsListComponent from '../components/filmsList';
+import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
-import ShowMoreButtonComponent from '../components/showMoreButton.js';
+import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, renderFilter, RenderPosition} from '../utils/render.js';
 import {CARD_COUNT} from '../const.js';

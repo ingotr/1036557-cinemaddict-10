@@ -1,4 +1,4 @@
-import AbstractComponent from './abstractComponent.js';
+import AbstractComponent from './abstract-component.js';
 
 const createCommentMarkup = (comment) => {
   const {text, emoji, autor, date} = comment;
