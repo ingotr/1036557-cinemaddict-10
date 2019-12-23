@@ -1,7 +1,7 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
-import {render, replace, replaceElementToTargetContainer, RenderPosition} from '../utils/render.js';
+import {render, replace, RenderPosition} from '../utils/render.js';
 
 const Mode = {
   DEFAULT: `default`,
@@ -81,9 +81,8 @@ export default class MovieController {
         }
       };
 
-      card.setCardElementsClickHandler((evt) => {
-        const cardParentElementContainer = evt.target.parentElement.parentElement.parentElement;
-        this._replaceCardToPopup(cardParentElementContainer);
+      card.setCardElementsClickHandler(() => {
+        this._replaceCardToPopup();
 
         render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
         const popupElement = popContainer.getElement().querySelector(`.film-details`);
@@ -162,16 +161,12 @@ export default class MovieController {
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
   }
 
-  _replaceCardToPopup(targetContainer) {
+  _replaceCardToPopup() {
     this._onViewChange();
-
-    replaceElementToTargetContainer(this._popupComponent, this._cardComponent, targetContainer);
     this._mode = Mode.POPUP;
   }
 
   _replacePopupToCard() {
-    // this._cardComponent.reset();
-    replaceElementToTargetContainer(this._cardComponent, this._popupComponent, this._container);
     this._mode = Mode.DEFAULT;
   }
 
