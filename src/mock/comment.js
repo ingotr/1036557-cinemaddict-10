@@ -1,4 +1,4 @@
-import {getRandomElement, getReleaseDate} from '../utils/common.js';
+import {getRandomElement, getCommentDateFromNow} from '../utils/common.js';
 
 
 const TextBlocks = [
@@ -29,7 +29,7 @@ const generateComment = () => {
     text: getRandomElement(TextBlocks),
     emoji: getRandomElement(Emojis),
     autor: getRandomElement(Autors),
-    date: getReleaseDate(),
+    date: getCommentDateFromNow(),
     deleteBtn: ``,
   };
 };

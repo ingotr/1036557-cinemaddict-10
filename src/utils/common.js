@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {DescriptionItems, MonthNames} from '../const.js';
 
 const MAX_DESCRIPTION_LENGTH = 3;
@@ -33,10 +34,15 @@ const getRandomDate = (start, end) => {
 };
 
 const getRandomYear = () => {
-  const targetDate = getRandomDate(new Date(1900, 1, 1), new Date());
-  const targetYear = targetDate.getFullYear();
+  const targetYear = moment(getRandomDate(new Date(1900, 1, 1), new Date())).format(`YYYY`);
 
   return targetYear;
+};
+
+const getCommentDateFromNow = () => {
+  const targetDate = moment(getRandomYear(), `hh:mm:ss a`).fromNow();
+
+  return targetDate;
 };
 
 const getReleaseDate = (year) => {
@@ -44,7 +50,8 @@ const getReleaseDate = (year) => {
   const targetDay = targetDate.getDay();
   const targetMonth = MonthNames[targetDate.getMonth()];
   const targetYear = year;
-  const releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
+  let releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
+  releaseDate = moment(releaseDate).format(`DD MMMM YYYY`);
 
   return releaseDate;
 };
@@ -62,4 +69,4 @@ const getRandomCommentsNumber = () => {
   return commentsNumber;
 };
 
-export {getRandomIntegerNumber, getRandomElement, getRandomRating, getRandomYear, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber};
+export {getRandomIntegerNumber, getRandomElement, getRandomRating, getRandomYear, getCommentDateFromNow, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber};
