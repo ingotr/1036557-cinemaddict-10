@@ -12,6 +12,12 @@ const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const TOPRATED_LIST_LENGTH = 2;
 const MOSTCOMMENTED_LIST_LENGTH = 2;
 
+const FILTER_NAME_INDEX = {
+  WATCHLIST: 0,
+  HISTORY: 1,
+  FAVORITES: 2,
+};
+
 const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
 const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
@@ -150,12 +156,8 @@ export default class PageController {
           movieController.render(film, filmListContainer);
           return movieController;
         });
-      } else {
-        return [];
       }
-      // } else {
-      //   container.parentElement.remove();
-      // }
+      return [];
     };
 
     if (CARD_COUNT > 0) {
@@ -182,33 +184,15 @@ export default class PageController {
     const filterHistoryCount = document.querySelector(`a[href="#history"] span`);
     const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`);
 
-    const FilterNamesIndex = {
-      WATCHLIST: 0,
-      HISTORY: 1,
-      FAVORITES: 2,
-    };
-
     switch (filterType) {
       case `watchlist`:
-        if (filterChanged) {
-          renderFilter(this._filters, FilterNamesIndex.WATCHLIST, filterWatchlistCount, true);
-        } else {
-          renderFilter(this._filters, FilterNamesIndex.WATCHLIST, filterWatchlistCount, false);
-        }
+        renderFilter(this._filters, FILTER_NAME_INDEX.WATCHLIST, filterWatchlistCount, Boolean(filterChanged));
         break;
       case `history`:
-        if (filterChanged) {
-          renderFilter(this._filters, FilterNamesIndex.HISTORY, filterHistoryCount, true);
-        } else {
-          renderFilter(this._filters, FilterNamesIndex.HISTORY, filterHistoryCount, false);
-        }
+        renderFilter(this._filters, FILTER_NAME_INDEX.HISTORY, filterHistoryCount, Boolean(filterChanged));
         break;
       case `favorites`:
-        if (filterChanged) {
-          renderFilter(this._filters, FilterNamesIndex.FAVORITES, filterFavoritesCount, true);
-        } else {
-          renderFilter(this._filters, FilterNamesIndex.FAVORITES, filterFavoritesCount, false);
-        }
+        renderFilter(this._filters, FILTER_NAME_INDEX.FAVORITES, filterFavoritesCount, Boolean(filterChanged));
         break;
     }
   }
