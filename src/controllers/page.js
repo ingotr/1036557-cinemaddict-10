@@ -83,12 +83,13 @@ const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange
 };
 
 export default class PageController {
-  constructor(container, filters) {
+  constructor(container, filters, moviesModel) {
     this._container = container;
+    this._moviesModel = moviesModel;
+    this._movies = this._moviesModel.getMovies();
 
     this._filters = filters;
 
-    this._films = [];
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
@@ -108,7 +109,7 @@ export default class PageController {
   }
 
   _renderShowMoreButton() {
-    if (showingCardCount >= this._films.length) {
+    if (showingCardCount >= this._movies.length) {
       return;
     }
 
@@ -118,19 +119,17 @@ export default class PageController {
       const prevCardCount = showingCardCount;
       showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
-      const newFilms = renderFilmCards(this._films.slice(prevCardCount, showingCardCount),
+      const newFilms = renderFilmCards(this._movies.slice(prevCardCount, showingCardCount),
           this._filmListContainerElement, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
-      if (showingCardCount >= this._films.length) {
+      if (showingCardCount >= this._movies.length) {
         remove(this._showMoreButtonComponent);
       }
     });
   }
 
-  render(films) {
-    this._films = films;
-
+  render() {
     const container = this._container;
 
     render(container, this._filtersComponent.getElement(), RenderPosition.BEFOREEND);
@@ -144,8 +143,8 @@ export default class PageController {
     const filmTopRatedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra .films-list__container`);
     const filmMostCommentedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra:last-child .films-list__container`);
 
-    const topRatedList = getTopRatedFilms(this._films);
-    const mostCommentedList = getMostCommentedFilms(this._films);
+    const topRatedList = getTopRatedFilms(this._movies);
+    const mostCommentedList = getMostCommentedFilms(this._movies);
 
     const renderCustomFilmList = (filmList, filmListContainer) => {
       if (filmList.length > 0) {
@@ -161,7 +160,7 @@ export default class PageController {
     };
 
     if (CARD_COUNT > 0) {
-      const newFilms = renderFilmCards(films.slice(0, showingCardCount), this._filmListContainerElement,
+      const newFilms = renderFilmCards(this._movies.slice(0, showingCardCount), this._filmListContainerElement,
           this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
       this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
@@ -198,15 +197,11 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldData, newData) {
-    const index = this._films.findIndex((it) => it === oldData);
+    const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      movieController.render(newData);
     }
-
-    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-
-    movieController.render(this._films[index]);
   }
 
   _onSortTypeChange(sortType) {
@@ -214,13 +209,13 @@ export default class PageController {
 
     switch (sortType) {
       case SortType.DATE_DOWN:
-        sortedFilms = this._films.slice().sort((a, b) => a.year - b.year);
+        sortedFilms = this._movies.slice().sort((a, b) => a.year - b.year);
         break;
       case SortType.RATING_DOWN:
-        sortedFilms = this._films.slice().sort((a, b) => a.rating - b.rating);
+        sortedFilms = this._movies.slice().sort((a, b) => a.rating - b.rating);
         break;
       case SortType.DEFAULT:
-        sortedFilms = this._films.slice(0, showingCardCount);
+        sortedFilms = this._movies.slice(0, showingCardCount);
         break;
     }
 
