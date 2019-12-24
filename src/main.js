@@ -23,6 +23,6 @@ moviesModel.setMovies(datum);
 const footerStatisticElement = document.querySelector(`.footer__statistics p`);
 footerStatisticElement.textContent = `${datum.length} movies inside`;
 
-const pageController = new PageControllerComponent(mainElement, filters);
-pageController.render(datum);
+const pageController = new PageControllerComponent(mainElement, filters, moviesModel);
+pageController.render();
 
