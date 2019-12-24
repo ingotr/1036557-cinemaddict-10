@@ -79,3 +79,9 @@ export const MonthNames = [
   `December`,
 ];
 
+export const FilterType = {
+  ALL: `all movies`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`,
+};

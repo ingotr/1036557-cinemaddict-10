@@ -1,7 +1,7 @@
 import FilterComponent from '../components/filters.js';
-import {FilteType} from '../const.js';
+import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {getTaskByFilter} from '../utils/filter.js';
+import {getMoviesByFilter} from '../utils/filter.js';
 
 export default class FilterController {
   constructor(container, moviesModel) {
@@ -16,11 +16,11 @@ export default class FilterController {
 
   render() {
     const container = this._container;
-    const allTasks = this._tasksModel.getTaskAll();
+    const allMovies = this._moviesModel.getMovies();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        count: getTaskByFilter(allTasks, filterType).legnth,
+        count: getMoviesByFilter(allMovies, filterType).legnth,
         checked: filterType === this._activeFilterType,
       };
     });
