@@ -4,19 +4,13 @@ import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
-import {render, remove, renderFilter, RenderPosition} from '../utils/render.js';
+import {render, remove, RenderPosition} from '../utils/render.js';
 import {CARD_COUNT} from '../const.js';
 
 const CARD_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const TOPRATED_LIST_LENGTH = 2;
 const MOSTCOMMENTED_LIST_LENGTH = 2;
-
-const FILTER_NAME_INDEX = {
-  WATCHLIST: 0,
-  HISTORY: 1,
-  FAVORITES: 2,
-};
 
 const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
@@ -101,11 +95,12 @@ export default class PageController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._onFiltersChange = this._onFiltersChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
     this._filtersComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._moviesModel.setFilterChangeHandlers(this._onFilterChange);
   }
 
   _renderShowMoreButton() {
@@ -178,23 +173,23 @@ export default class PageController {
 
   }
 
-  _onFiltersChange(filterType, filterChanged) {
-    const filterWatchlistCount = document.querySelector(`a[href="#watchlist"] span`);
-    const filterHistoryCount = document.querySelector(`a[href="#history"] span`);
-    const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`);
+  // _onFiltersChange(filterType, filterChanged) {
+  //   const filterWatchlistCount = document.querySelector(`a[href="#watchlist"] span`);
+  //   const filterHistoryCount = document.querySelector(`a[href="#history"] span`);
+  //   const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`);
 
-    switch (filterType) {
-      case `watchlist`:
-        renderFilter(this._filters, FILTER_NAME_INDEX.WATCHLIST, filterWatchlistCount, Boolean(filterChanged));
-        break;
-      case `history`:
-        renderFilter(this._filters, FILTER_NAME_INDEX.HISTORY, filterHistoryCount, Boolean(filterChanged));
-        break;
-      case `favorites`:
-        renderFilter(this._filters, FILTER_NAME_INDEX.FAVORITES, filterFavoritesCount, Boolean(filterChanged));
-        break;
-    }
-  }
+  //   switch (filterType) {
+  //     case `watchlist`:
+  //       renderFilter(this._filters, FILTER_NAME_INDEX.WATCHLIST, filterWatchlistCount, Boolean(filterChanged));
+  //       break;
+  //     case `history`:
+  //       renderFilter(this._filters, FILTER_NAME_INDEX.HISTORY, filterHistoryCount, Boolean(filterChanged));
+  //       break;
+  //     case `favorites`:
+  //       renderFilter(this._filters, FILTER_NAME_INDEX.FAVORITES, filterFavoritesCount, Boolean(filterChanged));
+  //       break;
+  //   }
+  // }
 
   _onDataChange(movieController, oldData, newData) {
     const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
@@ -246,5 +241,11 @@ export default class PageController {
     this._showedMostCommentedMovieControllers.forEach((it) => {
       it._setDefaultView();
     });
+  }
+
+  _onFilterChange() {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(0, CARD_ON_START));
+    this._renderShowMoreButton();
   }
 }
