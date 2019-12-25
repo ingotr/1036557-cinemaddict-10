@@ -16,7 +16,7 @@ export default class FilterController {
 
   render() {
     const container = this._container;
-    const allMovies = this._moviesModel.getMovies();
+    const allMovies = this._moviesModel.getMoviesAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
