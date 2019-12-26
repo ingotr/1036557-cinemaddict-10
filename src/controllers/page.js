@@ -1,4 +1,4 @@
-import FiltersComponent, {SortType} from '../components/filters.js';
+import SortComponent, {SortType} from '../components/sort.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
@@ -87,7 +87,7 @@ export default class PageController {
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
-    this._filtersComponent = new FiltersComponent();
+    this._sortComponent = new SortComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
@@ -99,7 +99,7 @@ export default class PageController {
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
-    this._filtersComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._moviesModel.setFilterChangeHandlers(this._onFilterChange);
   }
 
@@ -127,7 +127,7 @@ export default class PageController {
   render() {
     const container = this._container;
 
-    render(container, this._filtersComponent.getElement(), RenderPosition.BEFOREEND);
+    render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
