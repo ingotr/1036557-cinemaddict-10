@@ -9,7 +9,7 @@ import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {CARD_COUNT} from '../const.js';
 
-const CARD_ON_START = 5;
+const SHOWING_CARDS_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const TOPRATED_LIST_LENGTH = 2;
 const MOSTCOMMENTED_LIST_LENGTH = 2;
@@ -18,7 +18,7 @@ const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
 const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
 
-let showingCardCount = CARD_ON_START;
+let showingCardCount = SHOWING_CARDS_ON_START;
 
 const isPositiveRating = (films) => {
   return films.some((film) => film.rating > 0);
@@ -85,6 +85,8 @@ export default class PageController {
     this._movies = this._moviesModel.getMovies();
 
     this._filters = filters;
+
+    this._showingMovieCount = SHOWING_CARDS_ON_START;
 
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
@@ -201,6 +203,22 @@ export default class PageController {
   //   }
   // }
 
+  _removeMovies() {
+    const filmListElement = this._filmListContainerElement;
+    filmListElement.innerHTML = ``;
+
+    this._showedMovieControllers = [];
+  }
+
+  _renderMovies() {
+    const filmListElement = this._filmListContainerElement;
+
+    const newFilms = renderFilmCards(this._movies.slice(0, showingCardCount), filmListElement,
+        this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
+    this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
+    this._showingMovieCount = this._showedMovieControllers.length;
+  }
+
   _onDataChange(movieController, oldData, newData) {
     const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
 
@@ -255,7 +273,7 @@ export default class PageController {
 
   _onFilterChange() {
     this._removeMovies();
-    this._renderMovies(this._moviesModel.getMovies().slice(0, CARD_ON_START));
+    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
   }
 }
