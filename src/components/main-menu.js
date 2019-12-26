@@ -5,7 +5,7 @@ const createMainMenuTemplate = (filters) => {
   const [watchlist, history, favorites] = filters;
   return (
     `<nav class="main-navigation">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+      <a href="#all movies" class="main-navigation__item main-navigation__item--active">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist.count}</span></a>
       <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${history.count}</span></a>
       <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorites.count}</span></a>
@@ -18,7 +18,7 @@ export default class MainMenu extends AbstractComponent {
     super();
 
     this._filters = filters;
-    this._currentFilterType = FilterType.ALL;
+    this._activeFilterType = FilterType.ALL;
   }
 
   getTemplate() {
@@ -38,14 +38,20 @@ export default class MainMenu extends AbstractComponent {
       this._deactivateAllFilterElements(filterElements);
 
       evt.target.classList.add(`main-navigation__item--active`);
+      let currentFilter = evt.target.getAttribute(`href`);
+      currentFilter = currentFilter.substring(1);
+      console.log(currentFilter);
 
-      if (this._currentSortType === FilterType) {
+      this._activeFilterType = currentFilter;
+      console.log(this._activeFilterType);
+
+      if (this._activeFilterType === FilterType) {
         return;
       }
 
-      this._currentSortType = FilterType;
+      this._activeFilterType = FilterType;
 
-      handler(this._currentSortType);
+      handler(this._activeFilterType);
     });
   }
 
