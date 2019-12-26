@@ -39,7 +39,7 @@ export default class Movies {
     return true;
   }
 
-  setFilterChangeHandler(handler) {
+  setFilterChangeHandlers(handler) {
     this._filterChangeHandlers.push(handler);
   }
 }

@@ -1,3 +1,5 @@
+import MainMenuComponent from '../components/main-menu.js';
+import StatsComponent from '../components/stats.js';
 import SortComponent, {SortType} from '../components/sort.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/films-list';
@@ -87,6 +89,8 @@ export default class PageController {
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
+    this._filterComponent = new MainMenuComponent(this._filters);
+    this._statsComponent = new StatsComponent();
     this._sortComponent = new SortComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
@@ -99,6 +103,7 @@ export default class PageController {
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._moviesModel.setFilterChangeHandlers(this._onFilterChange);
   }
@@ -126,6 +131,11 @@ export default class PageController {
 
   render() {
     const container = this._container;
+
+    render(this._container, this._filterComponent.getElement(), RenderPosition.BEFOREEND);
+    const mainNavigationElement = this._container.querySelector(`.main-navigation`);
+
+    render(mainNavigationElement, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
