@@ -20,10 +20,11 @@ export default class FilterController {
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        count: getMoviesByFilter(allMovies, filterType).legnth,
+        count: getMoviesByFilter(allMovies, filterType).length,
         checked: filterType === this._activeFilterType,
       };
     });
+
     const oldComponent = this._filterComponent;
 
     this._filterComponent = new FilterComponent(filters);

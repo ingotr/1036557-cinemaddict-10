@@ -211,10 +211,10 @@ export default class PageController {
     this._showedMovieControllers = [];
   }
 
-  _renderMovies() {
+  _renderMovies(movies) {
     const filmListElement = this._filmListContainerElement;
 
-    const newFilms = renderFilmCards(this._movies.slice(0, showingCardCount), filmListElement,
+    const newFilms = renderFilmCards(movies, filmListElement,
         this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
     this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
     this._showingMovieCount = this._showedMovieControllers.length;
