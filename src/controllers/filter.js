@@ -1,4 +1,4 @@
-import FilterComponent from '../components/filters.js';
+import FilterComponent from '../components/main-menu.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {getMoviesByFilter} from '../utils/filter.js';
@@ -32,7 +32,7 @@ export default class FilterController {
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.BEFOREEND);
+      render(container, this._filterComponent.getElement(), RenderPosition.BEFOREEND);
     }
   }
 
