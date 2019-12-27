@@ -104,32 +104,23 @@ export default class PageController {
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
+    this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
-    // this._filterComponent.setFilterChangeHandler(this._onFilterChange);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._moviesModel.setFilterChangeHandlers(this._onFilterChange);
   }
 
   _renderShowMoreButton() {
+    remove(this._showMoreButtonComponent);
+
     if (showingCardCount >= this._movies.length) {
       return;
     }
 
     render(this._filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
-    this._showMoreButtonComponent.setClickHandler(() => {
-      const prevCardCount = showingCardCount;
-      showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
-
-      const newFilms = renderFilmCards(this._movies.slice(prevCardCount, showingCardCount),
-          this._filmListContainerElement, this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
-      this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
-
-      if (showingCardCount >= this._movies.length) {
-        remove(this._showMoreButtonComponent);
-      }
-    });
+    this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
   }
 
   render() {
@@ -168,10 +159,7 @@ export default class PageController {
     };
 
     if (CARD_COUNT > 0) {
-      const newFilms = renderFilmCards(this._movies.slice(0, showingCardCount), this._filmListContainerElement,
-          this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
-      this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
-
+      this._renderMovies((this._movies.slice(0, showingCardCount)));
       this._renderShowMoreButton();
 
       const newTopRatedFilms = renderCustomFilmList(topRatedList, filmTopRatedElement);
@@ -185,24 +173,6 @@ export default class PageController {
     }
 
   }
-
-  // _onFiltersChange(filterType, filterChanged) {
-  //   const filterWatchlistCount = document.querySelector(`a[href="#watchlist"] span`);
-  //   const filterHistoryCount = document.querySelector(`a[href="#history"] span`);
-  //   const filterFavoritesCount = document.querySelector(`a[href="#favorites"] span`);
-
-  //   switch (filterType) {
-  //     case `watchlist`:
-  //       renderFilter(this._filters, FILTER_NAME_INDEX.WATCHLIST, filterWatchlistCount, Boolean(filterChanged));
-  //       break;
-  //     case `history`:
-  //       renderFilter(this._filters, FILTER_NAME_INDEX.HISTORY, filterHistoryCount, Boolean(filterChanged));
-  //       break;
-  //     case `favorites`:
-  //       renderFilter(this._filters, FILTER_NAME_INDEX.FAVORITES, filterFavoritesCount, Boolean(filterChanged));
-  //       break;
-  //   }
-  // }
 
   _removeMovies() {
     const filmListElement = this._filmListContainerElement;
@@ -243,15 +213,23 @@ export default class PageController {
         break;
     }
 
-    this._filmListContainerElement.innerHTML = ``;
-
-    const newFilms = renderFilmCards(sortedFilms, this._filmListContainerElement,
-        this._filmsComponent, this._onDataChange, this._onFiltersChange, this._onUserRatingChange, this._onViewChange);
-    this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
+    this._removeMovies();
+    this._renderMovies(sortedFilms);
 
     if (sortType === SortType.DEFAULT) {
       this._renderShowMoreButton(sortedFilms, this._showMoreButtonComponent, this._filmListContainerElement);
     } else {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
+  _onShowMoreButtonClick() {
+    const prevCardCount = showingCardCount;
+    showingCardCount = showingCardCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+    this._renderMovies(this._movies.slice(prevCardCount, showingCardCount));
+
+    if (showingCardCount >= this._movies.length) {
       remove(this._showMoreButtonComponent);
     }
   }
