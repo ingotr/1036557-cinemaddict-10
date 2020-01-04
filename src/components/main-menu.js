@@ -2,7 +2,7 @@ import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
 const createMainMenuTemplate = (filters) => {
-  const [all, watchlist, history, favorites] = filters;
+  const [watchlist, history, favorites] = filters;
   return (
     `<nav class="main-navigation">
       <a href="#all movies" data-filter-type="${FilterType.ALL}" class="main-navigation__item main-navigation__item--active">All movies</a>

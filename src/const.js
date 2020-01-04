@@ -80,8 +80,8 @@ export const MonthNames = [
 ];
 
 export const FilterType = {
-  ALL: `all movies`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
   FAVORITES: `favorites`,
+  ALL: `all movies`,
 };
