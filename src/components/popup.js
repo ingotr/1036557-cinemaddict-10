@@ -245,6 +245,11 @@ export default class Popup extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-details__user-rating-score`).addEventListener(`change`, handler);
   }
 
+  setCommentsDeleteButtonClickHandler(handler) {
+    const deleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    deleteButtons.forEach((button) => button.addEventListener(`click`, handler));
+  }
+
   _subscribeOnEvents() {
     this.setAddToWatchlistButtonCLickHandler();
     this.setMarkAsWatchedButtonClickHandler();

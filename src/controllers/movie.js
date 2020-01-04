@@ -78,6 +78,11 @@ export default class MovieController {
           .forEach((comment) => render(commentsListElement, new CommentComponent(comment).getElement(), RenderPosition.BEFOREEND));
 
         document.addEventListener(`keydown`, onEscKeyPress);
+
+        this._popupComponent.setCommentsDeleteButtonClickHandler(() => {
+          event.preventDefault();
+          this._onDataChange();
+        });
       });
 
       popup.setCloseButtonClickHandler(() => {
