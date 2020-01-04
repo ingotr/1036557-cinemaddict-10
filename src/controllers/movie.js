@@ -4,6 +4,7 @@ import CommentComponent from '../components/comment.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 
 const Mode = {
+  // ADDING: `adding`,
   DEFAULT: `default`,
   POPUP: `popup`,
 };
@@ -17,6 +18,7 @@ export default class MovieController {
 
     this._cardComponent = null;
     this._popupComponent = null;
+
     this._onDataChange = onDataChange;
     this._onFiltersChange = onFiltersChange;
     this._onUserRatingChange = onUserRatingChange;
@@ -45,9 +47,8 @@ export default class MovieController {
     const oldPopupComponent = this._popupComponent;
 
     this._cardComponent = new CardComponent(data);
-    render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
-
     this._popupComponent = new PopupComponent(data);
+
     const popupMiddleContainer = this._popupComponent.getElement().querySelector(`.form-details__middle-container`);
 
     const popupUserRating = this._popupComponent.getElement().querySelector(`.film-details__user-rating`);
@@ -87,25 +88,27 @@ export default class MovieController {
       });
     };
 
-
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
       this._watchListButtonClickHandler(data);
+      this._onDataChange();
     });
 
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
       this._markWatchedButtonClickHandler(data);
+      this._onDataChange();
     });
 
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
       this._setFavoriteButtonClickHandler(data);
+      this._onDataChange();
     });
 
     this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
       data.isOnWatchList = !data.isOnWatchList;
-      this._onDataChange(this, oldPopupComponent, this._popupComponent);
+      this._onDataChange();
     });
 
 
@@ -122,12 +125,12 @@ export default class MovieController {
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
 
-      this._onDataChange(this, oldPopupComponent, this._popupComponent);
+      this._onDataChange();
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
       data.isFavorite = !data.isFavorite;
-      this._onDataChange(this, oldPopupComponent, this._popupComponent);
+      this._onDataChange();
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {

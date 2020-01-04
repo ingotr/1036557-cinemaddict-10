@@ -102,13 +102,13 @@ export default class PageController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
+    this._onFiltersChange = this._onFiltersChange.bind(this);
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
     this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
-    this._moviesModel.setFilterChangeHandlers(this._onFilterChange);
+    this._moviesModel.setFilterChangeHandlers(this._onFiltersChange);
   }
 
   _renderShowMoreButton() {
@@ -190,12 +190,12 @@ export default class PageController {
     this._showingMovieCount = this._showedMovieControllers.length;
   }
 
-  _onDataChange(movieController, oldData, newData) {
-    const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
-
-    if (isSuccess) {
-      movieController.render(newData);
-    }
+  _onDataChange() {
+    this._filterController.render();
+    // const isSuccess = this._moviesModel.updateMovie(oldData.id, newData);
+    // if (isSuccess) {
+    //   movieController.render(newData);
+    // }
   }
 
   _onSortTypeChange(sortType) {
@@ -250,7 +250,7 @@ export default class PageController {
     });
   }
 
-  _onFilterChange() {
+  _onFiltersChange() {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
