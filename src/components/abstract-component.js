@@ -21,6 +21,10 @@ export default class AbstractComponent {
     return this._element;
   }
 
+  getCard() {
+    return this._card;
+  }
+
   removeElement() {
     this._element = null;
   }

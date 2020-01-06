@@ -18,7 +18,7 @@ const createPopUpTemplate = (popup) => {
     duration,
     poster,
     description,
-    commentsNumber,
+    comments,
     director,
     writers,
     actors,
@@ -161,7 +161,7 @@ const createPopUpTemplate = (popup) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
             </ul>
@@ -243,11 +243,6 @@ export default class Popup extends AbstractSmartComponent {
 
   setUserRatingChangeHandler(handler) {
     this.getElement().querySelector(`.film-details__user-rating-score`).addEventListener(`change`, handler);
-  }
-
-  setCommentsDeleteButtonClickHandler(handler) {
-    const deleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
-    deleteButtons.forEach((button) => button.addEventListener(`click`, handler));
   }
 
   _subscribeOnEvents() {

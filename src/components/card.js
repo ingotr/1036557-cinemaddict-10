@@ -8,7 +8,7 @@ const createButtonMarkup = (name, description, isActive) => {
 };
 
 const createDefaultCardTemplate = (card) => {
-  const {title, rating, year, duration, genres, poster, description, commentsNumber} = card;
+  const {title, rating, year, duration, genres, poster, description, comments} = card;
 
   const addToWatchlistButton = createButtonMarkup(`add-to-watchlist`, `Add to watchlist`, true);
   const markAsWatchedButton = createButtonMarkup(`mark-as-watched`, `Mark as watched`, card.isWatched);
@@ -25,7 +25,7 @@ const createDefaultCardTemplate = (card) => {
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
         <p class="film-card__description">${description}…</p>
-        <a class="film-card__comments">${commentsNumber} comments</a>
+        <a class="film-card__comments">${comments.length} comments</a>
         <form class="film-card__controls">
           ${addToWatchlistButton}
           ${markAsWatchedButton}
