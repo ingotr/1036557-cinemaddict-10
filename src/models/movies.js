@@ -42,6 +42,20 @@ export default class Movies {
     return true;
   }
 
+  deleteComment(movieId, commentIndex) {
+    const index = this._movies.findIndex((it) => it.id === movieId);
+    if (index === -1) {
+      return false;
+    }
+
+    this._movies[index].comments = [].concat(this._movies[index].comments.slice(0, commentIndex),
+        this._movies[index].comments.slice(commentIndex + 1));
+
+    this._dataChangeHandlers.forEach((handler) => handler());
+
+    return this._movies[index];
+  }
+
   setDataChangeHandlers(handler) {
     this._dataChangeHandlers.push(handler);
   }
