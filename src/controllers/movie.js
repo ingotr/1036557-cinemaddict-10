@@ -10,7 +10,7 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange) {
+  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange, onCommentsCountChange) {
     this._container = container;
     this._popupContainer = popupContainer;
 
@@ -23,6 +23,7 @@ export default class MovieController {
     this._onFiltersChange = onFiltersChange;
     this._onUserRatingChange = onUserRatingChange;
     this._onViewChange = onViewChange;
+    this._onCommentsCountChange = onCommentsCountChange;
 
     this._setDefaultView = this._setDefaultView;
   }
@@ -46,6 +47,7 @@ export default class MovieController {
     const oldCardComponent = this._cardComponent;
     const oldPopupComponent = this._popupComponent;
 
+    this._data = data;
     this._cardComponent = new CardComponent(data);
     this._popupComponent = new PopupComponent(data);
 
@@ -70,19 +72,9 @@ export default class MovieController {
       card.setCardElementsClickHandler(() => {
         this._replaceCardToPopup();
 
-        render(popContainer.getElement(), popup.getElement(), RenderPosition.BEFOREEND);
-        const popupElement = popContainer.getElement().querySelector(`.film-details`);
-        const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
-        const popupCommentsList = data.comments;
-        popupCommentsList.slice(0, popupCommentsList.length)
-          .forEach((comment) => render(commentsListElement, new CommentComponent(comment).getElement(), RenderPosition.BEFOREEND));
+        this.renderPopup();
 
         document.addEventListener(`keydown`, onEscKeyPress);
-
-        this._popupComponent.setCommentsDeleteButtonClickHandler(() => {
-          event.preventDefault();
-          this._onDataChange();
-        });
       });
 
       popup.setCloseButtonClickHandler(() => {
@@ -152,6 +144,38 @@ export default class MovieController {
     }
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
+  }
+
+  _removeComments(list) {
+    const commentsList = list;
+    commentsList.innerHTML = ``;
+  }
+
+  renderComments(popupCommentsList, commentsListElement) {
+    popupCommentsList.slice(0, popupCommentsList.length)
+    .forEach((comment, index) => {
+      const currentComment = new CommentComponent(comment);
+      render(commentsListElement, currentComment.getElement(), RenderPosition.BEFOREEND);
+
+      this._addCommentsHandlers(currentComment, index, commentsListElement);
+    });
+  }
+
+  renderPopup() {
+    const popupData = this._data;
+    render(this._popupContainer.getElement(), this._popupComponent.getElement(), RenderPosition.BEFOREEND);
+    const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
+    const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
+    const popupCommentsList = popupData.comments;
+
+    this.renderComments(popupCommentsList, commentsListElement);
+  }
+
+  _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
+    currentComment.setCommentsDeleteButtonClickHandler(() => {
+      event.preventDefault();
+      this._onCommentsCountChange(this, this._cardComponent, null, commentIndex, commentContainer);
+    });
   }
 
   _replaceCardToPopup() {
