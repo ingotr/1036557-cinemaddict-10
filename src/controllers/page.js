@@ -19,6 +19,13 @@ const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
 const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
 
+const EMOJI_ID = {
+  SMILE: `emoji-smile`,
+  SLEEPING: `emoji-sleeping`,
+  GRINNING: `emoji-gpuke`,
+  ANGRY: `emoji-angry`,
+};
+
 let showingCardCount = SHOWING_CARDS_ON_START;
 
 const isPositiveRating = (films) => {
@@ -71,9 +78,11 @@ const getMostCommentedFilms = (films) => {
   return isPositiveCommentsNumber(films) ? filterMostCommentedFilms(films) : [];
 };
 
-const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange, onCommentsCountChange) => {
+const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange, onFiltersChange,
+    onUserRatingChange, onViewChange, onCommentsCountChange, onEmojiChange) => {
   return films.map((film) => {
-    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange, onCommentsCountChange);
+    const movieController = new MovieControllerComponent(filmsListContainer, popupContainer, onDataChange,
+        onFiltersChange, onUserRatingChange, onViewChange, onCommentsCountChange, onEmojiChange);
     movieController.render(film);
     return movieController;
   });
@@ -110,6 +119,7 @@ export default class PageController {
     this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._onCommentsCountChange = this._onCommentsCountChange.bind(this);
+    this._onEmojiChange = this._onEmojiChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._moviesModel.setFilterChangeHandlers(this._onFiltersChange);
@@ -132,7 +142,7 @@ export default class PageController {
       return filmList.map((film) => {
         const movieController = new MovieControllerComponent(this._filmListContainerElement,
             this._filmsComponent, this._onDataChange, this._onFiltersChange,
-            this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange);
+            this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange, this._onEmojiChange);
 
         movieController.render(film, filmListContainer);
         return movieController;
@@ -201,7 +211,7 @@ export default class PageController {
 
     const newFilms = renderFilmCards(movies, filmListElement,
         this._filmsComponent, this._onDataChange, this._onFiltersChange,
-        this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange);
+        this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange, this._onEmojiChange);
     this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
     this._showingMovieCount = this._showedMovieControllers.length;
   }
@@ -309,5 +319,26 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
+  }
+
+  _onEmojiChange(emojiType, bigEmojiContainer) {
+    switch (emojiType) {
+      case EMOJI_ID.SMILE:
+        bigEmojiContainer.src = `images/emoji/smile.png`;
+        bigEmojiContainer.classList.remove(`visually-hidden`);
+        break;
+      case EMOJI_ID.SLEEPING:
+        bigEmojiContainer.src = `images/emoji/sleeping.png`;
+        bigEmojiContainer.classList.remove(`visually-hidden`);
+        break;
+      case EMOJI_ID.GRINNING:
+        bigEmojiContainer.src = `images/emoji/puke.png`;
+        bigEmojiContainer.classList.remove(`visually-hidden`);
+        break;
+      case EMOJI_ID.ANGRY:
+        bigEmojiContainer.src = `images/emoji/angry.png`;
+        bigEmojiContainer.classList.remove(`visually-hidden`);
+        break;
+    }
   }
 }
