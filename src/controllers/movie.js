@@ -10,7 +10,8 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange, onViewChange, onCommentsCountChange) {
+  constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange,
+      onViewChange, onCommentsCountChange, onEmojiChange) {
     this._container = container;
     this._popupContainer = popupContainer;
 
@@ -24,6 +25,7 @@ export default class MovieController {
     this._onUserRatingChange = onUserRatingChange;
     this._onViewChange = onViewChange;
     this._onCommentsCountChange = onCommentsCountChange;
+    this._onEmojiChange = onEmojiChange;
 
     this._setDefaultView = this._setDefaultView;
   }
@@ -108,7 +110,6 @@ export default class MovieController {
       this._onDataChange();
     });
 
-
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
       data.isOnWatchList = !data.isOnWatchList;
 
@@ -152,12 +153,19 @@ export default class MovieController {
   }
 
   renderComments(popupCommentsList, commentsListElement) {
+    const popupComponent = this._popupComponent;
+
     popupCommentsList.slice(0, popupCommentsList.length)
     .forEach((comment, index) => {
       const currentComment = new CommentComponent(comment);
       render(commentsListElement, currentComment.getElement(), RenderPosition.BEFOREEND);
 
       this._addCommentsHandlers(currentComment, index, commentsListElement);
+    });
+
+    popupComponent.setEmojiItemClickHandlers(() => {
+      const bigEmojiContainer = popupComponent.getElement().querySelector(`.big-emoji`);
+      this._onEmojiChange(event.target.id, bigEmojiContainer);
     });
   }
 
