@@ -167,7 +167,9 @@ const createPopUpTemplate = (popup) => {
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">
+                <img class="big-emoji visually-hidden" src="images/emoji/smile.png" width="55" height="55" alt="emoji">
+              </div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -243,6 +245,13 @@ export default class Popup extends AbstractSmartComponent {
 
   setUserRatingChangeHandler(handler) {
     this.getElement().querySelector(`.film-details__user-rating-score`).addEventListener(`change`, handler);
+  }
+
+  setEmojiItemClickHandlers(handler) {
+    const emojiItemList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+    emojiItemList.forEach((item) => {
+      item.addEventListener(`click`, handler);
+    });
   }
 
   _subscribeOnEvents() {
