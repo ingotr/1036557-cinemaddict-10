@@ -3,11 +3,20 @@ import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
+import {EMOJI_ID} from '../const.js';
 
 const Mode = {
   // ADDING: `adding`,
   DEFAULT: `default`,
   POPUP: `popup`,
+};
+
+let emptyComment = {
+  text: ``,
+  author: ``,
+  emoji: ``,
+  date: ``,
+  deleteBtn: ``,
 };
 
 export default class MovieController {
@@ -27,6 +36,8 @@ export default class MovieController {
     this._onViewChange = onViewChange;
     this._onCommentsCountChange = onCommentsCountChange;
     this._onEmojiChange = onEmojiChange;
+
+    this._emptyComment = emptyComment;
 
     this._setDefaultView = this._setDefaultView;
   }
@@ -77,18 +88,29 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.key] = true;
 
-        if (keysPressed[`Control`] && event.key === `Enter`) {
+        let isEmojiExistInList = Object.values(EMOJI_ID).includes(this._emptyComment.emoji);
+        console.log(isEmojiExistInList);
+
+        const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
+        const commentAreaText = commentArea.value;
+
+        this._emptyComment.text = he.encode(commentAreaText);
+        // console.log(this._emptyComment.text);
+
+        console.table(this._emptyComment);
+
+        const bigEmojiContainer = this._popupComponent.getElement().querySelector(`.big-emoji`);
+        const bigEmojiSrc = bigEmojiContainer.src;
+
+        console.log(commentAreaText);
+        console.log(bigEmojiSrc);
+
+        if (keysPressed[`Control`] && event.key === `Enter`
+        && this._emptyComment.text.length > 0 && isEmojiExistInList) {
           alert(event.key);
-          // const newComment = new CommentComponent();
-
-          const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
-          const commentAreaText = commentArea.value;
-
-          const bigEmojiContainer = this._popupComponent.getElement().querySelector(`.big-emoji`);
-          const bigEmojiSrc = bigEmojiContainer.src;
-
-          console.log(commentAreaText);
-          console.log(bigEmojiSrc);
+          this._emptyComment.date = new Date();
+          const newComment = new CommentComponent(this._emptyComment);
+          console.table(`this is newComment `, newComment);
         }
       };
 
@@ -192,7 +214,7 @@ export default class MovieController {
 
     popupComponent.setEmojiItemClickHandlers(() => {
       const bigEmojiContainer = popupComponent.getElement().querySelector(`.big-emoji`);
-      this._onEmojiChange(event.target.id, bigEmojiContainer);
+      this._emptyComment.emoji = this._onEmojiChange(event.target.id, bigEmojiContainer);
     });
   }
 
