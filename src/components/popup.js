@@ -254,6 +254,10 @@ export default class Popup extends AbstractSmartComponent {
     });
   }
 
+  setSubmitCommentFormHandler(handler) {
+    this.getElement().querySelector(`.film-details__inner`).addEventListener(`submit`, handler);
+  }
+
   _subscribeOnEvents() {
     this.setAddToWatchlistButtonCLickHandler();
     this.setMarkAsWatchedButtonClickHandler();
