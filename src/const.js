@@ -85,3 +85,10 @@ export const FilterType = {
   FAVORITES: `favorites`,
   ALL: `all movies`,
 };
+
+export const EMOJI_ID = {
+  SMILE: `emoji-smile`,
+  SLEEPING: `emoji-sleeping`,
+  GRINNING: `emoji-gpuke`,
+  ANGRY: `emoji-angry`,
+};

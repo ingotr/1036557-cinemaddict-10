@@ -8,7 +8,7 @@ import NoFilmsComponent from '../components/no-films';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {CARD_COUNT} from '../const.js';
+import {CARD_COUNT, EMOJI_ID} from '../const.js';
 
 const SHOWING_CARDS_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -18,13 +18,6 @@ const MOSTCOMMENTED_LIST_LENGTH = 2;
 const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
 const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
-
-const EMOJI_ID = {
-  SMILE: `emoji-smile`,
-  SLEEPING: `emoji-sleeping`,
-  GRINNING: `emoji-gpuke`,
-  ANGRY: `emoji-angry`,
-};
 
 let showingCardCount = SHOWING_CARDS_ON_START;
 
@@ -326,19 +319,20 @@ export default class PageController {
       case EMOJI_ID.SMILE:
         bigEmojiContainer.src = `images/emoji/smile.png`;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        break;
+        return EMOJI_ID.SMILE;
       case EMOJI_ID.SLEEPING:
         bigEmojiContainer.src = `images/emoji/sleeping.png`;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        break;
+        return EMOJI_ID.SLEEPING;
       case EMOJI_ID.GRINNING:
         bigEmojiContainer.src = `images/emoji/puke.png`;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        break;
+        return EMOJI_ID.GRINNING;
       case EMOJI_ID.ANGRY:
         bigEmojiContainer.src = `images/emoji/angry.png`;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        break;
+        return EMOJI_ID.ANGRY;
     }
+    return emojiType;
   }
 }
