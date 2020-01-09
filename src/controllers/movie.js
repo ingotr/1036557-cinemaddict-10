@@ -1,6 +1,7 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
+import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
 
 const Mode = {
