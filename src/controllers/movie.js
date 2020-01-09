@@ -72,12 +72,38 @@ export default class MovieController {
         }
       };
 
+      let keysPressed = {};
+
+      const onCtrlEnterPress = (event) => {
+        keysPressed[event.key] = true;
+
+        if (keysPressed[`Control`] && event.key === `Enter`) {
+          alert(event.key);
+          // const newComment = new CommentComponent();
+
+          const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
+          const commentAreaText = commentArea.value;
+
+          const bigEmojiContainer = this._popupComponent.getElement().querySelector(`.big-emoji`);
+          const bigEmojiSrc = bigEmojiContainer.src;
+
+          console.log(commentAreaText);
+          console.log(bigEmojiSrc);
+        }
+      };
+
       card.setCardElementsClickHandler(() => {
         this._replaceCardToPopup();
 
         this.renderPopup();
 
         document.addEventListener(`keydown`, onEscKeyPress);
+
+        document.addEventListener(`keydown`, onCtrlEnterPress);
+
+        document.addEventListener(`keyup`, (event) => {
+          delete keysPressed[event.key];
+       });
       });
 
       popup.setCloseButtonClickHandler(() => {
