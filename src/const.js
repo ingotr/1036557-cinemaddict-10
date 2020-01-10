@@ -29,7 +29,9 @@ export const PosterItems = [
 ];
 
 export const DescriptionItems = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. ********
+  *******************
+  &&&&&&&&&&555&&`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
   `Aliquam id orci ut lectus varius viverra.`,
@@ -91,4 +93,11 @@ export const EMOJI_ID = {
   SLEEPING: `emoji-sleeping`,
   GRINNING: `emoji-gpuke`,
   ANGRY: `emoji-angry`,
+};
+
+export const EMOJI_SRC = {
+  SMILE: `images/emoji/smile.png`,
+  SLEEPING: `images/emoji/sleeping.png`,
+  GRINNING: `images/emoji/puke.png`,
+  ANGRY: `images/emoji/angry.png`,
 };
