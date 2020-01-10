@@ -11,9 +11,10 @@ const TextBlocks = [
 ];
 
 const Emojis = [
-  `sleeping`,
-  `smile`,
-  `angry`,
+  `images/emoji/sleeping.png`,
+  `images/emoji/smile.png`,
+  `images/emoji/puke.png`,
+  `images/emoji/angry.png`,
 ];
 
 const Autors = [
@@ -28,7 +29,7 @@ const generateComment = () => {
   return {
     text: getRandomElement(TextBlocks),
     emoji: getRandomElement(Emojis),
-    autor: getRandomElement(Autors),
+    author: getRandomElement(Autors),
     date: getCommentDateFromNow(),
     deleteBtn: ``,
   };
