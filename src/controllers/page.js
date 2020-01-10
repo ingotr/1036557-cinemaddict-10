@@ -253,7 +253,7 @@ export default class PageController {
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
     if (newData === null) {
-      const isSuccess = this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
+      this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
       // if (isSuccess) {
       //   movieController.render(isSuccess);
@@ -263,12 +263,12 @@ export default class PageController {
     }
 
     if (oldData === null) {
-      const isSuccess = this._moviesModel.addComment(newData.getCard().id, newComment);
+      this._moviesModel.addComment(newData.getCard().id, newComment);
 
       this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-      console.log(newData);
       this._renderNewPopupData(movieController, newData);
     }
+    return true;
   }
 
   _onDataChange() {
@@ -334,24 +334,29 @@ export default class PageController {
   }
 
   _onEmojiChange(emojiType, bigEmojiContainer) {
+    let emoji = ``;
     switch (emojiType) {
       case EMOJI_ID.SMILE:
-        bigEmojiContainer.src = `images/emoji/smile.png`;
+        emoji = `images/emoji/smile.png`;
+        bigEmojiContainer.src = emoji;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.SMILE;
+        return emoji;
       case EMOJI_ID.SLEEPING:
-        bigEmojiContainer.src = `images/emoji/sleeping.png`;
+        emoji = `images/emoji/sleeping.png`;
+        bigEmojiContainer.src = emoji;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.SLEEPING;
+        return emoji;
       case EMOJI_ID.GRINNING:
-        bigEmojiContainer.src = `images/emoji/puke.png`;
+        emoji = `images/emoji/puke.png`;
+        bigEmojiContainer.src = emoji;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.GRINNING;
+        return emoji;
       case EMOJI_ID.ANGRY:
-        bigEmojiContainer.src = `images/emoji/angry.png`;
+        emoji = `images/emoji/angry.png`;
+        bigEmojiContainer.src = emoji;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.ANGRY;
+        return emoji;
     }
-    return emojiType;
+    return emoji;
   }
 }
