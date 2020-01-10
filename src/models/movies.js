@@ -56,6 +56,22 @@ export default class Movies {
     return this._movies[index];
   }
 
+  addComment(movieId, newComment) {
+    const index = this._movies.findIndex((it) => it.id === movieId);
+    if (index === -1) {
+      return false;
+    }
+
+    let moviesCommentList = this._movies[index].comments;
+    moviesCommentList = [].concat(moviesCommentList.push(newComment._comment));
+
+    console.log(`movies comments `, moviesCommentList);
+
+    this._dataChangeHandlers.forEach((handler) => handler());
+
+    return this._movies[index];
+  }
+
   setDataChangeHandlers(handler) {
     this._dataChangeHandlers.push(handler);
   }
