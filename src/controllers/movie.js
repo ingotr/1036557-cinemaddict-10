@@ -3,11 +3,10 @@ import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {EMOJI_ID} from '../const.js';
+import {EMOJI_SRC} from '../const.js';
 import {getCurrentDate} from '../utils/common.js';
 
 const Mode = {
-  // ADDING: `adding`,
   DEFAULT: `default`,
   POPUP: `popup`,
 };
@@ -89,7 +88,7 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.key] = true;
 
-        let isEmojiExistInList = Object.values(EMOJI_ID).includes(this._emptyComment.emoji);
+        let isEmojiExistInList = Object.values(EMOJI_SRC).includes(this._emptyComment.emoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         const commentAreaText = commentArea.value;
@@ -99,15 +98,15 @@ export default class MovieController {
         if (keysPressed[`Control`] && event.key === `Enter`
         && this._emptyComment.text.length > 0 && isEmojiExistInList) {
           this._emptyComment.date = getCurrentDate();
-          const newComment = new CommentComponent(this._emptyComment);
-          console.table(`this is newComment `, newComment);
 
           const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
           const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
 
-          console.log(`this card component `, this._cardComponent);
-          this._onCommentsCountChange(this, null, this._cardComponent, 0, commentsListElement, newComment);
-          this._cleanBufferComment();
+          this._onCommentsCountChange(this, null, this._cardComponent, 0, commentsListElement, this._emptyComment);
+
+          // if (isCommentCreate) {
+          //   this._cleanBufferComment();
+          // }
         }
       };
 
@@ -217,12 +216,10 @@ export default class MovieController {
 
   renderPopup() {
     const popupData = this._data;
-    console.log(popupData);
     render(this._popupContainer.getElement(), this._popupComponent.getElement(), RenderPosition.BEFOREEND);
     const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
     const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
     const popupCommentsList = popupData.comments;
-    console.log(popupCommentsList);
 
     this.renderComments(popupCommentsList, commentsListElement);
   }
@@ -257,6 +254,5 @@ export default class MovieController {
       emptyComment[key] = ``;
     });
     this._emptyComment = emptyComment;
-    console.log(`just clean up the buffer container`, emptyComment);
   }
 }
