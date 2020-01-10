@@ -223,7 +223,32 @@ export default class PageController {
     this._showedMostCommentedMovieControllers = this._showedMostCommentedMovieControllers.concat(newMostCommentedFilms);
   }
 
-  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement) {
+  _removeOldMoviesData() {
+    this._removeMovies();
+    this._removeTopRatedMovies();
+    this._removeMostCommentedMovies();
+  }
+
+  _renderNewMoviesData(topRatedList, mostCommentedList) {
+    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
+    this._renderTopRatedMovies(topRatedList);
+    this._renderMostCommentedMovies(mostCommentedList);
+  }
+
+  _renderNewPopupData(movieController, sourceOfNewData) {
+    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData.getCard().id);
+    movieController.render(this._movies[newDataIndex]);
+    movieController.renderPopup();
+  }
+
+  _updateMovieInterface(commentsListElement, topRatedList, mostCommentedList) {
+    this._removeOldMoviesData();
+    this._renderNewMoviesData(topRatedList, mostCommentedList);
+    const commentsList = commentsListElement;
+    commentsList.innerHTML = ``;
+  }
+
+  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, newComment) {
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
@@ -233,23 +258,17 @@ export default class PageController {
       // if (isSuccess) {
       //   movieController.render(isSuccess);
       // }
+      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+      this._renderNewPopupData(movieController, oldData);
     }
 
-    this._removeMovies();
-    this._removeTopRatedMovies();
-    this._removeMostCommentedMovies();
+    if (oldData === null) {
+      const isSuccess = this._moviesModel.addComment(newData.getCard().id, newComment);
 
-    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
-    this._renderTopRatedMovies(topRatedList);
-    this._renderMostCommentedMovies(mostCommentedList);
-
-    const commentsList = commentsListElement;
-    commentsList.innerHTML = ``;
-
-    const newDataIndex = this._movies.findIndex((it) => it.id === oldData.getCard().id);
-
-    movieController.render(this._movies[newDataIndex]);
-    movieController.renderPopup();
+      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+      console.log(newData);
+      this._renderNewPopupData(movieController, newData);
+    }
   }
 
   _onDataChange() {
