@@ -1,7 +1,10 @@
 import AbstractComponent from './abstract-component.js';
+import he from 'he';
 
 const createCommentMarkup = (comment) => {
   const {text, emoji, author, date} = comment;
+
+  const encodedText = he.encode(text);
 
   return (
     `<li class="film-details__comment">
@@ -9,7 +12,7 @@ const createCommentMarkup = (comment) => {
         <img src="./${emoji}" width="55" height="55" alt="emoji">
       </span>
       <div>
-        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-text">${encodedText}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${date}</span>
