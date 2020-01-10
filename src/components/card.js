@@ -1,5 +1,8 @@
 import AbstractComponent from './abstract-component.js';
 
+const MAX_DESCRIPTION_LENGTH = 140;
+const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
+
 const createButtonMarkup = (name, description, isActive) => {
   return (
     `<button class="film-card__controls-item button
@@ -9,6 +12,9 @@ const createButtonMarkup = (name, description, isActive) => {
 
 const createDefaultCardTemplate = (card) => {
   const {title, rating, year, duration, genres, poster, description, comments} = card;
+
+  let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
+    description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
 
   const addToWatchlistButton = createButtonMarkup(`add-to-watchlist`, `Add to watchlist`, true);
   const markAsWatchedButton = createButtonMarkup(`mark-as-watched`, `Mark as watched`, card.isWatched);
@@ -24,7 +30,7 @@ const createDefaultCardTemplate = (card) => {
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${description}…</p>
+        <p class="film-card__description">${currentDescription}</p>
         <a class="film-card__comments">${comments.length} comments</a>
         <form class="film-card__controls">
           ${addToWatchlistButton}

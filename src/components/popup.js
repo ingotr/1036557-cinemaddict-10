@@ -3,6 +3,9 @@ import AbstractSmartComponent from './abstract-smart-component';
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
 
+const MAX_DESCRIPTION_LENGTH = 140;
+const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
+
 const createGenresMarkup = (genre) => {
   return (
     `<span class="film-details__genre">${genre}</span>`
@@ -30,6 +33,9 @@ const createPopUpTemplate = (popup) => {
   const genresList = createGenresMarkup(genres);
 
   let genreListTitle = genres.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
+
+  let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
+    description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
 
   return (
     `<section class="film-details">
@@ -92,7 +98,7 @@ const createPopUpTemplate = (popup) => {
               </table>
 
               <p class="film-details__film-description">
-                ${description}
+                ${currentDescription}
               </p>
             </div>
           </div>
