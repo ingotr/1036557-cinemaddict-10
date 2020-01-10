@@ -71,7 +71,7 @@ const getRandomCommentsNumber = () => {
 
 const getCurrentDate = () => {
   let currentDate = new Date();
-  currentDate = moment(currentDate).format(`DD MMMM YYYY`);
+  currentDate = moment(currentDate).format(`DD MMMM YYYY HH:MM`);
   return currentDate;
 };
 
