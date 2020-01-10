@@ -1,3 +1,4 @@
+import CommentComponent from '../components/comment.js';
 import {getMoviesByFilter} from '../utils/filter.js';
 import {FilterType} from '../const.js';
 
@@ -56,16 +57,16 @@ export default class Movies {
     return this._movies[index];
   }
 
-  addComment(movieId, newComment) {
+  addComment(movieId, commentData) {
     const index = this._movies.findIndex((it) => it.id === movieId);
     if (index === -1) {
       return false;
     }
 
-    let moviesCommentList = this._movies[index].comments;
-    moviesCommentList = [].concat(moviesCommentList.push(newComment._comment));
+    const newComment = new CommentComponent(commentData);
 
-    console.log(`movies comments `, moviesCommentList);
+    let moviesCommentList = this._movies[index].comments;
+    moviesCommentList = [].concat(moviesCommentList.unshift(newComment.getCommentData()));
 
     this._dataChangeHandlers.forEach((handler) => handler());
 
