@@ -11,14 +11,6 @@ const Mode = {
   POPUP: `popup`,
 };
 
-let emptyComment = {
-  text: ``,
-  author: ``,
-  emoji: ``,
-  date: ``,
-  deleteBtn: ``,
-};
-
 export default class MovieController {
   constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange,
       onViewChange, onCommentsCountChange, onEmojiChange) {
@@ -37,7 +29,7 @@ export default class MovieController {
     this._onCommentsCountChange = onCommentsCountChange;
     this._onEmojiChange = onEmojiChange;
 
-    this._emptyComment = emptyComment;
+    this._emptyCommentEmoji = ``;
 
     this._setDefaultView = this._setDefaultView;
   }
@@ -88,25 +80,29 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.key] = true;
 
-        let isEmojiExistInList = Object.values(EMOJI_SRC).includes(this._emptyComment.emoji);
+        let isEmojiExistInList = Object.values(EMOJI_SRC).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         const commentAreaText = commentArea.value;
 
-        this._emptyComment.text = he.encode(commentAreaText);
+        const newCommentText = he.encode(commentAreaText);
+        const newCommentEmoji = this._emptyCommentEmoji;
 
         if (keysPressed[`Control`] && event.key === `Enter`
-        && this._emptyComment.text.length > 0 && isEmojiExistInList) {
-          this._emptyComment.date = getCurrentDate();
+        && newCommentText.length > 0 && isEmojiExistInList) {
+
+          const emptyComment = {
+            text: newCommentText,
+            author: ``,
+            emoji: newCommentEmoji,
+            date: getCurrentDate(),
+            deleteBtn: ``,
+          };
 
           const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
           const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
 
-          this._onCommentsCountChange(this, null, this._cardComponent, 0, commentsListElement, this._emptyComment);
-
-          // if (isCommentCreate) {
-          //   this._cleanBufferComment();
-          // }
+          this._onCommentsCountChange(this, null, this._cardComponent, 0, commentsListElement, emptyComment);
         }
       };
 
@@ -210,7 +206,7 @@ export default class MovieController {
 
     popupComponent.setEmojiItemClickHandlers(() => {
       const bigEmojiContainer = popupComponent.getElement().querySelector(`.big-emoji`);
-      this._emptyComment.emoji = this._onEmojiChange(event.target.id, bigEmojiContainer);
+      this._emptyCommentEmoji = this._onEmojiChange(event.target.id, bigEmojiContainer);
     });
   }
 
@@ -247,12 +243,5 @@ export default class MovieController {
 
       this._replacePopupToCard();
     }
-  }
-
-  _cleanBufferComment() {
-    Object.keys(emptyComment).map((key) => {
-      emptyComment[key] = ``;
-    });
-    this._emptyComment = emptyComment;
   }
 }
