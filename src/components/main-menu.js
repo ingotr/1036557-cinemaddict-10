@@ -60,6 +60,14 @@ export default class MainMenu extends AbstractComponent {
     });
   }
 
+  setActiveItem(menuItem) {
+    const item = this.getElement().querySelector(`#${menuItem}`);
+
+    if (item) {
+      item.active = true;
+    }
+  }
+
   _deactivateAllFilterElements(filterElements) {
     for (const element in filterElements) {
       if (filterElements.hasOwnProperty(element)) {
