@@ -1,6 +1,14 @@
 import AbstractComponent from './abstract-component.js';
 import {FilterType} from '../const.js';
 
+export const MenuItem = {
+  ALL: `all movies`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`,
+  STATS: `stats`,
+};
+
 const createMainMenuTemplate = (filters) => {
   const [watchlist, history, favorites] = filters;
   return (
@@ -9,6 +17,7 @@ const createMainMenuTemplate = (filters) => {
       <a href="#watchlist" data-filter-type="${FilterType.WATCHLIST}" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist.count}</span></a>
       <a href="#history" data-filter-type="${FilterType.HISTORY}" class="main-navigation__item">History <span class="main-navigation__item-count">${history.count}</span></a>
       <a href="#favorites" data-filter-type="${FilterType.FAVORITES}" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorites.count}</span></a>
+      <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
     </nav>`
   );
 };
@@ -34,7 +43,7 @@ export default class MainMenu extends AbstractComponent {
       }
 
       const filterElements = evt.currentTarget.
-      querySelectorAll(`a:not(.main-navigation__item--additional)`);
+      querySelectorAll(`a:not(main-navigation__item--additional)`);
       this._deactivateAllFilterElements(filterElements);
 
       evt.target.classList.add(`main-navigation__item--active`);

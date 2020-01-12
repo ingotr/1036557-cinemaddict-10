@@ -156,9 +156,9 @@ export default class PageController {
     const container = this._container;
 
     this._filterController.render();
-    const mainNavigationElement = this._container.querySelector(`.main-navigation`);
+    // const mainNavigationElement = this._container.querySelector(`.main-navigation`);
 
-    render(mainNavigationElement, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
+    // render(mainNavigationElement, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
