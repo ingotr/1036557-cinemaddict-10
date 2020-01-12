@@ -130,6 +130,14 @@ export default class PageController {
     this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   renderCustomFilmList(filmList, filmListContainer) {
     if (filmList.length > 0) {
       return filmList.map((film) => {
