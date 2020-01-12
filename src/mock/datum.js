@@ -64,6 +64,7 @@ const generateData = () => {
   const commCount = getRandomCommentsNumber();
   const filmYear = getRandomYear();
   return {
+    id: String(new Date() + Math.random()),
     title: getRandomElement(NameItems),
     rating: getRandomRating(),
     userRating: null,

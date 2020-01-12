@@ -69,4 +69,12 @@ const getRandomCommentsNumber = () => {
   return commentsNumber;
 };
 
-export {getRandomIntegerNumber, getRandomElement, getRandomRating, getRandomYear, getCommentDateFromNow, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber};
+const getCurrentDate = () => {
+  let currentDate = new Date();
+  currentDate = moment(currentDate).format(`DD MMMM YYYY HH:MM`);
+  return currentDate;
+};
+
+export {getRandomIntegerNumber, getRandomElement, getRandomRating,
+  getRandomYear, getCommentDateFromNow, getReleaseDate,
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate};

@@ -3,6 +3,9 @@ import AbstractSmartComponent from './abstract-smart-component';
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
 
+const MAX_DESCRIPTION_LENGTH = 140;
+const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
+
 const createGenresMarkup = (genre) => {
   return (
     `<span class="film-details__genre">${genre}</span>`
@@ -18,7 +21,7 @@ const createPopUpTemplate = (popup) => {
     duration,
     poster,
     description,
-    commentsNumber,
+    comments,
     director,
     writers,
     actors,
@@ -30,6 +33,9 @@ const createPopUpTemplate = (popup) => {
   const genresList = createGenresMarkup(genres);
 
   let genreListTitle = genres.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
+
+  let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
+    description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
 
   return (
     `<section class="film-details">
@@ -92,7 +98,7 @@ const createPopUpTemplate = (popup) => {
               </table>
 
               <p class="film-details__film-description">
-                ${description}
+                ${currentDescription}
               </p>
             </div>
           </div>
@@ -161,13 +167,15 @@ const createPopUpTemplate = (popup) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">
+                <img class="big-emoji visually-hidden" src="images/emoji/smile.png" width="55" height="55" alt="emoji">
+              </div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -243,6 +251,17 @@ export default class Popup extends AbstractSmartComponent {
 
   setUserRatingChangeHandler(handler) {
     this.getElement().querySelector(`.film-details__user-rating-score`).addEventListener(`change`, handler);
+  }
+
+  setEmojiItemClickHandlers(handler) {
+    const emojiItemList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+    emojiItemList.forEach((item) => {
+      item.addEventListener(`click`, handler);
+    });
+  }
+
+  setSubmitCommentFormHandler(handler) {
+    this.getElement().querySelector(`.film-details__inner`).addEventListener(`submit`, handler);
   }
 
   _subscribeOnEvents() {

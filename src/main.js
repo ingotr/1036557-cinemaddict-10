@@ -1,5 +1,5 @@
-import MainMenuComponent from './components/main-menu.js';
 import UserRankComponent from './components/user-rank.js';
+import MoviesModel from './models/movies.js';
 import PageControllerComponent from './controllers/page.js';
 import {generateDatum} from './mock/datum.js';
 import {generateFilters} from './mock/filter.js';
@@ -11,14 +11,16 @@ const mainElement = document.querySelector(`.main`);
 
 const filters = generateFilters(CARD_COUNT);
 
-render(mainElement, new MainMenuComponent(filters).getElement(), RenderPosition.BEFOREEND);
-render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
-
 const datum = generateDatum(CARD_COUNT);
+
+const moviesModel = new MoviesModel();
+moviesModel.setMovies(datum);
+
+render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
 
 const footerStatisticElement = document.querySelector(`.footer__statistics p`);
 footerStatisticElement.textContent = `${datum.length} movies inside`;
 
-const pageController = new PageControllerComponent(mainElement, filters);
-pageController.render(datum);
+const pageController = new PageControllerComponent(mainElement, filters, moviesModel);
+pageController.render();
 

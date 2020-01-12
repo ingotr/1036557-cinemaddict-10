@@ -6,7 +6,7 @@ export const SortType = {
   DEFAULT: `default`,
 };
 
-const createFiltersTemplate = () => (
+const createSortTemplate = () => (
   `<ul class="sort">
     <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
     <li><a href="#" data-sort-type="${SortType.DATE_DOWN}" class="sort__button">Sort by date</a></li>
@@ -14,7 +14,7 @@ const createFiltersTemplate = () => (
   </ul>`
 );
 
-export default class Filters extends AbstractComponent {
+export default class Sort extends AbstractComponent {
   constructor() {
     super();
 
@@ -22,7 +22,7 @@ export default class Filters extends AbstractComponent {
   }
 
   getTemplate() {
-    return createFiltersTemplate();
+    return createSortTemplate();
   }
 
   setSortTypeChangeHandler(handler) {
@@ -33,7 +33,12 @@ export default class Filters extends AbstractComponent {
         return;
       }
 
+      const sortElements = evt.currentTarget.querySelectorAll(`.sort__button`);
+      this._deactivateAllSortElements(sortElements);
+
       const sortType = evt.target.dataset.sortType;
+
+      evt.target.classList.add(`sort__button--active`);
 
       if (this._currentSortType === sortType) {
         return;
@@ -43,5 +48,13 @@ export default class Filters extends AbstractComponent {
 
       handler(this._currentSortType);
     });
+  }
+
+  _deactivateAllSortElements(sortElements) {
+    for (const element in sortElements) {
+      if (sortElements.hasOwnProperty(element)) {
+        sortElements[element].classList.remove(`sort__button--active`);
+      }
+    }
   }
 }
