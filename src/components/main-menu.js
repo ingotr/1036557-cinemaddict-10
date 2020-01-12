@@ -68,6 +68,18 @@ export default class MainMenu extends AbstractComponent {
     }
   }
 
+  setOnClick(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const menuItem = evt.target.id;
+
+      handler(menuItem);
+    });
+  }
+
   _deactivateAllFilterElements(filterElements) {
     for (const element in filterElements) {
       if (filterElements.hasOwnProperty(element)) {
