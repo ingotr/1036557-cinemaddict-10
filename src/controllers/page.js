@@ -4,6 +4,7 @@ import SortComponent, {SortType} from '../components/sort.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
+import StatisticsComponent from '../components/statistics.js';
 
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
@@ -91,12 +92,15 @@ export default class PageController {
 
     this._showingMovieCount = SHOWING_CARDS_ON_START;
 
+    this._statisticsComponent = new StatisticsComponent();
+
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
-    this._filterController = new FilterController(this._container, this._moviesModel);
+    this._filterController = new FilterController(this._container, this._moviesModel, this._statisticsComponent, this);
 
     this._statsComponent = new StatsComponent();
+
     this._sortComponent = new SortComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
@@ -104,6 +108,7 @@ export default class PageController {
     this._filmListContainerElement = null;
     this._filmTopRatedElement = null;
     this._filmMostCommentedElement = null;
+    this._mainMenuComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -131,11 +136,11 @@ export default class PageController {
   }
 
   hide() {
-    this._container.hide();
+    this._filmsComponent.hide();
   }
 
   show() {
-    this._container.show();
+    this._filmsComponent.show();
   }
 
   renderCustomFilmList(filmList, filmListContainer) {
@@ -156,12 +161,12 @@ export default class PageController {
     const container = this._container;
 
     this._filterController.render();
-    // const mainNavigationElement = this._container.querySelector(`.main-navigation`);
-
-    // render(mainNavigationElement, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
+
+    render(container, this._statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+    this._statisticsComponent.hide();
 
     render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
     render(this._filmsComponent.getElement(), new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);

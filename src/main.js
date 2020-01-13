@@ -1,7 +1,7 @@
 import UserRankComponent from './components/user-rank.js';
-import StatisticsComponent from './components/statistics.js';
 import MoviesModel from './models/movies.js';
 import PageControllerComponent from './controllers/page.js';
+// import {MenuItem} from './components/main-menu.js';
 import {generateDatum} from './mock/datum.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
@@ -25,6 +25,28 @@ footerStatisticElement.textContent = `${datum.length} movies inside`;
 const pageController = new PageControllerComponent(mainElement, filters, moviesModel);
 pageController.render();
 
-const statisticsComponent = new StatisticsComponent();
-render(mainElement, statisticsComponent().getElement(), RenderPosition.BEFOREEND);
-statisticsComponent.hide();
+// const setActiveMenuItem = () => {
+//   // mainMenuComponent.setActiveItem(activeItem);
+//   statisticsComponent.hide();
+//   pageController.show();
+// };
+
+// const mainMenuComponent = pageController.getMainMenuComponent();
+// console.log(mainMenuComponent);
+// mainMenuComponent.setOnClick((menuItem) => {
+//   console.log(`click on menu`);
+//   switch (menuItem) {
+//     case MenuItem.ALL:
+//     case MenuItem.WATCHLIST:
+//     case MenuItem.HISTORY:
+//     case MenuItem.FAVORITES:
+//       statisticsComponent.hide();
+//       pageController.show();
+//       break;
+//     case MenuItem.STATS:
+//       // mainMenuComponent.setActiveItem(MenuItem.STATS);
+//       pageController.hide();
+//       statisticsComponent.show();
+//       break;
+//   }
+// });
