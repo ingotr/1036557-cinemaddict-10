@@ -44,7 +44,6 @@ export default class MovieController {
     data.isWatched = !data.isWatched;
     if (data.isWatched) {
       data.watchingDate = getCurrentDate();
-      console.log(`movie watched on `, data.watchingDate);
     }
   }
 

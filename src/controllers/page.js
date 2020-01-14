@@ -166,7 +166,7 @@ export default class PageController {
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._statisticsComponent.getElement(), RenderPosition.BEFOREEND);
-    // this._statisticsComponent.renderStatistics();
+    this._statisticsComponent.renderStatistics();
     this._statisticsComponent.hide();
 
     render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);

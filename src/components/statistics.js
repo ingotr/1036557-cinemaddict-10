@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract-component.js';
 import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
-import {getWatchedMovies } from '../utils/filter.js';
+import {getWatchedMovies} from '../utils/filter.js';
 import {GenreItems} from '../const.js';
 import {getFormattedRuntime} from '../utils/common.js';
 
@@ -67,8 +67,6 @@ export default class Statistics extends AbstractComponent {
   }
 
   getTemplate() {
-    this.getUserStatistics();
-
     return createStatisticsTemplate();
   }
 
@@ -80,81 +78,71 @@ export default class Statistics extends AbstractComponent {
     console.table(`most watched genres`, mostWatchedGenres);
     console.table(`total Runtime`, totalMoviesRuntime);
     console.log(`most popular genre`, favoriteGenre);
+
+    return {
+      favGenre: favoriteGenre,
+      totalMoviesDuration: totalMoviesRuntime,
+      genresList: mostWatchedGenres,
+    };
   }
 
-  // renderStatistics() {
-  //   let ctx = document.querySelector(`.statistic__chart`);
-  //   const genreList = [
-  //     {
-  //       label: `Sci-Fi`,
-  //       value: 11,
-  //     },
-  //     {
-  //       label: `Animation`,
-  //       value: 8,
-  //     },
-  //     {
-  //       label: `Fantasy`,
-  //       value: 6,
-  //     },
-  //     {
-  //       label: `Comedy`,
-  //       value: 4,
-  //     },
-  //     {
-  //       label: `TV Series`,
-  //       value: 9,
-  //     },
-  //   ];
+  renderStatistics() {
+    const userStatistics = this.getUserStatistics();
 
-  //   let statistic__chart = new Chart(ctx, {
-  //     type: `horizontalBar`,
-  //     data: {
-  //       // labels: [{'tr': 12}.value],
-  //       datasets: [{
-  //         data: [
-  //           genreList[0].value,
-  //           genreList[1].value,
-  //           genreList[2].value,
-  //           genreList[3].value,
-  //           genreList[4].value],
-  //         backgroundColor: `rgba(255, 206, 86, 1)`,
-  //         barThickness: 20,
-  //         maxBarThickness: 30,
-  //         barPercentage: 0.5,
-  //       }],
-  //       labels: [`${genreList[0].label} ${genreList[0].value}`,
-  //         `${genreList[1].label} ${genreList[1].value}`,
-  //         `${genreList[2].label} ${genreList[2].value}`,
-  //         `${genreList[3].label} ${genreList[3].value}`,
-  //         `${genreList[4].label} ${genreList[4].value}`,
-  //       ],
-  //     },
-  //     options: {
-  //       legend: {
-  //         display: false,
-  //       },
-  //       scales: {
-  //         display: false,
-  //         xAxes: [{
-  //           gridLines: {
-  //             display: false,
-  //           },
-  //           display: false,
-  //           ticks: {
-  //             display: false,
-  //             beginAtZero: true,
-  //           }
-  //         }],
-  //         yAxes: [{
-  //           gridLines: {
-  //             display: false,
-  //           },
-  //         }]
-  //       }
-  //     }
-  //   });
-  // }
+    this._renderStatisticsCharts(userStatistics.genresList);
+  }
+
+  _renderStatisticsCharts(list) {
+    let ctx = document.querySelector(`.statistic__chart`);
+    const genreList = list;
+
+    let myChart = new Chart(ctx, {
+      type: `horizontalBar`,
+      data: {
+        datasets: [{
+          data: [
+            genreList[0].movieCount,
+            genreList[1].movieCount,
+            genreList[2].movieCount,
+            genreList[3].movieCount,
+            genreList[4].movieCount],
+          backgroundColor: `rgba(255, 232, 0, 1)`,
+          barThickness: 20,
+          maxBarThickness: 30,
+          barPercentage: 0.5,
+        }],
+        labels: [`${genreList[0].label} ${genreList[0].movieCount}`,
+          `${genreList[1].label} ${genreList[1].movieCount}`,
+          `${genreList[2].label} ${genreList[2].movieCount}`,
+          `${genreList[3].label} ${genreList[3].movieCount}`,
+          `${genreList[4].label} ${genreList[4].movieCount}`,
+        ],
+      },
+      options: {
+        legend: {
+          display: false,
+        },
+        scales: {
+          display: false,
+          xAxes: [{
+            gridLines: {
+              display: false,
+            },
+            display: false,
+            ticks: {
+              display: false,
+              beginAtZero: true,
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: false,
+            },
+          }]
+        }
+      }
+    });
+  }
 
   _getFavoriteGenre() {
     return this._getStatisticsData()[0].label;
