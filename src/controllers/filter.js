@@ -1,7 +1,14 @@
 import FilterComponent, {MenuItem} from '../components/main-menu.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {getMoviesByFilter} from '../utils/filter.js';
+import {getMoviesByFilter, getWatchedMovies} from '../utils/filter.js';
+
+const GENRES = [
+  `Action`,
+  `Adventure`,
+  `Animation`,
+  `Biography`,
+  `Comedy`];
 
 export default class FilterController {
   constructor(container, moviesModel, statisticsComponent, pageController) {
@@ -9,6 +16,9 @@ export default class FilterController {
     this._moviesModel = moviesModel;
     this._statisticsComponent = statisticsComponent;
     this._pageController = pageController;
+
+    this._movies = this._moviesModel.getMovies();
+    this._watchedMovies = getWatchedMovies(this._movies);
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
@@ -42,6 +52,43 @@ export default class FilterController {
     } else {
       render(container, this._filterComponent.getElement(), RenderPosition.BEFOREEND);
     }
+
+    console.log(`all watched movies`, this._watchedMovies);
+
+    console.table(this._getStatisticsData());
+
+    // console.log(`total watched runtime ${this._getTotalMoviesRuntime()}`);
+  }
+
+  // _getTotalMoviesRuntime() {
+  //   const watchedMovies = this._watchedMovies;
+  //   let totalRuntime = 0;
+  //   watchedMovies.forEach((movie) => {
+  //     totalRuntime += movie.duration;
+  //   });
+
+  //   return totalRuntime;
+  // }
+
+  _getStatisticsData() {
+    let moviesStatistics = [];
+    GENRES.map((genre) => {
+      let count = this._getMoviesByGenre(genre).length;
+      moviesStatistics.push(this._getMovieStatisticElement(genre, count));
+    });
+    return moviesStatistics;
+  }
+
+  _getMovieStatisticElement(genre, count) {
+    return {
+      label: genre,
+      movieCount: count,
+    };
+  }
+
+  _getMoviesByGenre(genre) {
+    const moviesByGenre = this._watchedMovies.filter((film) => film.genres.includes(genre));
+    return moviesByGenre;
   }
 
   _onDataChange() {
