@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component.js';
+import {getFormattedRuntime} from '../utils/common.js';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
@@ -13,6 +14,8 @@ const createButtonMarkup = (name, description, isActive) => {
 const createDefaultCardTemplate = (card) => {
   const {title, rating, year, duration, genres, poster, description, comments} = card;
 
+  const formattedRuntime = getFormattedRuntime(duration);
+
   let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
     description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
 
@@ -26,7 +29,8 @@ const createDefaultCardTemplate = (card) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${year}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${formattedRuntime.digits.hours}${formattedRuntime.labels.HOURS}
+        ${formattedRuntime.digits.minutes}${formattedRuntime.labels.MINUTES}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">

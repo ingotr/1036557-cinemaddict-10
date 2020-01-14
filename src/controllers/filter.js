@@ -2,13 +2,8 @@ import FilterComponent, {MenuItem} from '../components/main-menu.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {getMoviesByFilter, getWatchedMovies} from '../utils/filter.js';
-
-const GENRES = [
-  `Action`,
-  `Adventure`,
-  `Animation`,
-  `Biography`,
-  `Comedy`];
+import {GenreItems} from '../const.js';
+import {getFormattedRuntime} from '../utils/common.js';
 
 export default class FilterController {
   constructor(container, moviesModel, statisticsComponent, pageController) {
@@ -57,26 +52,33 @@ export default class FilterController {
 
     console.table(this._getStatisticsData());
 
-    // console.log(`total watched runtime ${this._getTotalMoviesRuntime()}`);
+    console.table(this._getTotalMoviesRuntime());
+
   }
 
-  // _getTotalMoviesRuntime() {
-  //   const watchedMovies = this._watchedMovies;
-  //   let totalRuntime = 0;
-  //   watchedMovies.forEach((movie) => {
-  //     totalRuntime += movie.duration;
-  //   });
+  _getTotalMoviesRuntime() {
+    const watchedMovies = this._watchedMovies;
+    let totalMinutes = 0;
+    watchedMovies.forEach((movie) => {
+      totalMinutes += movie.duration;
+    });
 
-  //   return totalRuntime;
-  // }
+    const totalRuntime = getFormattedRuntime(totalMinutes);
+
+    return totalRuntime.digits;
+  }
 
   _getStatisticsData() {
     let moviesStatistics = [];
-    GENRES.map((genre) => {
+    GenreItems.map((genre) => {
       let count = this._getMoviesByGenre(genre).length;
       moviesStatistics.push(this._getMovieStatisticElement(genre, count));
     });
-    return moviesStatistics;
+
+    let mostWatchedGenreList = moviesStatistics.sort((a, b) => b.movieCount - a.movieCount);
+    mostWatchedGenreList = mostWatchedGenreList.slice(0, 5);
+
+    return mostWatchedGenreList;
   }
 
   _getMovieStatisticElement(genre, count) {

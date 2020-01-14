@@ -3,9 +3,9 @@ import {DescriptionItems, MonthNames} from '../const.js';
 
 const MAX_DESCRIPTION_LENGTH = 3;
 const MAX_RATING = 9;
-const MAX_HOURS_RUNTIME = 4;
-const MAX_MINUTES_RUNTIME = 59;
+const MAX_RUNTIME = 299;
 const MAX_COMMENTS_NUMBER = 9;
+const HOUR_LENGTH = 60;
 
 const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
@@ -56,12 +56,33 @@ const getReleaseDate = (year) => {
   return releaseDate;
 };
 
-const getRandomDuration = () => {
-  const hours = getRandomIntegerNumber(0, MAX_HOURS_RUNTIME);
-  const minutes = getRandomIntegerNumber(0, MAX_MINUTES_RUNTIME);
-  const duration = `${hours}h ${minutes}m`;
+const getRuntimeHours = (runtime) => {
+  const hours = Math.ceil(runtime / HOUR_LENGTH);
+  return hours;
+};
 
-  return duration;
+const getRuntimeMinutes = (runtime) => {
+  const minutes = runtime % HOUR_LENGTH;
+  return minutes;
+};
+
+const getFormattedRuntime = (runtime) => {
+  return {
+    digits: {
+      hours: getRuntimeHours(runtime),
+      minutes: getRuntimeMinutes(runtime),
+    },
+    labels: {
+      HOURS: `h`,
+      MINUTES: `m`,
+    },
+  };
+};
+
+const getRandomDuration = () => {
+  const runtime = getRandomIntegerNumber(0, MAX_RUNTIME);
+
+  return runtime;
 };
 
 const getRandomCommentsNumber = () => {
@@ -77,4 +98,4 @@ const getCurrentDate = () => {
 
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
-  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate};
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate, getFormattedRuntime};

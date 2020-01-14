@@ -1,4 +1,5 @@
 import AbstractSmartComponent from './abstract-smart-component';
+import {getFormattedRuntime} from '../utils/common.js';
 
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
@@ -29,6 +30,8 @@ const createPopUpTemplate = (popup) => {
     genres,
     age,
   } = popup;
+
+  const formattedRuntime = getFormattedRuntime(duration);
 
   const genresList = createGenresMarkup(genres);
 
@@ -83,7 +86,8 @@ const createPopUpTemplate = (popup) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${formattedRuntime.digits.hours}${formattedRuntime.labels.HOURS}
+                  ${formattedRuntime.digits.minutes}${formattedRuntime.labels.MINUTES}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
