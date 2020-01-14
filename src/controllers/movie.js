@@ -42,6 +42,10 @@ export default class MovieController {
   _markWatchedButtonClickHandler(data) {
     this._onFiltersChange(`history`, !data.isWatched);
     data.isWatched = !data.isWatched;
+    if (data.isWatched) {
+      data.watchingDate = getCurrentDate();
+      console.log(`movie watched on `, data.watchingDate);
+    }
   }
 
   _setFavoriteButtonClickHandler(data) {

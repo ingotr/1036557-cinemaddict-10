@@ -63,6 +63,7 @@ const getRandomGenres = () => {
 const generateData = () => {
   const commCount = getRandomCommentsNumber();
   const filmYear = getRandomYear();
+  const watchingYear = getRandomYear();
   return {
     id: String(new Date() + Math.random()),
     title: getRandomElement(NameItems),
@@ -84,6 +85,7 @@ const generateData = () => {
     isOnWatchList: Math.random() > 0.5,
     isWatched: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
+    watchingDate: getReleaseDate(watchingYear),
   };
 };
 
