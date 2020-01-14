@@ -5,7 +5,29 @@ import {getWatchedMovies} from '../utils/filter.js';
 import {GenreItems} from '../const.js';
 import {getFormattedRuntime} from '../utils/common.js';
 
-const createStatisticsTemplate = () => {
+const createStatisticTextListMarkup = (userStatistics) => {
+  const {favGenre, totalMoviesDuration, genresList, watchedMoviesCount} = userStatistics;
+  return (
+    `<ul class="statistic__text-list">
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">You watched</h4>
+        <p class="statistic__item-text">${watchedMoviesCount} <span class="statistic__item-description">movies</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Total duration</h4>
+        <p class="statistic__item-text">${totalMoviesDuration.hours} <span class="statistic__item-description">h</span>
+        ${totalMoviesDuration.minutes} <span class="statistic__item-description">m</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Top genre</h4>
+        <p class="statistic__item-text">${favGenre}</p>
+      </li>
+    </ul>`
+  );
+};
+
+const createStatisticsTemplate = (userStatistics) => {
+  const textList = createStatisticTextListMarkup(userStatistics);
   return (
     `<section class="statistic">
       <p class="statistic__rank">
@@ -33,23 +55,10 @@ const createStatisticsTemplate = () => {
         <label for="statistic-year" class="statistic__filters-label">Year</label>
       </form>
 
-      <ul class="statistic__text-list">
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
-        </li>
-      </ul>
+      ${textList}
 
       <div class="statistic__chart-wrap">
-        <canvas class="statistic__chart" width="1000"></canvas>
+        <canvas class="statistic__chart" width="1000" height="300"></canvas>
       </div>
 
     </section>`
@@ -67,7 +76,8 @@ export default class Statistics extends AbstractComponent {
   }
 
   getTemplate() {
-    return createStatisticsTemplate();
+    const userStatistics = this.getUserStatistics();
+    return createStatisticsTemplate(userStatistics);
   }
 
   getUserStatistics() {
@@ -83,6 +93,7 @@ export default class Statistics extends AbstractComponent {
       favGenre: favoriteGenre,
       totalMoviesDuration: totalMoviesRuntime,
       genresList: mostWatchedGenres,
+      watchedMoviesCount: this._watchedMovies.length,
     };
   }
 
@@ -96,10 +107,20 @@ export default class Statistics extends AbstractComponent {
     let ctx = document.querySelector(`.statistic__chart`);
     const genreList = list;
 
+    Chart.defaults.global.defaultFontSize = 20;
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
+      plugins: [ChartJsDatalabels],
       data: {
+        labels: [
+          `${genreList[0].label}`,
+          `${genreList[1].label}`,
+          `${genreList[2].label}`,
+          `${genreList[3].label}`,
+          `${genreList[4].label}`,
+        ],
         datasets: [{
+          label: `test`,
           data: [
             genreList[0].movieCount,
             genreList[1].movieCount,
@@ -109,16 +130,29 @@ export default class Statistics extends AbstractComponent {
           backgroundColor: `rgba(255, 232, 0, 1)`,
           barThickness: 20,
           maxBarThickness: 30,
-          barPercentage: 0.5,
+          labels: {
+            display: false,
+          },
+          datalabels: {
+            anchor: `start`,
+            align: `start`,
+            color: `white`,
+            display: true,
+            font: {
+              size: 16,
+            },
+            padding: 10,
+          }
         }],
-        labels: [`${genreList[0].label} ${genreList[0].movieCount}`,
-          `${genreList[1].label} ${genreList[1].movieCount}`,
-          `${genreList[2].label} ${genreList[2].movieCount}`,
-          `${genreList[3].label} ${genreList[3].movieCount}`,
-          `${genreList[4].label} ${genreList[4].movieCount}`,
-        ],
       },
       options: {
+        plugins: {
+          datalabels: {
+            formatter(value, context) {
+              return context.chart.data.labels[context.dataIndex] + `   ` + value;
+            }
+          }
+        },
         legend: {
           display: false,
         },
@@ -138,8 +172,8 @@ export default class Statistics extends AbstractComponent {
             gridLines: {
               display: false,
             },
-          }]
-        }
+          }],
+        },
       }
     });
   }
