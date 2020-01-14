@@ -92,7 +92,7 @@ export default class PageController {
 
     this._showingMovieCount = SHOWING_CARDS_ON_START;
 
-    this._statisticsComponent = new StatisticsComponent();
+    this._statisticsComponent = new StatisticsComponent(this._moviesModel);
 
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
@@ -166,6 +166,7 @@ export default class PageController {
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+    // this._statisticsComponent.renderStatistics();
     this._statisticsComponent.hide();
 
     render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);

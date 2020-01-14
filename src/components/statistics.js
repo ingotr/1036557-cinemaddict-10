@@ -1,6 +1,9 @@
 import AbstractComponent from './abstract-component.js';
-import ChartJs from 'chart.js';
+import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
+import {getWatchedMovies } from '../utils/filter.js';
+import {GenreItems} from '../const.js';
+import {getFormattedRuntime} from '../utils/common.js';
 
 const createStatisticsTemplate = () => {
   return (
@@ -54,7 +57,143 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Statistics extends AbstractComponent {
+  constructor(moviesModel) {
+    super();
+
+    this._moviesModel = moviesModel;
+
+    this._movies = this._moviesModel.getMovies();
+    this._watchedMovies = getWatchedMovies(this._movies);
+  }
+
   getTemplate() {
+    this.getUserStatistics();
+
     return createStatisticsTemplate();
+  }
+
+  getUserStatistics() {
+    const favoriteGenre = this._getFavoriteGenre();
+    const totalMoviesRuntime = this._getTotalMoviesRuntime();
+    const mostWatchedGenres = this._getStatisticsData();
+
+    console.table(`most watched genres`, mostWatchedGenres);
+    console.table(`total Runtime`, totalMoviesRuntime);
+    console.log(`most popular genre`, favoriteGenre);
+  }
+
+  // renderStatistics() {
+  //   let ctx = document.querySelector(`.statistic__chart`);
+  //   const genreList = [
+  //     {
+  //       label: `Sci-Fi`,
+  //       value: 11,
+  //     },
+  //     {
+  //       label: `Animation`,
+  //       value: 8,
+  //     },
+  //     {
+  //       label: `Fantasy`,
+  //       value: 6,
+  //     },
+  //     {
+  //       label: `Comedy`,
+  //       value: 4,
+  //     },
+  //     {
+  //       label: `TV Series`,
+  //       value: 9,
+  //     },
+  //   ];
+
+  //   let statistic__chart = new Chart(ctx, {
+  //     type: `horizontalBar`,
+  //     data: {
+  //       // labels: [{'tr': 12}.value],
+  //       datasets: [{
+  //         data: [
+  //           genreList[0].value,
+  //           genreList[1].value,
+  //           genreList[2].value,
+  //           genreList[3].value,
+  //           genreList[4].value],
+  //         backgroundColor: `rgba(255, 206, 86, 1)`,
+  //         barThickness: 20,
+  //         maxBarThickness: 30,
+  //         barPercentage: 0.5,
+  //       }],
+  //       labels: [`${genreList[0].label} ${genreList[0].value}`,
+  //         `${genreList[1].label} ${genreList[1].value}`,
+  //         `${genreList[2].label} ${genreList[2].value}`,
+  //         `${genreList[3].label} ${genreList[3].value}`,
+  //         `${genreList[4].label} ${genreList[4].value}`,
+  //       ],
+  //     },
+  //     options: {
+  //       legend: {
+  //         display: false,
+  //       },
+  //       scales: {
+  //         display: false,
+  //         xAxes: [{
+  //           gridLines: {
+  //             display: false,
+  //           },
+  //           display: false,
+  //           ticks: {
+  //             display: false,
+  //             beginAtZero: true,
+  //           }
+  //         }],
+  //         yAxes: [{
+  //           gridLines: {
+  //             display: false,
+  //           },
+  //         }]
+  //       }
+  //     }
+  //   });
+  // }
+
+  _getFavoriteGenre() {
+    return this._getStatisticsData()[0].label;
+  }
+
+  _getTotalMoviesRuntime() {
+    const watchedMovies = this._watchedMovies;
+    let totalMinutes = 0;
+    watchedMovies.forEach((movie) => {
+      totalMinutes += movie.duration;
+    });
+
+    const totalRuntime = getFormattedRuntime(totalMinutes);
+
+    return totalRuntime.digits;
+  }
+
+  _getStatisticsData() {
+    let moviesStatistics = [];
+    GenreItems.map((genre) => {
+      let count = this._getMoviesByGenre(genre).length;
+      moviesStatistics.push(this._getMovieStatisticElement(genre, count));
+    });
+
+    let mostWatchedGenreList = moviesStatistics.sort((a, b) => b.movieCount - a.movieCount);
+    mostWatchedGenreList = mostWatchedGenreList.slice(0, 5);
+
+    return mostWatchedGenreList;
+  }
+
+  _getMovieStatisticElement(genre, count) {
+    return {
+      label: genre,
+      movieCount: count,
+    };
+  }
+
+  _getMoviesByGenre(genre) {
+    const moviesByGenre = this._watchedMovies.filter((film) => film.genres.includes(genre));
+    return moviesByGenre;
   }
 }

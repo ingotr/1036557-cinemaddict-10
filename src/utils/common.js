@@ -57,7 +57,7 @@ const getReleaseDate = (year) => {
 };
 
 const getRuntimeHours = (runtime) => {
-  const hours = Math.ceil(runtime / HOUR_LENGTH);
+  const hours = Math.trunc(runtime / HOUR_LENGTH);
   return hours;
 };
 
