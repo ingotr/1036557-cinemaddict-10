@@ -103,6 +103,10 @@ export default class Statistics extends AbstractComponent {
     this._renderStatisticsCharts(userStatistics.genresList);
   }
 
+  setStatisticsFiltersHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+  }
+
   _renderStatisticsCharts(list) {
     let ctx = document.querySelector(`.statistic__chart`);
     const genreList = list;
