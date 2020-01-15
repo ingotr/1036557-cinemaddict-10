@@ -29,12 +29,18 @@ const getRandomRating = () => {
   return Math.fround(Math.random() * MAX_RATING).toFixed(1);
 };
 
-const getRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+const getRandomDate = () => {
+  return new Date(new Date(2015, 1, 1).getTime() + Math.random() * (new Date().getTime() - new Date(2015, 1, 1).getTime()));
 };
 
 const getRandomYear = () => {
-  const targetYear = moment(getRandomDate(new Date(1900, 1, 1), new Date())).format(`YYYY`);
+  const targetYear = moment(getRandomDate(new Date(2019, 6, 6), new Date())).format(`YYYY`);
+
+  return targetYear;
+};
+
+const getTargetYear = (target) => {
+  const targetYear = moment(getRandomDate(new Date(target, 1, 1), new Date())).format(`YYYY`);
 
   return targetYear;
 };
@@ -57,7 +63,7 @@ const getReleaseDate = (year) => {
 };
 
 const getTimeDuration = (startTime, durationLength, durationLengthUnit) => {
-  let timeDuration = moment(startTime).subtract(durationLength, durationLengthUnit);
+  let timeDuration = moment(startTime).subtract(durationLength, durationLengthUnit).format(`DD MMMM YYYY`);
 
   return timeDuration;
 };
@@ -98,10 +104,16 @@ const getRandomCommentsNumber = () => {
 
 const getCurrentDate = () => {
   let currentDate = new Date();
-  currentDate = moment(currentDate).format(`DD MMMM YYYY HH:MM`);
+  currentDate = moment(currentDate).format(`DD MMMM YYYY`);
   return currentDate;
+};
+
+const getRandomWatchedDate = () => {
+  const watchedDate = moment(getRandomDate()).format(`DD MMMM YYYY`);
+  return watchedDate;
 };
 
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
-  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate, getFormattedRuntime, getTimeDuration};
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate,
+  getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear};

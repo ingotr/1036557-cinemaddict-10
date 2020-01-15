@@ -2,10 +2,21 @@ import AbstractComponent from './abstract-component.js';
 import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
 import {getWatchedMovies} from '../utils/filter.js';
-import {GenreItems} from '../const.js';
+import {GenreItems, STATISTIC_FILTERS_ID} from '../const.js';
 import {getFormattedRuntime, getCurrentDate, getTimeDuration} from '../utils/common.js';
+import moment from 'moment';
+
+const CHART_DEFAUL_FONT_SIZE = 20;
+const FIRST_FIVE_GENRES = 5;
+const STATISTIC_FILTER_RANGE = {
+  TODAY: 1,
+  WEEK: 7,
+  MONTH: 30,
+  YEAR: 365,
+};
 
 const createStatisticTextListMarkup = (userStatistics) => {
+  // eslint-disable-next-line no-unused-vars
   const {favGenre, totalMoviesDuration, genresList, watchedMoviesCount} = userStatistics;
   return (
     `<ul class="statistic__text-list">
@@ -76,18 +87,22 @@ export default class Statistics extends AbstractComponent {
   }
 
   getTemplate() {
-    const userStatistics = this.getUserStatistics(this._movies);
+    const userStatistics = this.getUserStatistics(this._watchedMovies);
     return createStatisticsTemplate(userStatistics);
   }
 
   getUserStatistics(movies) {
-    const favoriteGenre = this._getFavoriteGenre();
-    const totalMoviesRuntime = this._getTotalMoviesRuntime();
+    let favoriteGenre = this._getFavoriteGenre(movies);
+    let totalMoviesRuntime = this._getTotalMoviesRuntime();
     let mostWatchedGenres = this._getStatisticsData(movies);
 
-    console.table(`most watched genres`, mostWatchedGenres);
-    console.table(`total Runtime`, totalMoviesRuntime);
-    console.log(`most popular genre`, favoriteGenre);
+    if (favoriteGenre === ``) {
+      favoriteGenre = `«-»`;
+    }
+
+    if (totalMoviesRuntime <= 0) {
+      totalMoviesRuntime = 0;
+    }
 
     return {
       favGenre: favoriteGenre,
@@ -98,26 +113,46 @@ export default class Statistics extends AbstractComponent {
   }
 
   renderStatistics(statisticFilterChoice) {
-    if (statisticFilterChoice === STATISTIC_FILTERS_ID.ALL_TIME) {
-      moviesList = this._movies;
-    } else {
-      moviesList = this._getMoviesByBetweenDates(this._movies, durationTime, durationUnit);
-    }
-    const moviesList = this._getMoviesByBetweenDates(this._movies, durationTime, durationUnit);
-    const userStatistics = this.getUserStatistics(moviesList);
+    let moviesList = this._watchedMovies;
 
-    this._renderStatisticsCharts(userStatistics.genresList);
+    if (statisticFilterChoice !== STATISTIC_FILTERS_ID.ALL_TIME) {
+      switch (statisticFilterChoice) {
+        case STATISTIC_FILTERS_ID.TODAY:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.TODAY, `day`);
+          break;
+        case STATISTIC_FILTERS_ID.WEEK:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.WEEK, `days`);
+          break;
+        case STATISTIC_FILTERS_ID.MONTH:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.MONTH, `days`);
+          break;
+        case STATISTIC_FILTERS_ID.YEAR:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.YEAR, `days`);
+          break;
+      }
+    }
+
+    const userStatistics = this.getUserStatistics(moviesList);
+    let ctx = document.querySelector(`.statistic__chart`);
+
+    if (moviesList.length > 0) {
+      ctx.classList.remove(`visually-hidden`);
+      this._renderStatisticsCharts(userStatistics.genresList);
+    } else {
+      ctx.classList.add(`visually-hidden`);
+    }
   }
 
   setStatisticsFiltersHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, handler);
   }
 
   _renderStatisticsCharts(list) {
     let ctx = document.querySelector(`.statistic__chart`);
     const genreList = list;
 
-    Chart.defaults.global.defaultFontSize = 20;
+    Chart.defaults.global.defaultFontSize = CHART_DEFAUL_FONT_SIZE;
+    // eslint-disable-next-line no-unused-vars
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
       plugins: [ChartJsDatalabels],
@@ -212,7 +247,8 @@ export default class Statistics extends AbstractComponent {
     });
 
     let mostWatchedGenreList = moviesStatistics.sort((a, b) => b.movieCount - a.movieCount);
-    mostWatchedGenreList = mostWatchedGenreList.slice(0, 5);
+
+    mostWatchedGenreList = mostWatchedGenreList.slice(0, FIRST_FIVE_GENRES);
 
     return mostWatchedGenreList;
   }
@@ -224,24 +260,19 @@ export default class Statistics extends AbstractComponent {
     };
   }
 
-  _getDeltaTime() {
-
-    return deltaTime;
-  }
-
   _getMoviesByBetweenDates(movies, durationTime, durationUnit) {
     const moviesList = movies;
     const endDate = getCurrentDate();
-    console.log(endDate);
 
     const startDate = getTimeDuration(endDate, durationTime, durationUnit);
-    console.log(startDate);
 
     let moviesByDates = [];
 
-    moviesByDates = moviesList.filter((film) =>
-      (film.watchingDate > startDate && film.watchingDate < endDate));
-
+    moviesByDates = moviesList.filter((film) => {
+      const watchingDate = film.watchingDate;
+      const isBetween = moment(watchingDate).isBefore(endDate) && moment(watchingDate).isAfter(startDate);
+      return isBetween;
+    });
     return moviesByDates;
   }
 

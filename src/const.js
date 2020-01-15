@@ -101,3 +101,12 @@ export const EMOJI_SRC = {
   GRINNING: `images/emoji/puke.png`,
   ANGRY: `images/emoji/angry.png`,
 };
+
+export const STATISTIC_FILTERS_ID = {
+  ALL_TIME: `statistic-all-time`,
+  TODAY: `statistic-today`,
+  WEEK: `statistic-week`,
+  MONTH: `statistic-month`,
+  YEAR: `statistic-year`,
+};
+
