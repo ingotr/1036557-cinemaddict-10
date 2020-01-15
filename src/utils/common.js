@@ -56,6 +56,12 @@ const getReleaseDate = (year) => {
   return releaseDate;
 };
 
+const getTimeDuration = (startTime, durationLength, durationLengthUnit) => {
+  let timeDuration = moment(startTime).subtract(durationLength, durationLengthUnit);
+
+  return timeDuration;
+};
+
 const getRuntimeHours = (runtime) => {
   const hours = Math.trunc(runtime / HOUR_LENGTH);
   return hours;
@@ -98,4 +104,4 @@ const getCurrentDate = () => {
 
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
-  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate, getFormattedRuntime};
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate, getFormattedRuntime, getTimeDuration};

@@ -3,7 +3,7 @@ import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
 import {getWatchedMovies} from '../utils/filter.js';
 import {GenreItems} from '../const.js';
-import {getFormattedRuntime} from '../utils/common.js';
+import {getFormattedRuntime, getCurrentDate, getTimeDuration} from '../utils/common.js';
 
 const createStatisticTextListMarkup = (userStatistics) => {
   const {favGenre, totalMoviesDuration, genresList, watchedMoviesCount} = userStatistics;
@@ -76,14 +76,14 @@ export default class Statistics extends AbstractComponent {
   }
 
   getTemplate() {
-    const userStatistics = this.getUserStatistics();
+    const userStatistics = this.getUserStatistics(this._movies);
     return createStatisticsTemplate(userStatistics);
   }
 
-  getUserStatistics() {
+  getUserStatistics(movies) {
     const favoriteGenre = this._getFavoriteGenre();
     const totalMoviesRuntime = this._getTotalMoviesRuntime();
-    const mostWatchedGenres = this._getStatisticsData();
+    let mostWatchedGenres = this._getStatisticsData(movies);
 
     console.table(`most watched genres`, mostWatchedGenres);
     console.table(`total Runtime`, totalMoviesRuntime);
@@ -97,8 +97,14 @@ export default class Statistics extends AbstractComponent {
     };
   }
 
-  renderStatistics() {
-    const userStatistics = this.getUserStatistics();
+  renderStatistics(statisticFilterChoice) {
+    if (statisticFilterChoice === STATISTIC_FILTERS_ID.ALL_TIME) {
+      moviesList = this._movies;
+    } else {
+      moviesList = this._getMoviesByBetweenDates(this._movies, durationTime, durationUnit);
+    }
+    const moviesList = this._getMoviesByBetweenDates(this._movies, durationTime, durationUnit);
+    const userStatistics = this.getUserStatistics(moviesList);
 
     this._renderStatisticsCharts(userStatistics.genresList);
   }
@@ -182,8 +188,8 @@ export default class Statistics extends AbstractComponent {
     });
   }
 
-  _getFavoriteGenre() {
-    return this._getStatisticsData()[0].label;
+  _getFavoriteGenre(movies) {
+    return this._getStatisticsData(movies)[0].label;
   }
 
   _getTotalMoviesRuntime() {
@@ -198,10 +204,10 @@ export default class Statistics extends AbstractComponent {
     return totalRuntime.digits;
   }
 
-  _getStatisticsData() {
+  _getStatisticsData(movies) {
     let moviesStatistics = [];
     GenreItems.map((genre) => {
-      let count = this._getMoviesByGenre(genre).length;
+      let count = this._getMoviesByGenre(movies, genre).length;
       moviesStatistics.push(this._getMovieStatisticElement(genre, count));
     });
 
@@ -218,8 +224,29 @@ export default class Statistics extends AbstractComponent {
     };
   }
 
-  _getMoviesByGenre(genre) {
-    const moviesByGenre = this._watchedMovies.filter((film) => film.genres.includes(genre));
+  _getDeltaTime() {
+
+    return deltaTime;
+  }
+
+  _getMoviesByBetweenDates(movies, durationTime, durationUnit) {
+    const moviesList = movies;
+    const endDate = getCurrentDate();
+    console.log(endDate);
+
+    const startDate = getTimeDuration(endDate, durationTime, durationUnit);
+    console.log(startDate);
+
+    let moviesByDates = [];
+
+    moviesByDates = moviesList.filter((film) =>
+      (film.watchingDate > startDate && film.watchingDate < endDate));
+
+    return moviesByDates;
+  }
+
+  _getMoviesByGenre(movies, genre) {
+    const moviesByGenre = movies.filter((film) => film.genres.includes(genre));
     return moviesByGenre;
   }
 }

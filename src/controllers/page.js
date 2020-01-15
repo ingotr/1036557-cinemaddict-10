@@ -16,6 +16,14 @@ const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const TOPRATED_LIST_LENGTH = 2;
 const MOSTCOMMENTED_LIST_LENGTH = 2;
 
+const STATISTIC_FILTERS_ID = {
+  ALL_TIME: `statistic-all-time`,
+  TODAY: `statistic-today`,
+  WEEK: `statistic-week`,
+  MONTH: `statistic-month`,
+  YEAR: `statistic-year`,
+};
+
 const TOP_RATED_MARKUP = `<h2 class="films-list__title">Top rated</h2>`;
 const MOST_COMMENTED_MARKUP = `<h2 class="films-list__title">Most commented</h2>`;
 const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
@@ -120,6 +128,7 @@ export default class PageController {
     this._onEmojiChange = this._onEmojiChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._statisticsComponent.setStatisticsFiltersHandler(this._onStatisticsFilterChange);
     this._moviesModel.setFilterChangeHandlers(this._onFiltersChange);
   }
 
@@ -345,6 +354,25 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
+  }
+
+  _onStatisticsFilterChange(evt) {
+    evt.preventDefault();
+    console.log(evt.target, evt.target.id);
+    switch (evt.target.id) {
+      case STATISTIC_FILTERS_ID.ALL_TIME:
+        this._statisticsComponent.renderStatistics();
+        return test;
+      case STATISTIC_FILTERS_ID.TODAY:
+        return test;
+      case STATISTIC_FILTERS_ID.WEEK:
+        return test;
+      case STATISTIC_FILTERS_ID.MONTH:
+        return test;
+      case STATISTIC_FILTERS_ID.YEAR:
+        return test;
+    }
+    return test;
   }
 
   _onEmojiChange(emojiType, bigEmojiContainer) {
