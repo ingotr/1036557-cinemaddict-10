@@ -157,15 +157,12 @@ export default class Statistics extends AbstractComponent {
       type: `horizontalBar`,
       plugins: [ChartJsDatalabels],
       data: {
-        labels: [
-          `${genreList[0].label}`,
+        labels: [`${genreList[0].label}`,
           `${genreList[1].label}`,
           `${genreList[2].label}`,
           `${genreList[3].label}`,
-          `${genreList[4].label}`,
-        ],
+          `${genreList[4].label}`],
         datasets: [{
-          label: `test`,
           data: [
             genreList[0].movieCount,
             genreList[1].movieCount,
@@ -175,9 +172,6 @@ export default class Statistics extends AbstractComponent {
           backgroundColor: `rgba(255, 232, 0, 1)`,
           barThickness: 20,
           maxBarThickness: 30,
-          labels: {
-            display: false,
-          },
           datalabels: {
             anchor: `start`,
             align: `start`,
@@ -186,7 +180,7 @@ export default class Statistics extends AbstractComponent {
             font: {
               size: 16,
             },
-            padding: 10,
+            padding: 6,
           }
         }],
       },
@@ -216,6 +210,9 @@ export default class Statistics extends AbstractComponent {
           yAxes: [{
             gridLines: {
               display: false,
+            },
+            ticks: {
+              fontColor: `transparent`,
             },
           }],
         },
