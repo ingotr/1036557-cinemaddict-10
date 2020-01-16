@@ -68,7 +68,6 @@ export default class FilterController {
         pageController.show();
         break;
       case MenuItem.STATS:
-        // mainMenuComponent.setActiveItem(MenuItem.STATS);
         pageController.hide();
         statistics.show();
         break;

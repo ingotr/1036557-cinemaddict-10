@@ -6,7 +6,7 @@ import {GenreItems, STATISTIC_FILTERS_ID} from '../const.js';
 import {getFormattedRuntime, getCurrentDate, getTimeDuration} from '../utils/common.js';
 import moment from 'moment';
 
-const CHART_DEFAUL_FONT_SIZE = 20;
+const CHART_DEFAULT_FONT_SIZE = 20;
 const FIRST_FIVE_GENRES = 5;
 const STATISTIC_FILTER_RANGE = {
   TODAY: 1,
@@ -151,7 +151,7 @@ export default class Statistics extends AbstractComponent {
     let ctx = document.querySelector(`.statistic__chart`);
     const genreList = list;
 
-    Chart.defaults.global.defaultFontSize = CHART_DEFAUL_FONT_SIZE;
+    Chart.defaults.global.defaultFontSize = CHART_DEFAULT_FONT_SIZE;
     // eslint-disable-next-line no-unused-vars
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
