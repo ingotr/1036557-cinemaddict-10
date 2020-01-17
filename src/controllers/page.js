@@ -1,14 +1,14 @@
 import FilterController from '../controllers/filter.js';
-import StatsComponent from '../components/stats.js';
 import SortComponent, {SortType} from '../components/sort.js';
 import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
+import StatisticsComponent from '../components/statistics.js';
 
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {CARD_COUNT, EMOJI_ID} from '../const.js';
+import {CARD_COUNT, EMOJI_ID, STATISTIC_FILTERS_ID} from '../const.js';
 
 const SHOWING_CARDS_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -91,12 +91,13 @@ export default class PageController {
 
     this._showingMovieCount = SHOWING_CARDS_ON_START;
 
+    this._statisticsComponent = new StatisticsComponent(this._moviesModel);
+
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
-    this._filterController = new FilterController(this._container, this._moviesModel);
+    this._filterController = new FilterController(this._container, this._moviesModel, this._statisticsComponent, this);
 
-    this._statsComponent = new StatsComponent();
     this._sortComponent = new SortComponent();
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
@@ -104,6 +105,7 @@ export default class PageController {
     this._filmListContainerElement = null;
     this._filmTopRatedElement = null;
     this._filmMostCommentedElement = null;
+    this._mainMenuComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -130,6 +132,14 @@ export default class PageController {
     this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
   }
 
+  hide() {
+    this._filmsComponent.hide();
+  }
+
+  show() {
+    this._filmsComponent.show();
+  }
+
   renderCustomFilmList(filmList, filmListContainer) {
     if (filmList.length > 0) {
       return filmList.map((film) => {
@@ -148,12 +158,16 @@ export default class PageController {
     const container = this._container;
 
     this._filterController.render();
-    const mainNavigationElement = this._container.querySelector(`.main-navigation`);
-
-    render(mainNavigationElement, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
 
     render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
+
+    render(container, this._statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+    this._statisticsComponent.setStatisticsFiltersHandler(() => {
+      this._onStatisticsFilterChange(event.target.id);
+    });
+    this._statisticsComponent.renderStatistics();
+    this._statisticsComponent.hide();
 
     render(this._filmsComponent.getElement(), new FilmsListComponent().getElement(), RenderPosition.BEFOREEND);
     render(this._filmsComponent.getElement(), new FilmsListComponent(FILMS_LIST_EXTRA_MARKUP, TOP_RATED_MARKUP).getElement(), RenderPosition.BEFOREEND);
@@ -331,6 +345,27 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
+  }
+
+  _onStatisticsFilterChange(statisticFilterType) {
+    event.preventDefault();
+    switch (statisticFilterType) {
+      case STATISTIC_FILTERS_ID.ALL_TIME:
+        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.ALL_TIME);
+        break;
+      case STATISTIC_FILTERS_ID.TODAY:
+        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.TODAY);
+        break;
+      case STATISTIC_FILTERS_ID.WEEK:
+        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.WEEK);
+        break;
+      case STATISTIC_FILTERS_ID.MONTH:
+        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.MONTH);
+        break;
+      case STATISTIC_FILTERS_ID.YEAR:
+        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.YEAR);
+        break;
+    }
   }
 
   _onEmojiChange(emojiType, bigEmojiContainer) {

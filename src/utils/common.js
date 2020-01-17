@@ -3,9 +3,9 @@ import {DescriptionItems, MonthNames} from '../const.js';
 
 const MAX_DESCRIPTION_LENGTH = 3;
 const MAX_RATING = 9;
-const MAX_HOURS_RUNTIME = 4;
-const MAX_MINUTES_RUNTIME = 59;
+const MAX_RUNTIME = 299;
 const MAX_COMMENTS_NUMBER = 9;
+const HOUR_LENGTH = 60;
 
 const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
@@ -29,20 +29,20 @@ const getRandomRating = () => {
   return Math.fround(Math.random() * MAX_RATING).toFixed(1);
 };
 
-const getRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+const getRandomDate = () => {
+  return new Date(new Date(2015, 1, 1).getTime() + Math.random() * (new Date().getTime() - new Date(2015, 1, 1).getTime()));
 };
 
 const getRandomYear = () => {
-  const targetYear = moment(getRandomDate(new Date(1900, 1, 1), new Date())).format(`YYYY`);
+  return moment(getRandomDate(new Date(2019, 6, 6), new Date())).format(`YYYY`);
+};
 
-  return targetYear;
+const getTargetYear = (target) => {
+  return moment(getRandomDate(new Date(target, 1, 1), new Date())).format(`YYYY`);
 };
 
 const getCommentDateFromNow = () => {
-  const targetDate = moment(getRandomYear(), `hh:mm:ss a`).fromNow();
-
-  return targetDate;
+  return moment(getRandomYear(), `hh:mm:ss a`).fromNow();
 };
 
 const getReleaseDate = (year) => {
@@ -51,30 +51,52 @@ const getReleaseDate = (year) => {
   const targetMonth = MonthNames[targetDate.getMonth()];
   const targetYear = year;
   let releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
-  releaseDate = moment(releaseDate).format(`DD MMMM YYYY`);
 
-  return releaseDate;
+  return moment(releaseDate).format(`DD MMMM YYYY`);
+};
+
+const getTimeDuration = (startTime, durationLength, durationLengthUnit) => {
+  return moment(startTime).subtract(durationLength, durationLengthUnit).format(`DD MMMM YYYY`);
+};
+
+const getRuntimeHours = (runtime) => {
+  return Math.trunc(runtime / HOUR_LENGTH);
+};
+
+const getRuntimeMinutes = (runtime) => {
+  return runtime % HOUR_LENGTH;
+};
+
+const getFormattedRuntime = (runtime) => {
+  return {
+    digits: {
+      hours: getRuntimeHours(runtime),
+      minutes: getRuntimeMinutes(runtime),
+    },
+    labels: {
+      HOURS: `h`,
+      MINUTES: `m`,
+    },
+  };
 };
 
 const getRandomDuration = () => {
-  const hours = getRandomIntegerNumber(0, MAX_HOURS_RUNTIME);
-  const minutes = getRandomIntegerNumber(0, MAX_MINUTES_RUNTIME);
-  const duration = `${hours}h ${minutes}m`;
-
-  return duration;
+  return getRandomIntegerNumber(0, MAX_RUNTIME);
 };
 
 const getRandomCommentsNumber = () => {
-  const commentsNumber = getRandomIntegerNumber(0, MAX_COMMENTS_NUMBER);
-  return commentsNumber;
+  return getRandomIntegerNumber(0, MAX_COMMENTS_NUMBER);
 };
 
 const getCurrentDate = () => {
-  let currentDate = new Date();
-  currentDate = moment(currentDate).format(`DD MMMM YYYY HH:MM`);
-  return currentDate;
+  return moment(new Date()).format(`DD MMMM YYYY`);
+};
+
+const getRandomWatchedDate = () => {
+  return moment(getRandomDate()).format(`DD MMMM YYYY`);
 };
 
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
-  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate};
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate,
+  getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear};

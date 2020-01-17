@@ -1,4 +1,7 @@
-import {getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate, getRandomDuration, getRandomDescription, getRandomCommentsNumber, getRandomYear} from '../utils/common.js';
+import {
+  getRandomIntegerNumber, getRandomElement, getRandomRating, getReleaseDate,
+  getRandomDuration, getRandomDescription, getRandomCommentsNumber, getRandomYear, getRandomWatchedDate,
+} from '../utils/common.js';
 import {NameItems, PosterItems, GenreItems} from '../const.js';
 import {generateComments} from './comment.js';
 
@@ -84,13 +87,14 @@ const generateData = () => {
     isOnWatchList: Math.random() > 0.5,
     isWatched: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
+    watchingDate: getRandomWatchedDate(),
   };
 };
 
 const generateDatum = (count) => {
   return new Array(count)
-  .fill(``)
-  .map(generateData);
+    .fill(``)
+    .map(generateData);
 };
 
 export {generateDatum};

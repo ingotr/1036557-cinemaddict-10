@@ -1,18 +1,23 @@
-import FilterComponent from '../components/main-menu.js';
+import FilterComponent, {MenuItem} from '../components/main-menu.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {getMoviesByFilter} from '../utils/filter.js';
 
 export default class FilterController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, statisticsComponent, pageController) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._statisticsComponent = statisticsComponent;
+    this._pageController = pageController;
+
+    this._movies = this._moviesModel.getMovies();
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onMenuChange = this._onMenuChange.bind(this);
 
     this._moviesModel.setDataChangeHandlers(this._onDataChange);
   }
@@ -31,7 +36,8 @@ export default class FilterController {
     const oldComponent = this._filterComponent;
 
     this._filterComponent = new FilterComponent(filters);
-    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange, this._onMenuChange);
+
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
@@ -48,5 +54,23 @@ export default class FilterController {
     this._moviesModel.setFilter(filterType);
     this._activeFilterType = filterType;
     this._onDataChange();
+  }
+
+  _onMenuChange(menuItem) {
+    const statistics = this._statisticsComponent;
+    const pageController = this._pageController;
+    switch (menuItem) {
+      case MenuItem.ALL:
+      case MenuItem.WATCHLIST:
+      case MenuItem.HISTORY:
+      case MenuItem.FAVORITES:
+        statistics.hide();
+        pageController.show();
+        break;
+      case MenuItem.STATS:
+        pageController.hide();
+        statistics.show();
+        break;
+    }
   }
 }
