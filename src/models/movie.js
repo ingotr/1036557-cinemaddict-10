@@ -1,28 +1,34 @@
+import {getYearFromIso} from '../utils/common.js';
 export default class Movie {
   constructor(data) {
     this.id = data[`id`];
 
     this.comments = new Set(data[`comments`] || []);
 
-    this.filmInfo.title = data[`title`];
-    this.filmInfo.alternativeTitle = data[`alternative_title`];
-    this.filmInfo.totalRating = data[`total_rating`];
-    this.filmInfo.poster = data[`poster`];
-    this.filmInfo.ageRating = data[`age_rating`];
-    this.filmInfo.director = data[`director`];
-    this.filmInfo.writers = new Set(data[`writers`] || []);
-    this.filmInfo.actors = new Set(data[`actors`] || []);
-    this.filmInfo.release.date = data[`date`];
-    this.filmInfo.release.releaseCountry = data[`release_country`];
-    this.filmInfo.runtime = data[`runtime`];
-    this.filmInfo.genre = new Set(data[`genre`] || []);
-    this.filmInfo.description = data[`description`];
+    this.filmInfo = data[`film_info`];
+    this.filmInfo.title = this.filmInfo[`title`];
+    this.filmInfo.alternativeTitle = this.filmInfo[`alternative_title`];
+    this.filmInfo.totalRating = this.filmInfo[`total_rating`];
+    this.filmInfo.poster = this.filmInfo[`poster`];
+    this.filmInfo.ageRating = this.filmInfo[`age_rating`];
+    this.filmInfo.director = this.filmInfo[`director`];
+    this.filmInfo.actors = this.filmInfo[`actors`];
+    this.filmInfo.writers = this.filmInfo[`writers`];
 
-    this.userDetails.personalRating = data[`personal_rating`];
-    this.userDetails.watchlist = Boolean(data[`watchlist`]);
-    this.userDetails.alreadyWatched = Boolean(data[`already_watched`]);
-    this.userDetails.watchingDate = data[`watching_date`] ? new Date(data[`watching_date`]) : null;
-    this.userDetails.favorite = Boolean(data[`favorite`]);
+    this.filmInfo.release = this.filmInfo[`release`];
+    this.filmInfo.release.year = getYearFromIso(this.filmInfo.release[`date`]);
+    this.filmInfo.release.date = this.filmInfo.release[`date`];
+    this.filmInfo.release.releaseCountry = this.filmInfo.release[`release_country`];
+    this.filmInfo.runtime = this.filmInfo[`runtime`];
+    this.filmInfo.genre = this.filmInfo[`genre`];
+    this.filmInfo.description = this.filmInfo[`description`];
+
+    this.userDetails = data[`user_details`];
+    this.userDetails.personalRating = this.userDetails[`personal_rating`];
+    this.userDetails.watchlist = Boolean(this.userDetails[`watchlist`]);
+    this.userDetails.alreadyWatched = Boolean(this.userDetails[`already_watched`]);
+    this.userDetails.watchingDate = this.userDetails[`watching_date`] ? new Date(this.userDetails[`watching_date`]) : null;
+    this.userDetails.favorite = Boolean(this.userDetails[`favorite`]);
   }
 
   toRaw() {
