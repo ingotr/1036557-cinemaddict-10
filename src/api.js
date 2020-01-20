@@ -1,14 +1,10 @@
 import Movie from './models/movie.js';
+import Comment from './models/comment.js';
 
-const MOVIES_METHOD = {
-  GET: `GET`,
-  SYNC: `POST`,
-  PUT: `PUT`,
-};
-
-const COMMENTS_METHOD = {
+const METHOD = {
   GET: `GET`,
   POST: `POST`,
+  PUT: `PUT`,
   DELETE: `DELETE`
 };
 
@@ -38,7 +34,10 @@ const API = class {
   syncMovies() {
   }
 
-  getComments() {
+  getComments(movieId) {
+    return this._load({url: `comments/:${movieId}`})
+      .then((response) => response.json())
+      .then(Comment.parseComments);
   }
 
   postComments() {
@@ -47,7 +46,7 @@ const API = class {
   deleteComments() {
   }
 
-  _load({url, method = MOVIES_METHOD.GET, body = null, headers = new Headers()}) {
+  _load({url, method = METHOD.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
