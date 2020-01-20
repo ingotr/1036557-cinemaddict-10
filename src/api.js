@@ -27,6 +27,9 @@ const API = class {
   }
 
   getMovies() {
+    return this._load({url: `movies`})
+      .then((response) => response.json())
+      .then(Movie.parseMovies);
   }
 
   putMovies() {
