@@ -42,6 +42,16 @@ const API = class {
   deleteComments() {
   }
 
+  _load({url, method = MOVIES_METHOD.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
+  }
+
 };
 
 export default API;
