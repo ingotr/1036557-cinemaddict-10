@@ -23,7 +23,7 @@ const API = class {
   }
 
   getMovies() {
-    return this._load({url: `movies`})
+    return this._load({url: `/movies`})
       .then((response) => response.json())
       .then(Movie.parseMovies);
   }
@@ -35,7 +35,7 @@ const API = class {
   }
 
   getComments(movieId) {
-    return this._load({url: `comments/:${movieId}`})
+    return this._load({url: `/comments/${movieId}`})
       .then((response) => response.json())
       .then(Comment.parseComments);
   }
