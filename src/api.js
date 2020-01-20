@@ -19,6 +19,10 @@ const checkStatus = (response) => {
 };
 
 const API = class {
+  constructor(endPoint, authorization) {
+    this._endPoint = endPoint;
+    this._authorization = authorization;
+  }
 };
 
 export default API;
