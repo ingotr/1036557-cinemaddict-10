@@ -1,3 +1,5 @@
+import Movie from './models/movie.js';
+
 const MOVIES_METHOD = {
   GET: `GET`,
   SYNC: `POST`,
