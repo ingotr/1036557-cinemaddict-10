@@ -23,6 +23,25 @@ const API = class {
     this._endPoint = endPoint;
     this._authorization = authorization;
   }
+
+  getMovies() {
+  }
+
+  putMovies() {
+  }
+
+  syncMovies() {
+  }
+
+  getComments() {
+  }
+
+  postComments() {
+  }
+
+  deleteComments() {
+  }
+
 };
 
 export default API;
