@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import AbstractComponent from './abstract-component.js';
 import {getFormattedRuntime, getYearFromIso} from '../utils/common.js';
 
@@ -15,7 +16,7 @@ const createDefaultCardTemplate = (card) => {
   const {comments, filmInfo} = card;
   const {
     title,
-    totalRating,
+    total_rating,
     poster,
     release,
     runtime,
@@ -39,7 +40,7 @@ const createDefaultCardTemplate = (card) => {
   return (
     `<article class="film-card">
       <h3 class="film-card__title">${title}</h3>
-      <p class="film-card__rating">${totalRating}</p>
+      <p class="film-card__rating">${total_rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${formattedDate}</span>
         <span class="film-card__duration">${formattedRuntime.digits.hours}${formattedRuntime.labels.HOURS}

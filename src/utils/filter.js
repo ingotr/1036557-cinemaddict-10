@@ -13,7 +13,7 @@ export const getNotInWatchlistMovies = (movies) => {
 };
 
 export const getWatchedMovies = (movies) => {
-  return movies.filter((movie) => movie.userDetails.alreadyWatched);
+  return movies.filter((movie) => movie.userDetails.already_watched);
 };
 
 export const getFavoriteMovies = (movies) => {

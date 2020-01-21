@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import AbstractSmartComponent from './abstract-smart-component';
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
 
@@ -17,10 +18,10 @@ const createPopUpTemplate = (popup) => {
   const {comments, filmInfo, userDetails} = popup;
   const {
     title,
-    alternativeTitle,
-    totalRating,
+    alternative_title,
+    total_rating,
     poster,
-    ageRating,
+    age_rating,
     director,
     writers,
     actors,
@@ -30,10 +31,10 @@ const createPopUpTemplate = (popup) => {
     description,
   } = filmInfo;
 
-  const {date, releaseCountry} = release;
+  const {date, release_country} = release;
 
   const {
-    personalRating,
+    personal_rating,
   } = userDetails;
 
   const formattedRuntime = getFormattedRuntime(runtime);
@@ -58,19 +59,19 @@ const createPopUpTemplate = (popup) => {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${poster}" alt="">
 
-              <p class="film-details__age">${ageRating}</p>
+              <p class="film-details__age">${age_rating}</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${alternativeTitle}</p>
+                  <p class="film-details__title-original">Original: ${alternative_title}</p>
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${totalRating}</p>
-                  <p class="film-details__user-rating visually-hidden">Your rate ${personalRating}</p>
+                  <p class="film-details__total-rating">${total_rating}</p>
+                  <p class="film-details__user-rating visually-hidden">Your rate ${personal_rating}</p>
                 </div>
               </div>
 
@@ -98,7 +99,7 @@ const createPopUpTemplate = (popup) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${releaseCountry}</td>
+                  <td class="film-details__cell">${release_country}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">${genreListTitle}</td>

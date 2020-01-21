@@ -1,10 +1,13 @@
 import AbstractComponent from './abstract-component.js';
 import he from 'he';
+import {getDateFromIso} from '../utils/common.js';
 
-const createCommentMarkup = (comment) => {
-  const {author, text, date, emotion} = comment;
+const createCommentMarkup = (commentary) => {
+  const {author, comment, date, emotion} = commentary;
 
-  const encodedText = he.encode(text);
+  const encodedText = he.encode(comment);
+
+  const formattedDate = getDateFromIso(date);
 
   return (
     `<li class="film-details__comment">
@@ -15,7 +18,7 @@ const createCommentMarkup = (comment) => {
         <p class="film-details__comment-text">${encodedText}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${date}</span>
+          <span class="film-details__comment-day">${formattedDate}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
