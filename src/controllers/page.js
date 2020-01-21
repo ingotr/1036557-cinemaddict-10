@@ -22,14 +22,14 @@ const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
 let showingCardCount = SHOWING_CARDS_ON_START;
 
 const isPositiveRating = (films) => {
-  return films.some((film) => film.filmInfo.totalRating > 0);
+  return films.some((film) => film.filmInfo.total_rating > 0);
 };
 
 const compareRating = (b, a) => {
-  if (a.filmInfo.totalRating > b.filmInfo.totalRating) {
+  if (a.filmInfo.total_rating > b.filmInfo.total_rating) {
     return 1;
   }
-  if (a.filmInfo.totalRating < b.filmInfo.totalRating) {
+  if (a.filmInfo.total_rating < b.filmInfo.total_rating) {
     return -1;
   }
   return 0;
@@ -82,10 +82,11 @@ const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange
 };
 
 export default class PageController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
     this._movies = [];
+    this._api = api;
 
     this._showingMovieCount = SHOWING_CARDS_ON_START;
 
@@ -258,6 +259,12 @@ export default class PageController {
     movieController.renderPopup();
   }
 
+  _updateMovies() {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
+    this._renderShowMoreButton();
+  }
+
   _updateMovieInterface(commentsListElement, topRatedList, mostCommentedList) {
     this._removeOldMoviesData();
     this._renderNewMoviesData(topRatedList, mostCommentedList);
@@ -272,9 +279,6 @@ export default class PageController {
     if (newData === null) {
       this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
-      // if (isSuccess) {
-      //   movieController.render(isSuccess);
-      // }
       this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
       this._renderNewPopupData(movieController, oldData);
     }
@@ -288,8 +292,16 @@ export default class PageController {
     return true;
   }
 
-  _onDataChange() {
-    this._filterController.render();
+  _onDataChange(movieController, oldData, newData) {
+    this._api.updateMovie(oldData.id, newData)
+    .then((movieModel) => {
+      const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
+
+      if (isSuccess) {
+        movieController.render(movieModel);
+        this._updateMovies();
+      }
+    });
   }
 
   _onSortTypeChange(sortType) {
@@ -348,6 +360,7 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
+    this._filterController.render();
   }
 
   _onStatisticsFilterChange(statisticFilterType) {

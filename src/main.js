@@ -15,7 +15,7 @@ const moviesModel = new MoviesModel();
 
 render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
 
-const pageController = new PageControllerComponent(mainElement, moviesModel);
+const pageController = new PageControllerComponent(mainElement, moviesModel, api);
 
 const footerStatisticElement = document.querySelector(`.footer__statistics p`);
 
