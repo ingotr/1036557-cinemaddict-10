@@ -28,7 +28,15 @@ const API = class {
       .then(Movie.parseMovies);
   }
 
-  putMovies() {
+  updateMovie(id, data) {
+    return this._load({
+      url: `movies/${id}`,
+      method: METHOD.PUT,
+      body: JSON.stringify(data.toRaw()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Movie.parseMovie);
   }
 
   syncMovies() {
