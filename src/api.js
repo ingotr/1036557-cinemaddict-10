@@ -37,7 +37,10 @@ const API = class {
   getComments(movieId) {
     return this._load({url: `/comments/${movieId}`})
       .then((response) => response.json())
-      .then(Comment.parseComments);
+      .then(Comment.parseComments)
+      .then((comments) => {
+        return comments;
+      });
   }
 
   postComments() {

@@ -21,12 +21,17 @@ const footerStatisticElement = document.querySelector(`.footer__statistics p`);
 
 api.getMovies()
   .then((movies) => {
-    moviesModel.setMovies(movies);
-    movies.map((it) => {
-      // console.log(it);
-      api.getComments(it.id)
-      .then(it.comments = Promise.resolve(api.getComments(it.id)));
-    });
-    pageController.render();
     footerStatisticElement.textContent = `${movies.length} movies inside`;
+    movies.map((it) => {
+      api.getComments(it.id)
+      .then((value) => {
+        it.comments = value;
+      });
+    });
+    return movies;
+  })
+  .then((movies) => {
+    moviesModel.setMovies(movies);
+    pageController.render();
+    return movies;
   });
