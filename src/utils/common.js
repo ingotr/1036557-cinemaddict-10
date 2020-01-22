@@ -88,6 +88,14 @@ const getRandomCommentsNumber = () => {
   return getRandomIntegerNumber(0, MAX_COMMENTS_NUMBER);
 };
 
+const getYearFromIso = (isoDate) => {
+  return moment(isoDate).format(`YYYY`);
+};
+
+const getDateFromIso = (isoDate) => {
+  return moment(isoDate).format(`DD MMMM YYYY`);
+};
+
 const getCurrentDate = () => {
   return moment(new Date()).format(`DD MMMM YYYY`);
 };
@@ -99,4 +107,5 @@ const getRandomWatchedDate = () => {
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
   getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate,
-  getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear};
+  getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear,
+  getDateFromIso, getYearFromIso};

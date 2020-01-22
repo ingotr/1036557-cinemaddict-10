@@ -8,7 +8,7 @@ import StatisticsComponent from '../components/statistics.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {CARD_COUNT, EMOJI_ID, STATISTIC_FILTERS_ID} from '../const.js';
+import {EMOJI_ID, STATISTIC_FILTERS_ID} from '../const.js';
 
 const SHOWING_CARDS_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -22,14 +22,14 @@ const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
 let showingCardCount = SHOWING_CARDS_ON_START;
 
 const isPositiveRating = (films) => {
-  return films.some((film) => film.rating > 0);
+  return films.some((film) => film.filmInfo.total_rating > 0);
 };
 
 const compareRating = (b, a) => {
-  if (a.rating > b.rating) {
+  if (a.filmInfo.total_rating > b.filmInfo.total_rating) {
     return 1;
   }
-  if (a.rating < b.rating) {
+  if (a.filmInfo.total_rating < b.filmInfo.total_rating) {
     return -1;
   }
   return 0;
@@ -47,14 +47,14 @@ const getTopRatedFilms = (films) => {
 };
 
 const isPositiveCommentsNumber = (films) => {
-  return films.some((film) => film.commentsNumber > 0);
+  return films.some((film) => film.comments.length > 0);
 };
 
 const compareCommentsNumber = (b, a) => {
-  if (a.commentsNumber > b.commentsNumber) {
+  if (a.comments.length > b.comments.length) {
     return 1;
   }
-  if (a.commentsNumber < b.commentsNumber) {
+  if (a.comments.length < b.comments.length) {
     return -1;
   }
   return 0;
@@ -82,21 +82,20 @@ const renderFilmCards = (films, filmsListContainer, popupContainer, onDataChange
 };
 
 export default class PageController {
-  constructor(container, filters, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
-    this._movies = this._moviesModel.getMovies();
-
-    this._filters = filters;
+    this._movies = [];
+    this._api = api;
 
     this._showingMovieCount = SHOWING_CARDS_ON_START;
 
-    this._statisticsComponent = new StatisticsComponent(this._moviesModel);
+    this._statisticsComponent = null;
 
     this._showedMovieControllers = [];
     this._showedTopRatedMovieControllers = [];
     this._showedMostCommentedMovieControllers = [];
-    this._filterController = new FilterController(this._container, this._moviesModel, this._statisticsComponent, this);
+    this._filterController = null;
 
     this._sortComponent = new SortComponent();
     this._filmsComponent = new FilmsComponent();
@@ -155,6 +154,11 @@ export default class PageController {
   }
 
   render() {
+    this._movies = this._moviesModel.getMovies();
+
+    this._statisticsComponent = new StatisticsComponent(this._moviesModel);
+    this._filterController = new FilterController(this._container, this._moviesModel, this._statisticsComponent, this);
+
     const container = this._container;
 
     this._filterController.render();
@@ -180,7 +184,7 @@ export default class PageController {
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
-    if (CARD_COUNT > 0) {
+    if (this._movies.length > 0) {
       this._renderMovies((this._movies.slice(0, showingCardCount)));
       this._renderShowMoreButton();
 
@@ -255,6 +259,12 @@ export default class PageController {
     movieController.renderPopup();
   }
 
+  _updateMovies() {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
+    this._renderShowMoreButton();
+  }
+
   _updateMovieInterface(commentsListElement, topRatedList, mostCommentedList) {
     this._removeOldMoviesData();
     this._renderNewMoviesData(topRatedList, mostCommentedList);
@@ -269,9 +279,6 @@ export default class PageController {
     if (newData === null) {
       this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
-      // if (isSuccess) {
-      //   movieController.render(isSuccess);
-      // }
       this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
       this._renderNewPopupData(movieController, oldData);
     }
@@ -285,8 +292,16 @@ export default class PageController {
     return true;
   }
 
-  _onDataChange() {
-    this._filterController.render();
+  _onDataChange(movieController, oldData, newData) {
+    this._api.updateMovie(oldData.id, newData)
+    .then((movieModel) => {
+      const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
+
+      if (isSuccess) {
+        movieController.render(movieModel);
+        this._updateMovies();
+      }
+    });
   }
 
   _onSortTypeChange(sortType) {
@@ -294,10 +309,10 @@ export default class PageController {
 
     switch (sortType) {
       case SortType.DATE_DOWN:
-        sortedFilms = this._movies.slice().sort((a, b) => a.year - b.year);
+        sortedFilms = this._movies.slice().sort((a, b) => a.filmInfo.release.year - b.filmInfo.release.year);
         break;
       case SortType.RATING_DOWN:
-        sortedFilms = this._movies.slice().sort((a, b) => a.rating - b.rating);
+        sortedFilms = this._movies.slice().sort((a, b) => a.filmInfo.totalRating - b.filmInfo.totalRating);
         break;
       case SortType.DEFAULT:
         sortedFilms = this._movies.slice(0, showingCardCount);
@@ -345,6 +360,7 @@ export default class PageController {
     this._removeMovies();
     this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARDS_ON_START));
     this._renderShowMoreButton();
+    this._filterController.render();
   }
 
   _onStatisticsFilterChange(statisticFilterType) {

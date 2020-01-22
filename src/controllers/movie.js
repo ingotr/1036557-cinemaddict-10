@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
+import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {EMOJI_SRC} from '../const.js';
@@ -35,21 +37,28 @@ export default class MovieController {
   }
 
   _watchListButtonClickHandler(data) {
-    this._onFiltersChange(`watchlist`, !data.isOnWatchList);
-    data.isOnWatchList = !data.isOnWatchList;
+    const newMovie = MovieModel.clone(data);
+    newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
+
+    this._onDataChange(this, data, newMovie);
   }
 
   _markWatchedButtonClickHandler(data) {
-    this._onFiltersChange(`history`, !data.isWatched);
-    data.isWatched = !data.isWatched;
-    if (data.isWatched) {
-      data.watchingDate = getCurrentDate();
+    const newMovie = MovieModel.clone(data);
+    newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
+
+    if (newMovie.userDetails.alreadyWatched) {
+      newMovie.userDetails.watchingDate = getCurrentDate();
     }
+
+    this._onDataChange(this, data, newMovie);
   }
 
   _setFavoriteButtonClickHandler(data) {
-    this._onFiltersChange(`favorites`, !data.isFavorite);
-    data.isFavorite = !data.isFavorite;
+    const newMovie = MovieModel.clone(data);
+    newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
+
+    this._onDataChange(this, data, newMovie);
   }
 
   render(data, container = this._container) {
@@ -134,45 +143,56 @@ export default class MovieController {
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
       this._watchListButtonClickHandler(data);
-      this._onDataChange();
+      this._onFiltersChange();
     });
 
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
       this._markWatchedButtonClickHandler(data);
-      this._onDataChange();
+      this._onFiltersChange();
     });
 
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
       this._setFavoriteButtonClickHandler(data);
-      this._onDataChange();
+      this._onFiltersChange();
     });
 
     this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
-      data.isOnWatchList = !data.isOnWatchList;
-      this._onDataChange();
+      const newMovie = MovieModel.clone(data);
+      newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
+
+      this._onDataChange(this, data, newMovie);
+      this._onFiltersChange();
     });
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
-      data.isOnWatchList = !data.isOnWatchList;
+      const newMovie = MovieModel.clone(data);
+      newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
+
+      if (newMovie.userDetails.already_watched) {
+        newMovie.userDetails.watching_date = getCurrentDate();
+      }
 
       popupUserRating.classList.add(`visually-hidden`);
-      if (data.userRating !== null) {
-        data.userRating = null;
-        this._onUserRatingChange(popupUserRating, data.userRating);
+      if (newMovie.userDetails.user_rating !== null) {
+        newMovie.userDetails.user_rating = null;
+        this._onUserRatingChange(popupUserRating, newMovie.userDetails.user_rating);
       } else {
         popupUserRating.classList.add(`visually-hidden`);
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
-
-      this._onDataChange();
+      this._onDataChange(this, data, newMovie);
+      this._onFiltersChange();
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
-      data.isFavorite = !data.isFavorite;
-      this._onDataChange();
+      const newMovie = MovieModel.clone(data);
+      newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
+
+      this._onDataChange(this, data, newMovie);
+      this._onFiltersChange();
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {

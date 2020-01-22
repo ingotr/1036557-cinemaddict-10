@@ -5,19 +5,19 @@ export const getAllMovies = (movies) => {
 };
 
 export const getInWatchlistMovies = (movies) => {
-  return movies.filter((movie) => movie.isOnWatchList);
+  return movies.filter((movie) => movie.userDetails.watchlist);
 };
 
 export const getNotInWatchlistMovies = (movies) => {
-  return movies.filter((movie) => !movie.isOnWatchList);
+  return movies.filter((movie) => !movie.userDetails.watchlist);
 };
 
 export const getWatchedMovies = (movies) => {
-  return movies.filter((movie) => movie.isWatched);
+  return movies.filter((movie) => movie.userDetails.already_watched);
 };
 
 export const getFavoriteMovies = (movies) => {
-  return movies.filter((movie) => movie.isFavorite);
+  return movies.filter((movie) => movie.userDetails.favorite);
 };
 
 export const getMoviesByFilter = (movies, filterType) => {

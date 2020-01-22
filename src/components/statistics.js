@@ -228,7 +228,7 @@ export default class Statistics extends AbstractComponent {
     const watchedMovies = this._watchedMovies;
     let totalMinutes = 0;
     watchedMovies.forEach((movie) => {
-      totalMinutes += movie.duration;
+      totalMinutes += movie.filmInfo.runtime;
     });
 
     const totalRuntime = getFormattedRuntime(totalMinutes);
@@ -266,15 +266,17 @@ export default class Statistics extends AbstractComponent {
     let moviesByDates = [];
 
     moviesByDates = moviesList.filter((film) => {
-      const watchingDate = film.watchingDate;
+      const watchingDate = film.userDetails.watchingDate;
       const isBetween = moment(watchingDate).isBefore(endDate) && moment(watchingDate).isAfter(startDate);
       return isBetween;
     });
     return moviesByDates;
   }
 
-  _getMoviesByGenre(movies, genre) {
-    const moviesByGenre = movies.filter((film) => film.genres.includes(genre));
+  _getMoviesByGenre(movies, genres) {
+    const moviesByGenre = movies.filter((film) => {
+      return film.filmInfo.genre.includes(genres);
+    });
     return moviesByGenre;
   }
 }

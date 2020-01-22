@@ -1,5 +1,6 @@
+/* eslint-disable camelcase */
 import AbstractSmartComponent from './abstract-smart-component';
-import {getFormattedRuntime} from '../utils/common.js';
+import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
 
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
@@ -14,28 +15,35 @@ const createGenresMarkup = (genre) => {
 };
 
 const createPopUpTemplate = (popup) => {
+  const {comments, filmInfo, userDetails} = popup;
   const {
     title,
-    rating,
-    userRating,
-    releaseDate,
-    duration,
+    alternative_title,
+    total_rating,
     poster,
-    description,
-    comments,
+    age_rating,
     director,
     writers,
     actors,
-    country,
-    genres,
-    age,
-  } = popup;
+    release,
+    runtime,
+    genre,
+    description,
+  } = filmInfo;
 
-  const formattedRuntime = getFormattedRuntime(duration);
+  const {date, release_country} = release;
 
-  const genresList = createGenresMarkup(genres);
+  const {
+    personal_rating,
+  } = userDetails;
 
-  let genreListTitle = genres.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
+  const formattedRuntime = getFormattedRuntime(runtime);
+
+  const formattedDate = getDateFromIso(date);
+
+  const genresList = createGenresMarkup(genre);
+
+  let genreListTitle = genre.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
 
   let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
     description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
@@ -49,21 +57,21 @@ const createPopUpTemplate = (popup) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+              <img class="film-details__poster-img" src="${poster}" alt="">
 
-              <p class="film-details__age">${age}</p>
+              <p class="film-details__age">${age_rating}</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${title}</p>
+                  <p class="film-details__title-original">Original: ${alternative_title}</p>
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${rating}</p>
-                  <p class="film-details__user-rating visually-hidden">Your rate ${userRating}</p>
+                  <p class="film-details__total-rating">${total_rating}</p>
+                  <p class="film-details__user-rating visually-hidden">Your rate ${personal_rating}</p>
                 </div>
               </div>
 
@@ -82,7 +90,7 @@ const createPopUpTemplate = (popup) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate}</td>
+                  <td class="film-details__cell">${formattedDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -91,7 +99,7 @@ const createPopUpTemplate = (popup) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${country}</td>
+                  <td class="film-details__cell">${release_country}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">${genreListTitle}</td>
@@ -127,7 +135,7 @@ const createPopUpTemplate = (popup) => {
 
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="./images/posters/${poster}" alt="film-poster" class="film-details__user-rating-img">
+              <img src="${poster}" alt="film-poster" class="film-details__user-rating-img">
             </div>
 
             <section class="film-details__user-rating-inner">
