@@ -297,6 +297,7 @@ export default class PageController {
     }
 
     if (oldData === null) {
+      const creatingNewCommentForm = movieController.getCreatingNewCommentForm();
       const movie = newData.getCard();
       const newComment = commentData;
 
@@ -306,9 +307,11 @@ export default class PageController {
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
           this._renderNewPopupData(movieController, newData.getCard().id);
+          creatingNewCommentForm.removeAttribute(`disabled`);
         })
         .catch(() => {
           movieController.shake(movieController);
+          creatingNewCommentForm.removeAttribute(`disabled`);
         });
     }
     return true;

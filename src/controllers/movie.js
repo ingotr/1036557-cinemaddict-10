@@ -38,6 +38,7 @@ export default class MovieController {
     this._setDefaultView = this._setDefaultView;
 
     this._currentDelectingComment = null;
+    this._createNewCommentForm = null;
   }
 
   _watchListButtonClickHandler(data) {
@@ -109,6 +110,7 @@ export default class MovieController {
         if (keysPressed[`Control`] && event.key === `Enter`
         && newCommentText.length > 0 && isEmojiExistInList) {
 
+          this._createNewCommentForm = commentArea;
           commentArea.setAttribute(`disabled`, `true`);
 
           const emptyComment = {
@@ -254,6 +256,10 @@ export default class MovieController {
     return this._currentDelectingComment;
   }
 
+  getCreatingNewCommentForm() {
+    return this._createNewCommentForm;
+  }
+
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
     this._currentDelectingComment = currentComment;
     currentComment.setCommentsDeleteButtonClickHandler(() => {
@@ -283,6 +289,10 @@ export default class MovieController {
 
       this._replacePopupToCard();
     }
+  }
+
+  newCommentDeliveryError() {
+
   }
 
   shake(target) {
