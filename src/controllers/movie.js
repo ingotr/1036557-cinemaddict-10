@@ -8,6 +8,8 @@ import {render, replace, RenderPosition} from '../utils/render.js';
 import {EMOJI_IDS} from '../const.js';
 import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const Mode = {
   DEFAULT: `default`,
   POPUP: `popup`,
@@ -272,5 +274,17 @@ export default class MovieController {
 
       this._replacePopupToCard();
     }
+  }
+
+  shake(target) {
+    target.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      target.getElement().style.animation = ``;
+
+      target.setData({
+        deleteButtonText: `Delete`,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
