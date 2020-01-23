@@ -139,6 +139,10 @@ export default class PageController {
     this._filmsComponent.show();
   }
 
+  hideLoadingScreen() {
+    this._filmsComponent.hideLoadingTitle(this._filmsComponent);
+  }
+
   renderCustomFilmList(filmList, filmListContainer) {
     if (filmList.length > 0) {
       return filmList.map((film) => {
