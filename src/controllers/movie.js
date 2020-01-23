@@ -5,7 +5,7 @@ import CommentComponent from '../components/comment.js';
 import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {EMOJI_SRC} from '../const.js';
+import {EMOJI_IDS} from '../const.js';
 import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
 
 const Mode = {
@@ -92,7 +92,7 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.key] = true;
 
-        let isEmojiExistInList = Object.values(EMOJI_SRC).includes(this._emptyCommentEmoji);
+        let isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         const commentAreaText = commentArea.value;
@@ -100,13 +100,14 @@ export default class MovieController {
         const newCommentText = he.encode(commentAreaText);
         const newCommentEmoji = this._emptyCommentEmoji;
 
+
         if (keysPressed[`Control`] && event.key === `Enter`
         && newCommentText.length > 0 && isEmojiExistInList) {
 
           const emptyComment = {
             "comment": newCommentText,
             "date": getCurrentDateIsoFormat(),
-            "emotion": `smile`,
+            "emotion": newCommentEmoji,
           };
 
           const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
@@ -218,11 +219,12 @@ export default class MovieController {
     const popupComponent = this._popupComponent;
 
     popupCommentsList.slice(0, popupCommentsList.length)
-    .forEach((comment, index) => {
+    .forEach((comment) => {
       const currentComment = new CommentComponent(comment);
+
       render(commentsListElement, currentComment.getElement(), RenderPosition.BEFOREEND);
 
-      this._addCommentsHandlers(currentComment, index, commentsListElement);
+      this._addCommentsHandlers(currentComment, comment.id, commentsListElement);
     });
 
     popupComponent.setEmojiItemClickHandlers(() => {

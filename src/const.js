@@ -89,17 +89,33 @@ export const FilterType = {
 };
 
 export const EMOJI_ID = {
-  SMILE: `emoji-smile`,
-  SLEEPING: `emoji-sleeping`,
-  GRINNING: `emoji-gpuke`,
-  ANGRY: `emoji-angry`,
+  SMILE: {
+    ID: `emoji-smile`,
+    VALUE: `smile`,
+    SRC: `images/emoji/smile.png`,
+  },
+  SLEEPING: {
+    ID: `emoji-sleeping`,
+    VALUE: `sleeping`,
+    SRC: `images/emoji/sleeping.png`,
+  },
+  GRINNING: {
+    ID: `emoji-gpuke`,
+    VALUE: `puke`,
+    SRC: `images/emoji/puke.png`,
+  },
+  ANGRY: {
+    ID: `emoji-angry`,
+    VALUE: `angry`,
+    SRC: `images/emoji/angry.png`,
+  },
 };
 
-export const EMOJI_SRC = {
-  SMILE: `images/emoji/smile.png`,
-  SLEEPING: `images/emoji/sleeping.png`,
-  GRINNING: `images/emoji/puke.png`,
-  ANGRY: `images/emoji/angry.png`,
+export const EMOJI_IDS = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  GRINNING: `puke`,
+  ANGRY: `angry`,
 };
 
 export const STATISTIC_FILTERS_ID = {
