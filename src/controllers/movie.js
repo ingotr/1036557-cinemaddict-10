@@ -36,6 +36,8 @@ export default class MovieController {
     this._emptyCommentEmoji = ``;
 
     this._setDefaultView = this._setDefaultView;
+
+    this._currentDelectingComment = null;
   }
 
   _watchListButtonClickHandler(data) {
@@ -248,12 +250,19 @@ export default class MovieController {
     this.renderComments(popupCommentsList, commentsListElement);
   }
 
+  getCurrentDeletingComment() {
+    return this._currentDelectingComment;
+  }
+
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
+    this._currentDelectingComment = currentComment;
     currentComment.setCommentsDeleteButtonClickHandler(() => {
       event.preventDefault();
       currentComment.setData({
         deleteButtonText: `Deleting...`,
       });
+      currentComment.setDeleteButtonLocked();
+
       this._onCommentsCountChange(this, this._cardComponent, null, commentIndex, commentContainer, null);
     });
   }
@@ -277,10 +286,10 @@ export default class MovieController {
   }
 
   shake(target) {
-    target.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._popupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
 
     setTimeout(() => {
-      target.getElement().style.animation = ``;
+      this._popupComponent.getElement().style.animation = ``;
 
       target.setData({
         deleteButtonText: `Delete`,

@@ -277,12 +277,18 @@ export default class PageController {
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
     if (newData === null) {
+      const currentDeletingComment = movieController.getCurrentDeletingComment();
       this._api.deleteComment(commentIndex)
         .then(() => {
           this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
           this._renderNewPopupData(movieController, oldData.getCard().id);
+          currentDeletingComment.setDeleteButtonUnlocked();
+        })
+        .catch(() => {
+          movieController.shake(currentDeletingComment);
+          currentDeletingComment.setDeleteButtonUnlocked();
         });
     }
 
@@ -296,6 +302,9 @@ export default class PageController {
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
           this._renderNewPopupData(movieController, newData.getCard().id);
+        })
+        .catch(() => {
+          movieController.shake(movieController);
         });
     }
     return true;

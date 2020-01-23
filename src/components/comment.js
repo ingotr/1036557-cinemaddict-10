@@ -53,6 +53,16 @@ export default class Comment extends AbstractSmartComponent {
     return this._comment;
   }
 
+  setDeleteButtonUnlocked() {
+    const buttonElement = this.getElement().querySelector(`.film-details__comment-delete`);
+    buttonElement.removeAttribute(`disabled`);
+  }
+
+  setDeleteButtonLocked() {
+    const buttonElement = this.getElement().querySelector(`.film-details__comment-delete`);
+    buttonElement.setAttribute(`disabled`, `true`);
+  }
+
   setCommentsDeleteButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, handler);
   }
