@@ -249,6 +249,9 @@ export default class MovieController {
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
     currentComment.setCommentsDeleteButtonClickHandler(() => {
       event.preventDefault();
+      currentComment.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onCommentsCountChange(this, this._cardComponent, null, commentIndex, commentContainer, null);
     });
   }
