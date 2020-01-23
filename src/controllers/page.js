@@ -5,6 +5,8 @@ import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
 import StatisticsComponent from '../components/statistics.js';
 
+import Comment from '../models/comment.js';
+
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
@@ -272,22 +274,38 @@ export default class PageController {
     commentsList.innerHTML = ``;
   }
 
-  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, newComment) {
+  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, commentData) {
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
     if (newData === null) {
-      this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
+      this._api.deleteComment(commentIndex)
+        .then(() => {
+          this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
-      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-      this._renderNewPopupData(movieController, oldData);
+          this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+          this._renderNewPopupData(movieController, oldData);
+        });
     }
 
     if (oldData === null) {
-      this._moviesModel.addComment(newData.getCard().id, newComment);
+      console.log(`new data is`, newData);
 
-      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-      this._renderNewPopupData(movieController, newData);
+      console.log(`newcommentData is `, commentData);
+      const movie = newData.getCard();
+      console.log(`movie data is`, movie.id);
+      const newComment = commentData;
+      console.log(`newComment is`, newComment);
+
+      this._api.createComment(movie.id, newComment)
+        .then((movieModel) => {
+          this._moviesModel.addComment(movieModel.id, newComment);
+
+          this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+          this._renderNewPopupData(movieController, movieModel);
+        });
+      // this._moviesModel.addComment(newData.getCard().id, newComment);
+
     }
     return true;
   }

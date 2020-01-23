@@ -100,6 +100,10 @@ const getCurrentDate = () => {
   return moment(new Date()).format(`DD MMMM YYYY`);
 };
 
+const getCurrentDateIsoFormat = () => {
+  return new Date().toISOString();
+};
+
 const getRandomWatchedDate = () => {
   return moment(getRandomDate()).format(`DD MMMM YYYY`);
 };
@@ -108,4 +112,4 @@ export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
   getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate,
   getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear,
-  getDateFromIso, getYearFromIso};
+  getDateFromIso, getYearFromIso, getCurrentDateIsoFormat};

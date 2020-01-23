@@ -6,7 +6,7 @@ import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {EMOJI_SRC} from '../const.js';
-import {getCurrentDate} from '../utils/common.js';
+import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
 
 const Mode = {
   DEFAULT: `default`,
@@ -104,11 +104,9 @@ export default class MovieController {
         && newCommentText.length > 0 && isEmojiExistInList) {
 
           const emptyComment = {
-            text: newCommentText,
-            author: ``,
-            emoji: newCommentEmoji,
-            date: getCurrentDate(),
-            deleteBtn: ``,
+            "comment": newCommentText,
+            "date": getCurrentDateIsoFormat(),
+            "emotion": `smile`,
           };
 
           const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
