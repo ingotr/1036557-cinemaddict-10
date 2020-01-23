@@ -254,7 +254,7 @@ export default class PageController {
   }
 
   _renderNewPopupData(movieController, sourceOfNewData) {
-    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData.getCard().id);
+    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData);
     movieController.render(this._movies[newDataIndex]);
     movieController.renderPopup();
   }
@@ -282,7 +282,7 @@ export default class PageController {
           this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-          this._renderNewPopupData(movieController, oldData);
+          this._renderNewPopupData(movieController, oldData.getCard().id);
         });
     }
 
@@ -291,14 +291,12 @@ export default class PageController {
       const newComment = commentData;
 
       this._api.createComment(movie.id, newComment)
-        .then((movieModel) => {
-          this._moviesModel.addComment(movieModel.id, newComment);
+        .then(() => {
+          this._moviesModel.addComment(newData.getCard().id, newComment);
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-          this._renderNewPopupData(movieController, movieModel);
+          this._renderNewPopupData(movieController, newData.getCard().id);
         });
-      // this._moviesModel.addComment(newData.getCard().id, newComment);
-
     }
     return true;
   }

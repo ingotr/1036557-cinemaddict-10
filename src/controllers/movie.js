@@ -95,6 +95,7 @@ export default class MovieController {
         let isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
+        commentArea.removeAttribute(`disabled`);
         const commentAreaText = commentArea.value;
 
         const newCommentText = he.encode(commentAreaText);
@@ -103,6 +104,8 @@ export default class MovieController {
 
         if (keysPressed[`Control`] && event.key === `Enter`
         && newCommentText.length > 0 && isEmojiExistInList) {
+
+          commentArea.setAttribute(`disabled`, `true`);
 
           const emptyComment = {
             "comment": newCommentText,
