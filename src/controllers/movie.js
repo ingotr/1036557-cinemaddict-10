@@ -101,6 +101,8 @@ export default class MovieController {
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         commentArea.removeAttribute(`disabled`);
+        commentArea.style = `border: 0px solid red`;
+
         const commentAreaText = commentArea.value;
 
         const newCommentText = he.encode(commentAreaText);
@@ -291,8 +293,8 @@ export default class MovieController {
     }
   }
 
-  newCommentDeliveryError() {
-
+  newCommentDeliveryError(target) {
+    target.style = `border: 1px solid red`;
   }
 
   shake(target) {

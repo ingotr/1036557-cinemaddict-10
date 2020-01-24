@@ -312,6 +312,7 @@ export default class PageController {
         .catch(() => {
           movieController.shake(movieController);
           creatingNewCommentForm.removeAttribute(`disabled`);
+          movieController.newCommentDeliveryError(creatingNewCommentForm);
         });
     }
     return true;
