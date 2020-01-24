@@ -291,7 +291,10 @@ export default class PageController {
           currentDeletingComment.setDeleteButtonUnlocked();
         })
         .catch(() => {
-          movieController.shake(currentDeletingComment);
+          movieController.shake();
+          currentDeletingComment.setData({
+            deleteButtonText: `Delete`,
+          });
           currentDeletingComment.setDeleteButtonUnlocked();
         });
     }
@@ -319,6 +322,7 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldData, newData) {
+    const ratingButton = movieController.getRatingChangeButton();
     this._api.updateMovie(oldData.id, newData)
     .then((movieModel) => {
       const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
@@ -327,6 +331,14 @@ export default class PageController {
         movieController.render(movieModel);
         this._updateMovies();
       }
+    })
+    .then(() => {
+      ratingButton.removeAttribute(`disabled`);
+    })
+    .catch(() => {
+      ratingButton.removeAttribute(`disabled`);
+      ratingButton.style = `background-color: red`;
+      this.shake();
     });
   }
 

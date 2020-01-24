@@ -61,7 +61,7 @@ export default class Movie {
         'personal_rating': this.userDetails.personal_rating,
         'watchlist': this.userDetails.watchlist,
         'already_watched': this.userDetails.already_watched,
-        'watching_date': this.userDetails.watching_date ? this.userDetails.watching_date.toISOString() : null,
+        'watching_date': this.userDetails.watching_date ? this.userDetails.watching_date : null,
         'favorite': this.userDetails.favorite,
       }
     };

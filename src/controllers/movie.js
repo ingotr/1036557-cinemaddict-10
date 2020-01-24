@@ -39,6 +39,7 @@ export default class MovieController {
 
     this._currentDelectingComment = null;
     this._createNewCommentForm = null;
+    this._ratingChangeButton = null;
   }
 
   _watchListButtonClickHandler(data) {
@@ -177,24 +178,17 @@ export default class MovieController {
     });
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
+      event.preventDefault();
       const newMovie = MovieModel.clone(data);
       newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
 
       if (newMovie.userDetails.already_watched) {
-        newMovie.userDetails.watching_date = getCurrentDate();
-      }
-
-      popupUserRating.classList.add(`visually-hidden`);
-      if (newMovie.userDetails.user_rating !== null) {
-        newMovie.userDetails.user_rating = null;
-        this._onUserRatingChange(popupUserRating, newMovie.userDetails.user_rating);
+        newMovie.userDetails.watching_date = getCurrentDateIsoFormat();
       } else {
-        popupUserRating.classList.add(`visually-hidden`);
+        newMovie.userDetails.watching_date = null;
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
-      this._onDataChange(this, data, newMovie);
-      this._onFiltersChange();
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
@@ -206,9 +200,17 @@ export default class MovieController {
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
-      data.userRating = evt.target.value;
-      this._onUserRatingChange(popupUserRating, data.userRating);
+      event.preventDefault();
+      const target = evt.target;
+      this._ratingChangeButton = target;
+      const newMovie = MovieModel.clone(data);
+      newMovie.userDetails.personal_rating = target.value;
+
       popupUserRating.classList.remove(`visually-hidden`);
+      target.setAttribute(`disabled`, `true`);
+      target.style = `background-color: white`;
+      this._onUserRatingChange(popupUserRating, newMovie.userDetails.personal_rating);
+      this._onDataChange(this, data, newMovie);
     });
 
     if (oldCardComponent && oldPopupComponent) {
@@ -262,6 +264,10 @@ export default class MovieController {
     return this._createNewCommentForm;
   }
 
+  getRatingChangeButton() {
+    return this._ratingChangeButton;
+  }
+
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
     this._currentDelectingComment = currentComment;
     currentComment.setCommentsDeleteButtonClickHandler(() => {
@@ -297,15 +303,12 @@ export default class MovieController {
     target.style = `border: 1px solid red`;
   }
 
-  shake(target) {
+  shake() {
     this._popupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
 
     setTimeout(() => {
       this._popupComponent.getElement().style.animation = ``;
 
-      target.setData({
-        deleteButtonText: `Delete`,
-      });
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
