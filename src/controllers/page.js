@@ -139,6 +139,10 @@ export default class PageController {
     this._filmsComponent.show();
   }
 
+  hideLoadingScreen() {
+    this._filmsComponent.hideLoadingTitle(this._filmsComponent);
+  }
+
   renderCustomFilmList(filmList, filmListContainer) {
     if (filmList.length > 0) {
       return filmList.map((film) => {
@@ -254,7 +258,7 @@ export default class PageController {
   }
 
   _renderNewPopupData(movieController, sourceOfNewData) {
-    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData.getCard().id);
+    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData);
     movieController.render(this._movies[newDataIndex]);
     movieController.renderPopup();
   }
@@ -272,27 +276,53 @@ export default class PageController {
     commentsList.innerHTML = ``;
   }
 
-  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, newComment) {
+  _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, commentData) {
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
     if (newData === null) {
-      this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
+      const currentDeletingComment = movieController.getCurrentDeletingComment();
+      this._api.deleteComment(commentIndex)
+        .then(() => {
+          this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
-      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-      this._renderNewPopupData(movieController, oldData);
+          this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+          this._renderNewPopupData(movieController, oldData.getCard().id);
+          currentDeletingComment.setDeleteButtonUnlocked();
+        })
+        .catch(() => {
+          movieController.shake();
+          currentDeletingComment.setData({
+            deleteButtonText: `Delete`,
+          });
+          currentDeletingComment.setDeleteButtonUnlocked();
+        });
     }
 
     if (oldData === null) {
-      this._moviesModel.addComment(newData.getCard().id, newComment);
+      const creatingNewCommentForm = movieController.getCreatingNewCommentForm();
+      const movie = newData.getCard();
+      const newComment = commentData;
 
-      this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
-      this._renderNewPopupData(movieController, newData);
+      this._api.createComment(movie.id, newComment)
+        .then(() => {
+          this._moviesModel.addComment(newData.getCard().id, newComment);
+
+          this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
+          this._renderNewPopupData(movieController, newData.getCard().id);
+          creatingNewCommentForm.removeAttribute(`disabled`);
+        })
+        .catch(() => {
+          movieController.shake(movieController);
+          creatingNewCommentForm.removeAttribute(`disabled`);
+          movieController.newCommentDeliveryError(creatingNewCommentForm);
+        });
     }
     return true;
   }
 
   _onDataChange(movieController, oldData, newData) {
+    const ratingButton = movieController.getRatingChangeButton();
     this._api.updateMovie(oldData.id, newData)
     .then((movieModel) => {
       const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
@@ -301,6 +331,14 @@ export default class PageController {
         movieController.render(movieModel);
         this._updateMovies();
       }
+    })
+    .then(() => {
+      ratingButton.removeAttribute(`disabled`);
+    })
+    .catch(() => {
+      ratingButton.removeAttribute(`disabled`);
+      ratingButton.style = `background-color: red`;
+      movieController.shake();
     });
   }
 
@@ -385,29 +423,24 @@ export default class PageController {
   }
 
   _onEmojiChange(emojiType, bigEmojiContainer) {
-    let emoji = ``;
     switch (emojiType) {
-      case EMOJI_ID.SMILE:
-        emoji = `images/emoji/smile.png`;
-        bigEmojiContainer.src = emoji;
+      case EMOJI_ID.SMILE.ID:
+        bigEmojiContainer.src = EMOJI_ID.SMILE.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return emoji;
-      case EMOJI_ID.SLEEPING:
-        emoji = `images/emoji/sleeping.png`;
-        bigEmojiContainer.src = emoji;
+        return EMOJI_ID.SMILE.VALUE;
+      case EMOJI_ID.SLEEPING.ID:
+        bigEmojiContainer.src = EMOJI_ID.SLEEPING.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return emoji;
-      case EMOJI_ID.GRINNING:
-        emoji = `images/emoji/puke.png`;
-        bigEmojiContainer.src = emoji;
+        return EMOJI_ID.SLEEPING.VALUE;
+      case EMOJI_ID.GRINNING.ID:
+        bigEmojiContainer.src = EMOJI_ID.GRINNING.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return emoji;
-      case EMOJI_ID.ANGRY:
-        emoji = `images/emoji/angry.png`;
-        bigEmojiContainer.src = emoji;
+        return EMOJI_ID.GRINNING.VALUE;
+      case EMOJI_ID.ANGRY.ID:
+        bigEmojiContainer.src = EMOJI_ID.ANGRY.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return emoji;
+        return EMOJI_ID.ANGRY.VALUE;
     }
-    return emoji;
+    return emojiType;
   }
 }

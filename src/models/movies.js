@@ -44,11 +44,13 @@ export default class Movies {
     return true;
   }
 
-  deleteComment(movieId, commentIndex) {
+  deleteComment(movieId, commentId) {
     const index = this._movies.findIndex((it) => it.id === movieId);
     if (index === -1) {
       return false;
     }
+
+    const commentIndex = this._movies[index].comments.findIndex((it) => it.id === commentId);
 
     this._movies[index].comments = [].concat(this._movies[index].comments.slice(0, commentIndex),
         this._movies[index].comments.slice(commentIndex + 1));

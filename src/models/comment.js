@@ -10,7 +10,7 @@ export default class Comment {
   toRAW() {
     return {
       'comment': this.comment,
-      'date': this.date ? this.date.toIsoString() : null,
+      'date': this.date ? this.date.toISOString() : null,
       'emotion': this.emotion,
     };
   }

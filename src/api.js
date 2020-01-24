@@ -28,9 +28,9 @@ const API = class {
       .then(Movie.parseMovies);
   }
 
-  updateMovie(id, data) {
+  updateMovie(movieId, data) {
     return this._load({
-      url: `movies/${id}`,
+      url: `/movies/${movieId}`,
       method: METHOD.PUT,
       body: JSON.stringify(data.toRaw()),
       headers: new Headers({'Content-Type': `application/json`})
@@ -51,10 +51,19 @@ const API = class {
       });
   }
 
-  postComments() {
+  createComment(movieId, data) {
+    return this._load({
+      url: `/comments/${movieId}`,
+      method: METHOD.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Comment.parseComment);
   }
 
-  deleteComments() {
+  deleteComment(commentId) {
+    return this._load({url: `/comments/${commentId}`, method: METHOD.DELETE});
   }
 
   _load({url, method = METHOD.GET, body = null, headers = new Headers()}) {

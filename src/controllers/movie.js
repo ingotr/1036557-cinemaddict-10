@@ -5,8 +5,10 @@ import CommentComponent from '../components/comment.js';
 import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {EMOJI_SRC} from '../const.js';
-import {getCurrentDate} from '../utils/common.js';
+import {EMOJI_IDS, RADIX_DECIMAL} from '../const.js';
+import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
+
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const Mode = {
   DEFAULT: `default`,
@@ -34,6 +36,10 @@ export default class MovieController {
     this._emptyCommentEmoji = ``;
 
     this._setDefaultView = this._setDefaultView;
+
+    this._currentDelectingComment = null;
+    this._createNewCommentForm = null;
+    this._ratingChangeButton = null;
   }
 
   _watchListButtonClickHandler(data) {
@@ -92,23 +98,28 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.key] = true;
 
-        let isEmojiExistInList = Object.values(EMOJI_SRC).includes(this._emptyCommentEmoji);
+        let isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
+        commentArea.removeAttribute(`disabled`);
+        commentArea.style = `border: 0px solid red`;
+
         const commentAreaText = commentArea.value;
 
         const newCommentText = he.encode(commentAreaText);
         const newCommentEmoji = this._emptyCommentEmoji;
 
+
         if (keysPressed[`Control`] && event.key === `Enter`
         && newCommentText.length > 0 && isEmojiExistInList) {
 
+          this._createNewCommentForm = commentArea;
+          commentArea.setAttribute(`disabled`, `true`);
+
           const emptyComment = {
-            text: newCommentText,
-            author: ``,
-            emoji: newCommentEmoji,
-            date: getCurrentDate(),
-            deleteBtn: ``,
+            "comment": newCommentText,
+            "date": getCurrentDateIsoFormat(),
+            "emotion": newCommentEmoji,
           };
 
           const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
@@ -167,24 +178,17 @@ export default class MovieController {
     });
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
+      event.preventDefault();
       const newMovie = MovieModel.clone(data);
       newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
 
       if (newMovie.userDetails.already_watched) {
-        newMovie.userDetails.watching_date = getCurrentDate();
-      }
-
-      popupUserRating.classList.add(`visually-hidden`);
-      if (newMovie.userDetails.user_rating !== null) {
-        newMovie.userDetails.user_rating = null;
-        this._onUserRatingChange(popupUserRating, newMovie.userDetails.user_rating);
+        newMovie.userDetails.watching_date = `${getCurrentDateIsoFormat()}`;
       } else {
-        popupUserRating.classList.add(`visually-hidden`);
+        newMovie.userDetails.watching_date = null;
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
-      this._onDataChange(this, data, newMovie);
-      this._onFiltersChange();
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
@@ -196,9 +200,17 @@ export default class MovieController {
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
-      data.userRating = evt.target.value;
-      this._onUserRatingChange(popupUserRating, data.userRating);
+      event.preventDefault();
+      const target = evt.target;
+      this._ratingChangeButton = target;
+      const newMovie = MovieModel.clone(data);
+      newMovie.userDetails.personal_rating = parseInt(target.value, RADIX_DECIMAL);
+
       popupUserRating.classList.remove(`visually-hidden`);
+      target.setAttribute(`disabled`, `true`);
+      target.style = `background-color: white`;
+      this._onUserRatingChange(popupUserRating, newMovie.userDetails.personal_rating);
+      this._onDataChange(this, data, newMovie);
     });
 
     if (oldCardComponent && oldPopupComponent) {
@@ -220,11 +232,12 @@ export default class MovieController {
     const popupComponent = this._popupComponent;
 
     popupCommentsList.slice(0, popupCommentsList.length)
-    .forEach((comment, index) => {
+    .forEach((comment) => {
       const currentComment = new CommentComponent(comment);
+
       render(commentsListElement, currentComment.getElement(), RenderPosition.BEFOREEND);
 
-      this._addCommentsHandlers(currentComment, index, commentsListElement);
+      this._addCommentsHandlers(currentComment, comment.id, commentsListElement);
     });
 
     popupComponent.setEmojiItemClickHandlers(() => {
@@ -243,9 +256,27 @@ export default class MovieController {
     this.renderComments(popupCommentsList, commentsListElement);
   }
 
+  getCurrentDeletingComment() {
+    return this._currentDelectingComment;
+  }
+
+  getCreatingNewCommentForm() {
+    return this._createNewCommentForm;
+  }
+
+  getRatingChangeButton() {
+    return this._ratingChangeButton;
+  }
+
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
+    this._currentDelectingComment = currentComment;
     currentComment.setCommentsDeleteButtonClickHandler(() => {
       event.preventDefault();
+      currentComment.setData({
+        deleteButtonText: `Deleting...`,
+      });
+      currentComment.setDeleteButtonLocked();
+
       this._onCommentsCountChange(this, this._cardComponent, null, commentIndex, commentContainer, null);
     });
   }
@@ -266,5 +297,18 @@ export default class MovieController {
 
       this._replacePopupToCard();
     }
+  }
+
+  newCommentDeliveryError(target) {
+    target.style = `border: 1px solid red`;
+  }
+
+  shake() {
+    this._popupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._popupComponent.getElement().style.animation = ``;
+
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

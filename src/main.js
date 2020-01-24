@@ -34,4 +34,5 @@ api.getMovies()
     moviesModel.setMovies(movies);
     pageController.render();
     return movies;
-  });
+  })
+  .then(() => pageController.hideLoadingScreen());
