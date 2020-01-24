@@ -5,7 +5,7 @@ import CommentComponent from '../components/comment.js';
 import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {EMOJI_IDS} from '../const.js';
+import {EMOJI_IDS, RADIX_DECIMAL} from '../const.js';
 import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -183,7 +183,7 @@ export default class MovieController {
       newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
 
       if (newMovie.userDetails.already_watched) {
-        newMovie.userDetails.watching_date = getCurrentDateIsoFormat();
+        newMovie.userDetails.watching_date = `${getCurrentDateIsoFormat()}`;
       } else {
         newMovie.userDetails.watching_date = null;
       }
@@ -204,7 +204,7 @@ export default class MovieController {
       const target = evt.target;
       this._ratingChangeButton = target;
       const newMovie = MovieModel.clone(data);
-      newMovie.userDetails.personal_rating = target.value;
+      newMovie.userDetails.personal_rating = parseInt(target.value, RADIX_DECIMAL);
 
       popupUserRating.classList.remove(`visually-hidden`);
       target.setAttribute(`disabled`, `true`);

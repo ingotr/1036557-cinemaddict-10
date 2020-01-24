@@ -126,3 +126,4 @@ export const STATISTIC_FILTERS_ID = {
   YEAR: `statistic-year`,
 };
 
+export const RADIX_DECIMAL = 10;

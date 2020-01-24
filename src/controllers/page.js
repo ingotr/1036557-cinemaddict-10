@@ -338,7 +338,7 @@ export default class PageController {
     .catch(() => {
       ratingButton.removeAttribute(`disabled`);
       ratingButton.style = `background-color: red`;
-      this.shake();
+      movieController.shake();
     });
   }
 
