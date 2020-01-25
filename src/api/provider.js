@@ -1,3 +1,6 @@
+import Movie from '../models/movie.js';
+import Comment from '../models/comment.js';
+
 export default class Provider {
   constructor(api, store) {
     this._api = api;
@@ -5,27 +8,50 @@ export default class Provider {
   }
 
   getMovies() {
-    return this._api.getMovies();
+    if (this._isOnline()) {
+      return this._api.getMovies();
+    }
+
+    return Promise.resolve(Movie.parseMovies([]));
   }
 
-  updateMovie() {
-    return this._api.updateMovie();
+  updateMovie(movieId, data) {
+    if (this._isOnline()) {
+      return this._api.updateMovie(movieId, data);
+    }
+
+    return Promise.resolve(data);
   }
 
   syncMovies() {
     return this._api.syncMovies();
   }
 
-  getComments() {
-    return this._api.getComments();
+  getComments(movieId) {
+    if (this._isOnline()) {
+      return this._api.getComments(movieId);
+    }
+
+    return Promise.resolve(Comment.parseComments([]));
   }
 
-  createComment() {
-    return this._api.createComment();
+  createComment(movieId, data) {
+    if (this._isOnline()) {
+      return this._api.createComment(movieId, data);
+    }
+
+    const fakeNewCommentId = new Date().toDateString();
+    const fakeNewComment = Comment.parseComment(Object.assign({}, data.toRaw(), {id: fakeNewCommentId}));
+
+    return Promise.resolve(fakeNewComment);
   }
 
-  deleteComment() {
-    return this._api.deleteComment();
+  deleteComment(commentId) {
+    if (this._isOnline()) {
+      return this._api.deleteComment(commentId);
+    }
+
+    return Promise.resolve();
   }
 
   _isOnline() {
