@@ -7,6 +7,14 @@ import {render, RenderPosition} from './utils/render.js';
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+    })
+    .catch(() => {
+    });
+});
+
 const api = new API(END_POINT, AUTHORIZATION);
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
