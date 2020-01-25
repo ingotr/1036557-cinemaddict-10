@@ -1,9 +1,14 @@
 import Api from './api/index.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 import UserRankComponent from './components/user-rank.js';
 import MoviesModel from './models/movies.js';
 import PageControllerComponent from './controllers/page.js';
 import {render, RenderPosition} from './utils/render.js';
 
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
 
@@ -16,6 +21,9 @@ window.addEventListener(`load`, () => {
 });
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
