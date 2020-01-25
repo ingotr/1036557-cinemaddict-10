@@ -31,15 +31,15 @@ const moviesModel = new MoviesModel();
 
 render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
 
-const pageController = new PageControllerComponent(mainElement, moviesModel, api);
+const pageController = new PageControllerComponent(mainElement, moviesModel, apiWithProvider);
 
 const footerStatisticElement = document.querySelector(`.footer__statistics p`);
 
-api.getMovies()
+apiWithProvider.getMovies()
   .then((movies) => {
     footerStatisticElement.textContent = `${movies.length} movies inside`;
     movies.map((it) => {
-      api.getComments(it.id)
+      apiWithProvider.getComments(it.id)
       .then((value) => {
         it.comments = value;
       });
