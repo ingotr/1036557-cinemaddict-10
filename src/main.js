@@ -1,4 +1,4 @@
-import API from './api.js';
+import Api from './api/index.js';
 import UserRankComponent from './components/user-rank.js';
 import MoviesModel from './models/movies.js';
 import PageControllerComponent from './controllers/page.js';
@@ -15,7 +15,7 @@ window.addEventListener(`load`, () => {
     });
 });
 
-const api = new API(END_POINT, AUTHORIZATION);
+const api = new Api(END_POINT, AUTHORIZATION);
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
