@@ -281,8 +281,9 @@ export default class PageController {
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
     if (newData === null) {
+      const currentMovie = oldData.getCard();
       const currentDeletingComment = movieController.getCurrentDeletingComment();
-      this._api.deleteComment(commentIndex)
+      this._api.deleteComment(commentIndex, currentMovie)
         .then(() => {
           this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
 
@@ -350,7 +351,7 @@ export default class PageController {
         sortedFilms = this._movies.slice().sort((a, b) => a.filmInfo.release.year - b.filmInfo.release.year);
         break;
       case SortType.RATING_DOWN:
-        sortedFilms = this._movies.slice().sort((a, b) => a.filmInfo.totalRating - b.filmInfo.totalRating);
+        sortedFilms = this._movies.slice().sort((a, b) => parseInt(a.filmInfo.total_rating, 10) - parseInt(b.filmInfo.total_rating, 10));
         break;
       case SortType.DEFAULT:
         sortedFilms = this._movies.slice(0, showingCardCount);

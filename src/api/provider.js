@@ -2,16 +2,17 @@ import Movie from '../models/movie.js';
 import Comment from '../models/comment.js';
 
 export default class Provider {
-  constructor(api, store) {
+  constructor(api, store, commentStore) {
     this._api = api;
     this._store = store;
+    this._storeComments = commentStore;
   }
 
   getMovies() {
     if (this._isOnline()) {
       return this._api.getMovies()
         .then((movies) => {
-          movies.forEach((movie) => this._store.setItem(movie.id. movie.toRaw()));
+          movies.forEach((movie) => this._store.setItem(movie.id, movie.toRaw()));
           return movies;
         });
     }
@@ -45,44 +46,66 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.getComments(movieId)
       .then((comments) => {
-        comments.forEach((comment) => {
-          this._store.setItem(comment.id, comment.toRAW());
-        });
+        this._storeComments.setItem(movieId, Object.assign({}, Object.values(comments)));
+
         return comments;
       });
     }
 
-    const storeComments = Object.values(this._store.getAll());
+    const storeComments = Object.values(this._storeComments.getAll());
+    const commentByMovieId = Object.values(storeComments[movieId]);
 
-    return Promise.resolve(Comment.parseComments(storeComments));
+    return Promise.resolve(Comment.parseComments(commentByMovieId));
   }
 
   createComment(movieId, data) {
+    const storeComments = Object.values(this._storeComments.getAll());
+    const commentByMovieId = Object.values(storeComments[movieId]);
+
     if (this._isOnline()) {
       return this._api.createComment(movieId, data)
       .then((newComment) => {
-        this._store.setItem(newComment, newComment.toRAW());
+        this._storeComments.setItem(movieId, Object.assign({}, commentByMovieId, newComment.toRAW()));
         return newComment;
       });
     }
 
     const fakeNewCommentId = new Date().toDateString();
-    const fakeNewComment = Comment.parseComment(Object.assign({}, data.toRAW(), {id: fakeNewCommentId}));
+    const fakeNewCommentAuthor = `offlineComment`;
+    const newOfflineComment = {
+      'id': fakeNewCommentId,
+      'author': fakeNewCommentAuthor,
+      'comment': data.comment,
+      'date': data.date,
+      'emotion': data.emotion,
+    };
 
-    this._store.setItem(fakeNewComment.id, Object.assign({}, fakeNewComment.toRAW(), {offline: true}));
+    const fakeNewComment = Comment.parseComment(Object.assign({}, newOfflineComment));
+    let commentsWithNewComment = commentByMovieId;
+    commentsWithNewComment.push(newOfflineComment);
+
+    this._storeComments.setItem(movieId, commentsWithNewComment);
 
     return Promise.resolve(fakeNewComment);
   }
 
-  deleteComment(commentId) {
+  deleteComment(commentId, movie) {
+    const currentMovie = movie;
+    const movieId = currentMovie.id;
+    const commentIndex = currentMovie.comments.findIndex((it) => it.id === commentId);
+
+    const movieComments = [].concat(currentMovie.comments.slice(0, commentIndex),
+        currentMovie.comments.slice(commentIndex + 1));
+
     if (this._isOnline()) {
       return this._api.deleteComment(commentId)
       .then(() => {
-        this._store.removeItem(commentId);
+        // this._storeComments.removeItem(commentId);
+        this._storeComments.setItem(movieId, Object.assign({}, Object.values(movieComments)));
       });
     }
 
-    this._store.removeItem(commentId);
+    this._storeComments.setItem(movieId, Object.assign({}, Object.values(movieComments)));
 
     return Promise.resolve();
   }

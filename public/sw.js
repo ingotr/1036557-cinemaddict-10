@@ -1,4 +1,4 @@
-const CACHE_PREFIX = `cinemaddict-cache`;
+const CACHE_PREFIX = `cinemaddict`;
 const CACHE_VER = `v1`;
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
 const RESPONSE_STATUS_OK = 200;
@@ -15,7 +15,7 @@ self.addEventListener(`install`, (evt) => {
             `/css/main.css`,
             `/images/background.png`,
             `/images/bitmap.png`,
-            `/imgaes/bitmap@2x.png`,
+            `/images/bitmap@2x.png`,
             `/images/bitmap@3x.png`,
             `/images/emoji/angry.png`,
             `/images/emoji/puke.png`,
@@ -70,8 +70,8 @@ const fetchHandler = (evt) => {
                   return response;
                 }
 
-                const clodeResponse = response.clone();
-                caches.open(CACHE_NAME).then((cache) => cache.put(request, clodeResponse));
+                const clonedResponse = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(request, clonedResponse));
 
                 return response;
               }

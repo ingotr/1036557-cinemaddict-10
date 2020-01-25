@@ -31,7 +31,6 @@ export default class Movie {
     this.userDetails.watching_date = this.userDetails[`watching_date`] ? new Date(this.userDetails[`watching_date`]) : null;
     this.userDetails.favorite = Boolean(this.userDetails[`favorite`]);
 
-    this.setComments = this.setComments.bind(this);
   }
 
   toRaw() {
@@ -65,11 +64,6 @@ export default class Movie {
         'favorite': this.userDetails.favorite,
       }
     };
-  }
-
-  setComments(data) {
-    this.comments = data;
-    return this.comments;
   }
 
   static parseMovie(data) {
