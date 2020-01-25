@@ -31,5 +31,23 @@ self.addEventListener(`install`, (evt) => {
 self.addEventListener(`activate`, (evt) => {
 });
 
-self.addEventListener(`fetch`, (evt) => {
-});
+const fetchHandler = (evt) => {
+  const {request} = evt;
+
+  evt.respondWith(
+      caches.match(request)
+        .then((cacheResponse) => {
+          if (cacheResponse) {
+            return cacheResponse;
+          }
+
+          return fetch(request).then(
+              (response) => {
+                return response;
+              }
+          );
+        })
+  );
+};
+
+self.addEventListener(`fetch`, fetchHandler);
