@@ -39,7 +39,14 @@ const API = class {
       .then(Movie.parseMovie);
   }
 
-  syncMovies() {
+  syncMovies(data) {
+    return this._load({
+      url: `/movies/syns`,
+      method: METHOD.POST,
+      body: JSON.stringify(data),
+      header: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   getComments(movieId) {
