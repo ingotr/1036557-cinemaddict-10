@@ -47,25 +47,28 @@ export default class Provider {
   }
 
   syncMovies() {
-    const storeMovies = Object.values(this._store.getAll());
+    if (this._isOnline()) {
+      const storeMovies = Object.values(this._store.getAll());
 
-    return this._api.syncMovies(storeMovies)
-      .then((response) => {
-        storeMovies.filter((movie) => movie.offline).forEach((movie) => {
-          this._store.removeItem(movie.id);
+      return this._api.syncMovies(storeMovies)
+        .then((response) => {
+          storeMovies.filter((movie) => movie.offline).forEach((movie) => {
+            this._store.removeItem(movie.id);
+          });
+
+          const createdMovies = getSyncedMovies(response.created);
+          const updatedMovies = getSyncedMovies(response.updated);
+
+          [...createdMovies, ...updatedMovies].forEach((movie) => {
+            this._store.setItem(movie.id, movie);
+          });
+
+          this._isSynchronized = true;
+
+          return Promise.resolve();
         });
-
-        const createdMovies = getSyncedMovies(response.created);
-        const updatedMovies = getSyncedMovies(response.updated);
-
-        [...createdMovies, ...updatedMovies].forEach((movie) => {
-          this._store.setItem(movie.id, movie);
-        });
-
-        this._isSynchronized = true;
-
-        return Promise.resolve();
-      });
+    }
+    return Promise.reject(new Error(`Sync data failed`));
   }
 
   getComments(movieId) {
