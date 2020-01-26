@@ -1,6 +1,9 @@
 import Movie from '../models/movie.js';
 import Comment from '../models/comment.js';
 
+const getSyncedMovies =
+  (items) => items.filter(({success}) => success).map(({payload}) => payload.movie);
+
 export default class Provider {
   constructor(api, store, commentStore) {
     this._api = api;
@@ -44,7 +47,25 @@ export default class Provider {
   }
 
   syncMovies() {
-    return this._api.syncMovies();
+    const storeMovies = Object.values(this._store.getAll());
+
+    return this._api.syncMovies(storeMovies)
+      .then((response) => {
+        storeMovies.filter((movie) => movie.offline).forEach((movie) => {
+          this._store.removeItem(movie.id);
+        });
+
+        const createdMovies = getSyncedMovies(response.created);
+        const updatedMovies = getSyncedMovies(response.updated);
+
+        [...createdMovies, ...updatedMovies].forEach((movie) => {
+          this._store.setItem(movie.id, movie);
+        });
+
+        this._isSynchronized = true;
+
+        return Promise.resolve();
+      });
   }
 
   getComments(movieId) {
