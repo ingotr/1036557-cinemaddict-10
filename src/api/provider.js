@@ -6,6 +6,7 @@ export default class Provider {
     this._api = api;
     this._store = store;
     this._storeComments = commentStore;
+    this._isSynchronized = true;
   }
 
   getMovies() {
@@ -18,6 +19,8 @@ export default class Provider {
     }
 
     const storeMovies = Object.values(this._store.getAll());
+
+    this._isSynchronized = false;
 
     return Promise.resolve(Movie.parseMovies(storeMovies));
   }
@@ -32,6 +35,8 @@ export default class Provider {
     }
 
     const fakeUpdatedMovie = Movie.parseMovie(Object.assign({}, data.toRaw(), {movieId}));
+
+    this._isSynchronized = false;
 
     this._store.setItem(movieId, Object.assign({}, fakeUpdatedMovie.toRaw(), {offline: true}));
 
@@ -54,6 +59,8 @@ export default class Provider {
 
     const storeComments = Object.values(this._storeComments.getAll());
     const commentByMovieId = Object.values(storeComments[movieId]);
+
+    this._isSynchronized = false;
 
     return Promise.resolve(Comment.parseComments(commentByMovieId));
   }
@@ -84,6 +91,8 @@ export default class Provider {
     let commentsWithNewComment = commentByMovieId;
     commentsWithNewComment.push(newOfflineComment);
 
+    this._isSynchronized = false;
+
     this._storeComments.setItem(movieId, commentsWithNewComment);
 
     return Promise.resolve(fakeNewComment);
@@ -100,14 +109,19 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.deleteComment(commentId)
       .then(() => {
-        // this._storeComments.removeItem(commentId);
         this._storeComments.setItem(movieId, Object.assign({}, Object.values(movieComments)));
       });
     }
 
+    this._isSynchronized = false;
+
     this._storeComments.setItem(movieId, Object.assign({}, Object.values(movieComments)));
 
     return Promise.resolve();
+  }
+
+  getSynchronize() {
+    return this._isSynchronized;
   }
 
   _isOnline() {
