@@ -29,14 +29,14 @@ export default class Movies {
     this._filterChangeHandlers.forEach((handler) => handler());
   }
 
-  updateMovie(id, movie) {
-    const index = this._movies.findIndex((it) => it.id === id);
+  updateMovie(movieId, newMovie) {
+    const index = this._movies.findIndex((movie) => movie.id === movieId);
 
     if (index === -1) {
       return false;
     }
 
-    this._movies = [].concat(this._movies.slice(0, index), movie,
+    this._movies = [].concat(this._movies.slice(0, index), newMovie,
         this._movies.slice(index + 1));
 
     this._dataChangeHandlers.forEach((handler) => handler());
@@ -45,12 +45,12 @@ export default class Movies {
   }
 
   deleteComment(movieId, commentId) {
-    const index = this._movies.findIndex((it) => it.id === movieId);
+    const index = this._movies.findIndex((movie) => movie.id === movieId);
     if (index === -1) {
       return false;
     }
 
-    const commentIndex = this._movies[index].comments.findIndex((it) => it.id === commentId);
+    const commentIndex = this._movies[index].comments.findIndex((comment) => comment.id === commentId);
 
     this._movies[index].comments = [].concat(this._movies[index].comments.slice(0, commentIndex),
         this._movies[index].comments.slice(commentIndex + 1));
@@ -61,7 +61,7 @@ export default class Movies {
   }
 
   addComment(movieId, commentData) {
-    const index = this._movies.findIndex((it) => it.id === movieId);
+    const index = this._movies.findIndex((movie) => movie.id === movieId);
     if (index === -1) {
       return false;
     }

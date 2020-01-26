@@ -28,22 +28,22 @@ const API = class {
       .then(Movie.parseMovies);
   }
 
-  updateMovie(movieId, data) {
+  updateMovie(movieId, movie) {
     return this._load({
       url: `/movies/${movieId}`,
       method: METHOD.PUT,
-      body: JSON.stringify(data.toRaw()),
+      body: JSON.stringify(movie.toRaw()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
       .then(Movie.parseMovie);
   }
 
-  syncMovies(data) {
+  syncMovies(movies) {
     return this._load({
       url: `/movies/syns`,
       method: METHOD.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(movies),
       header: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json());
@@ -58,11 +58,11 @@ const API = class {
       });
   }
 
-  createComment(movieId, data) {
+  createComment(movieId, comment) {
     return this._load({
       url: `/comments/${movieId}`,
       method: METHOD.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())

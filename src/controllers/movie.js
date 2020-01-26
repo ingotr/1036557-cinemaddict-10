@@ -42,38 +42,38 @@ export default class MovieController {
     this._ratingChangeButton = null;
   }
 
-  _watchListButtonClickHandler(data) {
-    const newMovie = MovieModel.clone(data);
+  _watchListButtonClickHandler(movie) {
+    const newMovie = MovieModel.clone(movie);
     newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
-    this._onDataChange(this, data, newMovie);
+    this._onDataChange(this, movie, newMovie);
   }
 
-  _markWatchedButtonClickHandler(data) {
-    const newMovie = MovieModel.clone(data);
-    newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
+  _markWatchedButtonClickHandler(movie) {
+    const newMovie = MovieModel.clone(movie);
+    newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
     if (newMovie.userDetails.alreadyWatched) {
       newMovie.userDetails.watchingDate = getCurrentDate();
     }
 
-    this._onDataChange(this, data, newMovie);
+    this._onDataChange(this, movie, newMovie);
   }
 
-  _setFavoriteButtonClickHandler(data) {
-    const newMovie = MovieModel.clone(data);
+  _setFavoriteButtonClickHandler(movie) {
+    const newMovie = MovieModel.clone(movie);
     newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
 
-    this._onDataChange(this, data, newMovie);
+    this._onDataChange(this, movie, newMovie);
   }
 
-  render(data, container = this._container) {
+  render(movie, container = this._container) {
     const oldCardComponent = this._cardComponent;
     const oldPopupComponent = this._popupComponent;
 
-    this._data = data;
-    this._cardComponent = new CardComponent(data);
-    this._popupComponent = new PopupComponent(data);
+    this._movie = movie;
+    this._cardComponent = new CardComponent(movie);
+    this._popupComponent = new PopupComponent(movie);
 
     const popupMiddleContainer = this._popupComponent.getElement().querySelector(`.form-details__middle-container`);
 
@@ -153,49 +153,49 @@ export default class MovieController {
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
       event.preventDefault();
-      this._watchListButtonClickHandler(data);
+      this._watchListButtonClickHandler(movie);
       this._onFiltersChange();
     });
 
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
-      this._markWatchedButtonClickHandler(data);
+      this._markWatchedButtonClickHandler(movie);
       this._onFiltersChange();
     });
 
     this._cardComponent.setFavoriteButtonClickHandler(() => {
       event.preventDefault();
-      this._setFavoriteButtonClickHandler(data);
+      this._setFavoriteButtonClickHandler(movie);
       this._onFiltersChange();
     });
 
     this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
-      const newMovie = MovieModel.clone(data);
+      const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
-      this._onDataChange(this, data, newMovie);
+      this._onDataChange(this, movie, newMovie);
       this._onFiltersChange();
     });
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
-      const newMovie = MovieModel.clone(data);
-      newMovie.userDetails.already_watched = !newMovie.userDetails.already_watched;
+      const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
-      if (newMovie.userDetails.already_watched) {
-        newMovie.userDetails.watching_date = `${getCurrentDateIsoFormat()}`;
+      if (newMovie.userDetails.alreadyWatched) {
+        newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
       } else {
-        newMovie.userDetails.watching_date = null;
+        newMovie.userDetails.watchingDate = null;
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
-      const newMovie = MovieModel.clone(data);
+      const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
 
-      this._onDataChange(this, data, newMovie);
+      this._onDataChange(this, movie, newMovie);
       this._onFiltersChange();
     });
 
@@ -203,14 +203,14 @@ export default class MovieController {
       event.preventDefault();
       const target = evt.target;
       this._ratingChangeButton = target;
-      const newMovie = MovieModel.clone(data);
-      newMovie.userDetails.personal_rating = parseInt(target.value, RADIX_DECIMAL);
+      const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.personalRating = parseInt(target.value, RADIX_DECIMAL);
 
       popupUserRating.classList.remove(`visually-hidden`);
       target.setAttribute(`disabled`, `true`);
       target.style = `background-color: white`;
-      this._onUserRatingChange(popupUserRating, newMovie.userDetails.personal_rating);
-      this._onDataChange(this, data, newMovie);
+      this._onUserRatingChange(popupUserRating, newMovie.userDetails.personalRating);
+      this._onDataChange(this, movie, newMovie);
     });
 
     if (oldCardComponent && oldPopupComponent) {
@@ -247,7 +247,7 @@ export default class MovieController {
   }
 
   renderPopup() {
-    const popupData = this._data;
+    const popupData = this._movie;
     render(this._popupContainer.getElement(), this._popupComponent.getElement(), RenderPosition.BEFOREEND);
     const popupElement = this._popupContainer.getElement().querySelector(`.film-details`);
     const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);

@@ -1,6 +1,6 @@
-export const CARD_COUNT = 22;
+const CARD_COUNT = 22;
 
-export const NameItems = [
+const NameItems = [
   `Побег из Шоушенка`,
   `Крестный отец`,
   `Крестный отец 2`,
@@ -18,7 +18,7 @@ export const NameItems = [
   `Властелин колец: Две крепости`,
 ];
 
-export const PosterItems = [
+const PosterItems = [
   `made-for-each-other.png`,
   `popeye-meets-sinbad.png`,
   `sagebrush-trail.jpg`,
@@ -28,7 +28,7 @@ export const PosterItems = [
   `the-man-with-the-golden-arm.jpg`,
 ];
 
-export const DescriptionItems = [
+const DescriptionItems = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. ********
   *******************
   &&&&&&&&&&555&&`,
@@ -43,7 +43,7 @@ export const DescriptionItems = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-export const GenreItems = [
+const GenreItems = [
   `Action`,
   `Adventure`,
   `Animation`,
@@ -66,7 +66,7 @@ export const GenreItems = [
   `Western`,
 ];
 
-export const MonthNames = [
+const MonthNames = [
   `January`,
   `February`,
   `March`,
@@ -81,14 +81,14 @@ export const MonthNames = [
   `December`,
 ];
 
-export const FilterType = {
+const FilterType = {
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
   FAVORITES: `favorites`,
   ALL: `all movies`,
 };
 
-export const EMOJI_ID = {
+const EMOJI_ID = {
   SMILE: {
     ID: `emoji-smile`,
     VALUE: `smile`,
@@ -111,14 +111,14 @@ export const EMOJI_ID = {
   },
 };
 
-export const EMOJI_IDS = {
+const EMOJI_IDS = {
   SMILE: `smile`,
   SLEEPING: `sleeping`,
   GRINNING: `puke`,
   ANGRY: `angry`,
 };
 
-export const STATISTIC_FILTERS_ID = {
+const STATISTIC_FILTERS_ID = {
   ALL_TIME: `statistic-all-time`,
   TODAY: `statistic-today`,
   WEEK: `statistic-week`,
@@ -126,4 +126,8 @@ export const STATISTIC_FILTERS_ID = {
   YEAR: `statistic-year`,
 };
 
-export const RADIX_DECIMAL = 10;
+const RADIX_DECIMAL = 10;
+
+export {CARD_COUNT, NameItems, PosterItems, DescriptionItems,
+  GenreItems, MonthNames, FilterType, EMOJI_ID, EMOJI_IDS,
+  STATISTIC_FILTERS_ID, RADIX_DECIMAL};

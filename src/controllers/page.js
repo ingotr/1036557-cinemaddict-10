@@ -22,14 +22,14 @@ const FILMS_LIST_EXTRA_MARKUP = `films-list--extra`;
 let showingCardCount = SHOWING_CARDS_ON_START;
 
 const isPositiveRating = (films) => {
-  return films.some((film) => film.filmInfo.total_rating > 0);
+  return films.some((film) => film.filmInfo.totalRating > 0);
 };
 
 const compareRating = (b, a) => {
-  if (a.filmInfo.total_rating > b.filmInfo.total_rating) {
+  if (a.filmInfo.totalRating > b.filmInfo.totalRating) {
     return 1;
   }
-  if (a.filmInfo.total_rating < b.filmInfo.total_rating) {
+  if (a.filmInfo.totalRating < b.filmInfo.totalRating) {
     return -1;
   }
   return 0;
@@ -351,7 +351,7 @@ export default class PageController {
         sortedFilms = this._movies.slice().sort((a, b) => a.filmInfo.release.year - b.filmInfo.release.year);
         break;
       case SortType.RATING_DOWN:
-        sortedFilms = this._movies.slice().sort((a, b) => parseInt(a.filmInfo.total_rating, 10) - parseInt(b.filmInfo.total_rating, 10));
+        sortedFilms = this._movies.slice().sort((a, b) => parseInt(a.filmInfo.totalRating, 10) - parseInt(b.filmInfo.totalRating, 10));
         break;
       case SortType.DEFAULT:
         sortedFilms = this._movies.slice(0, showingCardCount);
