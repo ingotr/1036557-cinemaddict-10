@@ -1,5 +1,5 @@
-import Movie from './models/movie.js';
-import Comment from './models/comment.js';
+import Movie from '../models/movie.js';
+import Comment from '../models/comment.js';
 
 const METHOD = {
   GET: `GET`,
@@ -28,18 +28,25 @@ const API = class {
       .then(Movie.parseMovies);
   }
 
-  updateMovie(movieId, data) {
+  updateMovie(movieId, movie) {
     return this._load({
       url: `/movies/${movieId}`,
       method: METHOD.PUT,
-      body: JSON.stringify(data.toRaw()),
+      body: JSON.stringify(movie.toRaw()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
       .then(Movie.parseMovie);
   }
 
-  syncMovies() {
+  syncMovies(movies) {
+    return this._load({
+      url: `/movies/syns`,
+      method: METHOD.POST,
+      body: JSON.stringify(movies),
+      header: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   getComments(movieId) {
@@ -51,11 +58,11 @@ const API = class {
       });
   }
 
-  createComment(movieId, data) {
+  createComment(movieId, comment) {
     return this._load({
       url: `/comments/${movieId}`,
       method: METHOD.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())

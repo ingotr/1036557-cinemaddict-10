@@ -1,9 +1,9 @@
 import AbstractComponent from './abstract-component.js';
 
-const filmListVisuallyHidden = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
-const filmsSectionClass = `films-list`;
+const FILMLIST_VISUALLY_HIDDEN_MARKUP = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
+const FILMLIST_SECTION_CLASS = `films-list`;
 
-const createFilmsListTemplate = (classTitle = filmsSectionClass, title = filmListVisuallyHidden) => (
+const createFilmsListTemplate = (classTitle = FILMLIST_SECTION_CLASS, title = FILMLIST_VISUALLY_HIDDEN_MARKUP) => (
   `<section class="${classTitle}">
     ${title}
     <div class="films-list__container">
@@ -12,7 +12,7 @@ const createFilmsListTemplate = (classTitle = filmsSectionClass, title = filmLis
 );
 
 export default class FilmsList extends AbstractComponent {
-  constructor(classTitle = filmsSectionClass, title = filmListVisuallyHidden) {
+  constructor(classTitle = FILMLIST_SECTION_CLASS, title = FILMLIST_VISUALLY_HIDDEN_MARKUP) {
     super();
 
     this._classTitle = classTitle;

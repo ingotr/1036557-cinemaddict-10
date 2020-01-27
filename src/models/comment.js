@@ -9,22 +9,24 @@ export default class Comment {
 
   toRAW() {
     return {
+      'id': this.id,
+      'author': this.author,
       'comment': this.comment,
       'date': this.date ? this.date.toISOString() : null,
       'emotion': this.emotion,
     };
   }
 
-  static parseComment(data) {
-    return new Comment(data);
+  static parseComment(comment) {
+    return new Comment(comment);
   }
 
-  static parseComments(data) {
-    return data.map(Comment.parseComment);
+  static parseComments(comments) {
+    return comments.map(Comment.parseComment);
   }
 
-  static clone(data) {
-    return new Comment(data.toRaw());
+  static clone(comment) {
+    return new Comment(comment.toRaw());
   }
 }
 
