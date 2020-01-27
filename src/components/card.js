@@ -1,6 +1,8 @@
 import AbstractComponent from './abstract-component.js';
+import debounce from 'lodash/debounce';
 import {getFormattedRuntime, getYearFromIso} from '../utils/common.js';
 
+const DEBOUNCE_TIMEOUT = 1000;
 const MAX_DESCRIPTION_LENGTH = 140;
 const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
 
@@ -75,15 +77,15 @@ export default class Card extends AbstractComponent {
   }
 
   setAddToWatchlistButtonCLickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setMarkAsWatchedButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setFavoriteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 }
 

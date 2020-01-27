@@ -1,9 +1,12 @@
 import AbstractSmartComponent from './abstract-smart-component';
+import debounce from 'lodash/debounce';
+
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
 
 const LONG_GENRES_LIST_TITLE = `Genres`;
 const SHORT_GENRES_LIST_TITLE = `Genre`;
 
+const DEBOUNCE_TIMEOUT = 1000;
 const MAX_DESCRIPTION_LENGTH = 140;
 const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
 
@@ -249,15 +252,15 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   setAddToWatchlistButtonCLickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setMarkAsWatchedButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setFavoriteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setUserRatingChangeHandler(handler) {
