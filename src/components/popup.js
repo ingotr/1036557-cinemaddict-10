@@ -1,14 +1,11 @@
 import AbstractSmartComponent from './abstract-smart-component';
-import debounce from 'lodash/debounce';
-
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
+import {DESCRIPTION} from '../const.js';
 
-const LONG_GENRES_LIST_TITLE = `Genres`;
-const SHORT_GENRES_LIST_TITLE = `Genre`;
-
-const DEBOUNCE_TIMEOUT = 1000;
-const MAX_DESCRIPTION_LENGTH = 140;
-const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
+const GENRE_TITLE = {
+  LONG: `Genres`,
+  SHORT: `Genre`,
+};
 
 const createGenresMarkup = (genre) => {
   return (
@@ -45,10 +42,10 @@ const createPopUpTemplate = (popup) => {
 
   const genresList = createGenresMarkup(genre);
 
-  let genreListTitle = genre.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
+  let genreListTitle = genre.length > 1 ? GENRE_TITLE.LONG : GENRE_TITLE.SHORT;
 
-  let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
-    description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
+  let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
+    description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;
 
   return (
     `<section class="film-details">
@@ -252,15 +249,15 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   setAddToWatchlistButtonCLickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, handler);
   }
 
   setMarkAsWatchedButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, handler);
   }
 
   setFavoriteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, debounce(handler, DEBOUNCE_TIMEOUT));
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, handler);
   }
 
   setUserRatingChangeHandler(handler) {

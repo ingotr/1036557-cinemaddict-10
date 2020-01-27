@@ -32,7 +32,7 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.updateMovie(movieId, movie)
       .then((newMovie) => {
-        this._store.setItem(newMovie.movieId, newMovie.toRa());
+        this._store.setItem(newMovie.movieId, newMovie.toRaw());
         return newMovie;
       });
     }
