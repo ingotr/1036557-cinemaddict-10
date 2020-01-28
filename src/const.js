@@ -118,7 +118,7 @@ const EMOJI_IDS = {
   ANGRY: `angry`,
 };
 
-const STATISTIC_FILTERS_ID = {
+const StatisticFilterId = {
   ALL_TIME: `statistic-all-time`,
   TODAY: `statistic-today`,
   WEEK: `statistic-week`,
@@ -135,4 +135,4 @@ const DESCRIPTION = {
 
 export {CARD_COUNT, NameItems, PosterItems, DescriptionItems,
   GenreItems, MonthNames, FilterType, EMOJI_ID, EMOJI_IDS,
-  STATISTIC_FILTERS_ID, RADIX_DECIMAL, DESCRIPTION};
+  StatisticFilterId, RADIX_DECIMAL, DESCRIPTION};

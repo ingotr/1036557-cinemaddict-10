@@ -1,18 +1,37 @@
-import {getRandomUserRank} from '../mock/user-rank.js';
 import AbstractComponent from './abstract-component.js';
 
-const getUserRank = () => {
-  const count = getRandomUserRank();
-  let rank = ``;
+const UserRanks = {
+  NONE: {
+    count: 0,
+    title: ``,
+  },
+  NOVICE: {
+    countMin: 1,
+    countMax: 11,
+    title: `novice`,
+  },
+  FAN: {
+    countMin: 11,
+    countMax: 20,
+    title: `fan`,
+  },
+  BUFF: {
+    countMin: 21,
+    title: `movie buff`,
+  },
+};
 
-  if ((count >= 1) && (count <= 10)) {
-    rank = `novice`;
+const getUserRank = (watchedMovies) => {
+  const rank = ``;
+
+  if ((watchedMovies >= UserRanks.NOVICE.countMin) && (watchedMovies <= UserRanks.NOVICE.countMax)) {
+    return UserRanks.NOVICE;
   }
-  if ((count >= 11) && (count <= 20)) {
-    rank = `fan`;
+  if ((watchedMovies >= UserRanks.FAN.countMin) && (watchedMovies <= UserRanks.FAN.countMax)) {
+    return UserRanks.FAN;
   }
-  if (count >= 21) {
-    rank = `movie buff`;
+  if (watchedMovies >= UserRanks.BUFF.countMin) {
+    return UserRanks.BUFF;
   }
 
   return rank;

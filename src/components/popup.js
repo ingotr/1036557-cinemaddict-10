@@ -2,7 +2,7 @@ import AbstractSmartComponent from './abstract-smart-component';
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
 import {DESCRIPTION} from '../const.js';
 
-const GENRE_TITLE = {
+const GenreTitle = {
   LONG: `Genres`,
   SHORT: `Genre`,
 };
@@ -42,7 +42,7 @@ const createPopUpTemplate = (popup) => {
 
   const genresList = createGenresMarkup(genre);
 
-  let genreListTitle = genre.length > 1 ? GENRE_TITLE.LONG : GENRE_TITLE.SHORT;
+  let genreListTitle = genre.length > 1 ? GenreTitle.LONG : GenreTitle.SHORT;
 
   let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
     description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;

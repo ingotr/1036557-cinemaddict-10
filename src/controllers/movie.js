@@ -15,6 +15,12 @@ const Mode = {
   POPUP: `popup`,
 };
 
+const Keycodes = {
+  ENTER: 13,
+  CTRL: 17,
+  ESCAPE: 27,
+};
+
 export default class MovieController {
   constructor(container, popupContainer, onDataChange, onFiltersChange, onUserRatingChange,
       onViewChange, onCommentsCountChange, onEmojiChange) {
@@ -56,7 +62,7 @@ export default class MovieController {
 
     const addEventListenerToComponent = (popContainer, card, popup) => {
       const onEscKeyPress = (evt) => {
-        const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+        const isEscKey = evt.keyCode === Keycodes.ESCAPE;
 
         if (isEscKey) {
           this._replacePopupToCard();
@@ -68,12 +74,12 @@ export default class MovieController {
         }
       };
 
-      let keysPressed = {};
+      const keysPressed = {};
 
       const onCtrlEnterPress = (event) => {
-        keysPressed[event.key] = true;
+        keysPressed[event.keyCode] = true;
 
-        let isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
+        const isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         commentArea.removeAttribute(`disabled`);
@@ -85,7 +91,7 @@ export default class MovieController {
         const newCommentEmoji = this._emptyCommentEmoji;
 
 
-        if (keysPressed[`Control`] && event.key === `Enter`
+        if (keysPressed[Keycodes.CTRL] && event.keyCode === Keycodes.ENTER
         && newCommentText.length > 0 && isEmojiExistInList) {
 
           this._createNewCommentForm = commentArea;

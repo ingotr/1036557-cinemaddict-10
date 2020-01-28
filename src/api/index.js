@@ -1,15 +1,20 @@
 import Movie from '../models/movie.js';
 import Comment from '../models/comment.js';
 
-const METHOD = {
+const Method = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
   DELETE: `DELETE`
 };
 
+const ServerResponseStatus = {
+  OK: 200,
+  MULTIPLE_CHOICE: 300,
+};
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= ServerResponseStatus.OK && response.status < ServerResponseStatus.MULTIPLE_CHOICE) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -31,7 +36,7 @@ const API = class {
   updateMovie(movieId, movie) {
     return this._load({
       url: `/movies/${movieId}`,
-      method: METHOD.PUT,
+      method: Method.PUT,
       body: JSON.stringify(movie.toRaw()),
       headers: new Headers({'Content-Type': `application/json`})
     })
@@ -42,7 +47,7 @@ const API = class {
   syncMovies(movies) {
     return this._load({
       url: `/movies/syns`,
-      method: METHOD.POST,
+      method: Method.POST,
       body: JSON.stringify(movies),
       header: new Headers({'Content-Type': `application/json`})
     })
@@ -61,7 +66,7 @@ const API = class {
   createComment(movieId, comment) {
     return this._load({
       url: `/comments/${movieId}`,
-      method: METHOD.POST,
+      method: Method.POST,
       body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': `application/json`})
     })
@@ -70,10 +75,10 @@ const API = class {
   }
 
   deleteComment(commentId) {
-    return this._load({url: `/comments/${commentId}`, method: METHOD.DELETE});
+    return this._load({url: `/comments/${commentId}`, method: Method.DELETE});
   }
 
-  _load({url, method = METHOD.GET, body = null, headers = new Headers()}) {
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})

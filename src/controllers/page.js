@@ -148,7 +148,7 @@ export default class PageController {
     this._filmsComponent.hideLoadingTitle(this._filmsComponent);
   }
 
-  renderCustomFilmList(filmList, filmListContainer) {
+  renderCustomFilms(filmList, filmListContainer) {
     if (filmList.length > 0) {
       return filmList.map((film) => {
         const movieController = new MovieControllerComponent(this._filmListContainerElement,
@@ -239,14 +239,14 @@ export default class PageController {
   _renderTopRatedMovies(topRatedList) {
     const topRatedListElement = this._filmTopRatedElement;
 
-    const newTopRatedFilms = this.renderCustomFilmList(topRatedList, topRatedListElement);
+    const newTopRatedFilms = this.renderCustomFilms(topRatedList, topRatedListElement);
     this._showedTopRatedMovieControllers = this._showedTopRatedMovieControllers.concat(newTopRatedFilms);
   }
 
   _renderMostCommentedMovies(mostCommentedList) {
     const mostCommentedListElement = this._filmMostCommentedElement;
 
-    const newMostCommentedFilms = this.renderCustomFilmList(mostCommentedList, mostCommentedListElement);
+    const newMostCommentedFilms = this.renderCustomFilms(mostCommentedList, mostCommentedListElement);
     this._showedMostCommentedMovieControllers = this._showedMostCommentedMovieControllers.concat(newMostCommentedFilms);
   }
 

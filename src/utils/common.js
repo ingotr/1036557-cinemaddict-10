@@ -53,7 +53,7 @@ const getReleaseDate = (year) => {
   const targetDay = targetDate.getDay();
   const targetMonth = MonthNames[targetDate.getMonth()];
   const targetYear = year;
-  let releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
+  const releaseDate = `${targetDay} ${targetMonth} ${targetYear}`;
 
   return moment(releaseDate).format(`DD MMMM YYYY`);
 };
