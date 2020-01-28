@@ -1,11 +1,11 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
+import {DESCRIPTION} from '../const.js';
 
-const LONG_GENRES_LIST_TITLE = `Genres`;
-const SHORT_GENRES_LIST_TITLE = `Genre`;
-
-const MAX_DESCRIPTION_LENGTH = 140;
-const MAX_DESCRIPTION_ELLIPSIS = `\&#8230`;
+const GENRE_TITLE = {
+  LONG: `Genres`,
+  SHORT: `Genre`,
+};
 
 const createGenresMarkup = (genre) => {
   return (
@@ -42,10 +42,10 @@ const createPopUpTemplate = (popup) => {
 
   const genresList = createGenresMarkup(genre);
 
-  let genreListTitle = genre.length > 1 ? LONG_GENRES_LIST_TITLE : SHORT_GENRES_LIST_TITLE;
+  let genreListTitle = genre.length > 1 ? GENRE_TITLE.LONG : GENRE_TITLE.SHORT;
 
-  let currentDescription = (description.length > MAX_DESCRIPTION_LENGTH) ?
-    description.slice(0, MAX_DESCRIPTION_LENGTH) + MAX_DESCRIPTION_ELLIPSIS : description;
+  let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
+    description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;
 
   return (
     `<section class="film-details">

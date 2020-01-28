@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentComponent from '../components/comment.js';
@@ -6,8 +5,9 @@ import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {EMOJI_IDS, RADIX_DECIMAL} from '../const.js';
-import {getCurrentDate, getCurrentDateIsoFormat} from '../utils/common.js';
+import {getCurrentDate, getCurrentDateIsoFormat, debounce} from '../utils/common.js';
 
+const DEBOUNCE_TIMEOUT = 1000;
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const Mode = {
@@ -40,31 +40,6 @@ export default class MovieController {
     this._currentDelectingComment = null;
     this._createNewCommentForm = null;
     this._ratingChangeButton = null;
-  }
-
-  _watchListButtonClickHandler(movie) {
-    const newMovie = MovieModel.clone(movie);
-    newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
-
-    this._onDataChange(this, movie, newMovie);
-  }
-
-  _markWatchedButtonClickHandler(movie) {
-    const newMovie = MovieModel.clone(movie);
-    newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
-
-    if (newMovie.userDetails.alreadyWatched) {
-      newMovie.userDetails.watchingDate = getCurrentDate();
-    }
-
-    this._onDataChange(this, movie, newMovie);
-  }
-
-  _setFavoriteButtonClickHandler(movie) {
-    const newMovie = MovieModel.clone(movie);
-    newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
-
-    this._onDataChange(this, movie, newMovie);
   }
 
   render(movie, container = this._container) {
@@ -151,34 +126,54 @@ export default class MovieController {
       });
     };
 
-    this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
-      event.preventDefault();
-      this._watchListButtonClickHandler(movie);
-      this._onFiltersChange();
-    });
-
-    this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
-      event.preventDefault();
-      this._markWatchedButtonClickHandler(movie);
-      this._onFiltersChange();
-    });
-
-    this._cardComponent.setFavoriteButtonClickHandler(() => {
-      event.preventDefault();
-      this._setFavoriteButtonClickHandler(movie);
-      this._onFiltersChange();
-    });
-
-    this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
+    const addToWatchlistButtonHanlder = () => {
       const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
       this._onDataChange(this, movie, newMovie);
       this._onFiltersChange();
+    };
+
+    this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
+      event.preventDefault();
+      debounce(addToWatchlistButtonHanlder(), DEBOUNCE_TIMEOUT);
     });
 
-    this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
+    const markWatchedButtonClickHandler = () => {
+      const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
+
+      if (newMovie.userDetails.alreadyWatched) {
+        newMovie.userDetails.watchingDate = getCurrentDate();
+      }
+
+      this._onDataChange(this, movie, newMovie);
+      this._onFiltersChange();
+    };
+
+    this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
       event.preventDefault();
+      debounce(markWatchedButtonClickHandler(), DEBOUNCE_TIMEOUT);
+    });
+
+    const setFavoriteButtonClickHandler = () => {
+      const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
+
+      this._onDataChange(this, movie, newMovie);
+      this._onFiltersChange();
+    };
+
+    this._cardComponent.setFavoriteButtonClickHandler(() => {
+      event.preventDefault();
+      debounce(setFavoriteButtonClickHandler(), DEBOUNCE_TIMEOUT);
+    });
+
+    this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
+      debounce(setFavoriteButtonClickHandler(), DEBOUNCE_TIMEOUT);
+    });
+
+    const markWatchedButtonClickHandlerPopup = () => {
       const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
@@ -189,14 +184,15 @@ export default class MovieController {
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
+    };
+
+    this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
+      event.preventDefault();
+      debounce(markWatchedButtonClickHandlerPopup(), DEBOUNCE_TIMEOUT);
     });
 
     this._popupComponent.setFavoriteButtonClickHandler(() => {
-      const newMovie = MovieModel.clone(movie);
-      newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
-
-      this._onDataChange(this, movie, newMovie);
-      this._onFiltersChange();
+      debounce(setFavoriteButtonClickHandler(), DEBOUNCE_TIMEOUT);
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
@@ -210,7 +206,15 @@ export default class MovieController {
       target.setAttribute(`disabled`, `true`);
       target.style = `background-color: white`;
       this._onUserRatingChange(popupUserRating, newMovie.userDetails.personalRating);
-      this._onDataChange(this, movie, newMovie);
+      Promise.resolve(this._onDataChange(this, movie, newMovie))
+        .then(() => {
+          target.removeAttribute(`disabled`);
+        })
+        .catch(() => {
+          target.removeAttribute(`disabled`);
+          target.style = `background-color: red`;
+          this.shake();
+        });
     });
 
     if (oldCardComponent && oldPopupComponent) {

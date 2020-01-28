@@ -128,6 +128,11 @@ const STATISTIC_FILTERS_ID = {
 
 const RADIX_DECIMAL = 10;
 
+const DESCRIPTION = {
+  MAX_LENGTH: 140,
+  ELLIPSIS: `\&#8230`,
+};
+
 export {CARD_COUNT, NameItems, PosterItems, DescriptionItems,
   GenreItems, MonthNames, FilterType, EMOJI_ID, EMOJI_IDS,
-  STATISTIC_FILTERS_ID, RADIX_DECIMAL};
+  STATISTIC_FILTERS_ID, RADIX_DECIMAL, DESCRIPTION};

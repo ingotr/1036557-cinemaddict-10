@@ -1,10 +1,13 @@
 import moment from 'moment';
 import {DescriptionItems, MonthNames} from '../const.js';
 
-const MAX_DESCRIPTION_LENGTH = 3;
-const MAX_RATING = 9;
-const MAX_RUNTIME = 299;
-const MAX_COMMENTS_NUMBER = 9;
+const MAX = {
+  DESCRIPTION_LENGTH: 3,
+  RATING: 9,
+  RUNTIME: 299,
+  COMMENTS_NUMBER: 9,
+};
+
 const HOUR_LENGTH = 60;
 
 const getRandomIntegerNumber = (min, max) => {
@@ -16,7 +19,7 @@ const getRandomElement = (arr) => {
 };
 
 const getRandomDescription = () => {
-  const currentLength = getRandomIntegerNumber(1, MAX_DESCRIPTION_LENGTH);
+  const currentLength = getRandomIntegerNumber(1, MAX.DESCRIPTION_LENGTH);
   let description = [];
   for (let i = 0; i < currentLength; i++) {
     description[i] = DescriptionItems[i];
@@ -26,7 +29,7 @@ const getRandomDescription = () => {
 };
 
 const getRandomRating = () => {
-  return Math.fround(Math.random() * MAX_RATING).toFixed(1);
+  return Math.fround(Math.random() * MAX.RATING).toFixed(1);
 };
 
 const getRandomDate = () => {
@@ -81,11 +84,11 @@ const getFormattedRuntime = (runtime) => {
 };
 
 const getRandomDuration = () => {
-  return getRandomIntegerNumber(0, MAX_RUNTIME);
+  return getRandomIntegerNumber(0, MAX.RUNTIME);
 };
 
 const getRandomCommentsNumber = () => {
-  return getRandomIntegerNumber(0, MAX_COMMENTS_NUMBER);
+  return getRandomIntegerNumber(0, MAX.COMMENTS_NUMBER);
 };
 
 const getYearFromIso = (isoDate) => {
@@ -108,8 +111,21 @@ const getRandomWatchedDate = () => {
   return moment(getRandomDate()).format(`DD MMMM YYYY`);
 };
 
+const debounce = (debounceInterval) => {
+  let lastTimeout;
+  window.debounce = {
+    debounce(cb) {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(cb, debounceInterval);
+    },
+  };
+};
+
+
 export {getRandomIntegerNumber, getRandomElement, getRandomRating,
   getRandomYear, getCommentDateFromNow, getReleaseDate,
   getRandomDuration, getRandomDescription, getRandomCommentsNumber, getCurrentDate,
   getFormattedRuntime, getTimeDuration, getRandomWatchedDate, getTargetYear,
-  getDateFromIso, getYearFromIso, getCurrentDateIsoFormat};
+  getDateFromIso, getYearFromIso, getCurrentDateIsoFormat, debounce};

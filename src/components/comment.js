@@ -1,6 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import he from 'he';
-import {getDateFromIso} from '../utils/common.js';
+import moment from 'moment';
 
 const DefaultData = {
   deleteButtonText: `Delete`,
@@ -11,7 +11,7 @@ const createCommentMarkup = (commentary, externalData) => {
 
   const encodedText = he.encode(comment);
 
-  const formattedDate = getDateFromIso(date);
+  const commentDateFromNow = moment(date).fromNow();
 
   const deleteButtonText = externalData.deleteButtonText;
 
@@ -24,7 +24,7 @@ const createCommentMarkup = (commentary, externalData) => {
         <p class="film-details__comment-text">${encodedText}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${formattedDate}</span>
+          <span class="film-details__comment-day">${commentDateFromNow}</span>
           <button class="film-details__comment-delete">${deleteButtonText}</button>
         </p>
       </div>
