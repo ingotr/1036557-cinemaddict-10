@@ -134,6 +134,7 @@ export default class MovieController {
 
     const addToWatchlistButtonHanlder = () => {
       const newMovie = MovieModel.clone(movie);
+      newMovie.comments = movie.comments;
       newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
       this._onDataChange(this, movie, newMovie);
@@ -176,7 +177,7 @@ export default class MovieController {
     });
 
     this._popupComponent.setAddToWatchlistButtonCLickHandler(() => {
-      debounce(setFavoriteButtonClickHandler(), DEBOUNCE_TIMEOUT);
+      debounce(addToWatchlistButtonHanlder(), DEBOUNCE_TIMEOUT);
     });
 
     const markWatchedButtonClickHandlerPopup = () => {

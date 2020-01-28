@@ -2,7 +2,7 @@ import AbstractComponent from './abstract-component.js';
 import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
 import {getWatchedMovies} from '../utils/filter.js';
-import {GenreItems, STATISTIC_FILTERS_ID} from '../const.js';
+import {GenreItems, StatisticFilterId} from '../const.js';
 import {getFormattedRuntime, getCurrentDate, getTimeDuration} from '../utils/common.js';
 import moment from 'moment';
 
@@ -114,18 +114,18 @@ export default class Statistics extends AbstractComponent {
   renderStatistics(statisticFilterChoice) {
     let moviesList = this._watchedMovies;
 
-    if (statisticFilterChoice !== STATISTIC_FILTERS_ID.ALL_TIME) {
+    if (statisticFilterChoice !== StatisticFilterId.ALL_TIME) {
       switch (statisticFilterChoice) {
-        case STATISTIC_FILTERS_ID.TODAY:
+        case StatisticFilterId.TODAY:
           moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.TODAY, `day`);
           break;
-        case STATISTIC_FILTERS_ID.WEEK:
+        case StatisticFilterId.WEEK:
           moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.WEEK, `days`);
           break;
-        case STATISTIC_FILTERS_ID.MONTH:
+        case StatisticFilterId.MONTH:
           moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.MONTH, `days`);
           break;
-        case STATISTIC_FILTERS_ID.YEAR:
+        case StatisticFilterId.YEAR:
           moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.YEAR, `days`);
           break;
       }

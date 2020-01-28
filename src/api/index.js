@@ -71,7 +71,7 @@ const API = class {
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then(Comment.parseComment);
+      .then((response) => response.comments[response.comments.length - 1]);
   }
 
   deleteComment(commentId) {

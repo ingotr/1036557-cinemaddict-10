@@ -8,7 +8,7 @@ import StatisticsComponent from '../components/statistics.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {EMOJI_ID, STATISTIC_FILTERS_ID} from '../const.js';
+import {EMOJI_ID, StatisticFilterId} from '../const.js';
 
 const SHOWING_CARD = {
   ON_START: 5,
@@ -311,8 +311,8 @@ export default class PageController {
       const newComment = commentData;
 
       this._api.createComment(movie.id, newComment)
-        .then(() => {
-          this._moviesModel.addComment(newData.getCard().id, newComment);
+        .then((updatedComment) => {
+          this._moviesModel.addComment(newData.getCard().id, updatedComment);
 
           this._updateMovieInterface(commentsListElement, topRatedList, mostCommentedList);
           this._renderNewPopupData(movieController, newData.getCard().id);
@@ -329,14 +329,19 @@ export default class PageController {
 
   _onDataChange(movieController, oldData, newData) {
     this._api.updateMovie(oldData.id, newData)
-    .then((movieModel) => {
-      const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
+      .then((updatedMovie) => {
+        const isSuccess = this._moviesModel.updateMovie(oldData.id, updatedMovie);
 
-      if (isSuccess) {
-        movieController.render(movieModel);
-        this._updateMovies();
-      }
-    });
+        if (isSuccess) {
+          movieController.render(updatedMovie);
+          this._updateMovies();
+        }
+
+        this._api.getComments(updatedMovie.id)
+        .then((value) => {
+          updatedMovie.comments = value;
+        });
+      });
   }
 
   _onSortTypeChange(sortType) {
@@ -401,20 +406,20 @@ export default class PageController {
   _onStatisticsFilterChange(statisticFilterType) {
     event.preventDefault();
     switch (statisticFilterType) {
-      case STATISTIC_FILTERS_ID.ALL_TIME:
-        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.ALL_TIME);
+      case StatisticFilterId.ALL_TIME:
+        this._statisticsComponent.renderStatistics(StatisticFilterId.ALL_TIME);
         break;
-      case STATISTIC_FILTERS_ID.TODAY:
-        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.TODAY);
+      case StatisticFilterId.TODAY:
+        this._statisticsComponent.renderStatistics(StatisticFilterId.TODAY);
         break;
-      case STATISTIC_FILTERS_ID.WEEK:
-        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.WEEK);
+      case StatisticFilterId.WEEK:
+        this._statisticsComponent.renderStatistics(StatisticFilterId.WEEK);
         break;
-      case STATISTIC_FILTERS_ID.MONTH:
-        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.MONTH);
+      case StatisticFilterId.MONTH:
+        this._statisticsComponent.renderStatistics(StatisticFilterId.MONTH);
         break;
-      case STATISTIC_FILTERS_ID.YEAR:
-        this._statisticsComponent.renderStatistics(STATISTIC_FILTERS_ID.YEAR);
+      case StatisticFilterId.YEAR:
+        this._statisticsComponent.renderStatistics(StatisticFilterId.YEAR);
         break;
     }
   }

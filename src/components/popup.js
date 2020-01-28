@@ -32,9 +32,7 @@ const createPopUpTemplate = (popup) => {
 
   const {date, releaseCountry} = release;
 
-  const {
-    personalRating,
-  } = userDetails;
+  const {personalRating} = userDetails;
 
   const formattedRuntime = getFormattedRuntime(runtime);
 
