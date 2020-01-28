@@ -16,8 +16,7 @@ const STATISTIC_FILTER_RANGE = {
 };
 
 const createStatisticTextListMarkup = (userStatistics) => {
-  // eslint-disable-next-line no-unused-vars
-  const {favGenre, totalMoviesDuration, genresList, watchedMoviesCount} = userStatistics;
+  const {favGenre, totalMoviesDuration, watchedMoviesCount} = userStatistics;
   return (
     `<ul class="statistic__text-list">
       <li class="statistic__text-item">
@@ -152,7 +151,6 @@ export default class Statistics extends AbstractComponent {
     const genreList = list;
 
     Chart.defaults.global.defaultFontSize = CHART_DEFAULT_FONT_SIZE;
-    // eslint-disable-next-line no-unused-vars
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
       plugins: [ChartJsDatalabels],
@@ -218,6 +216,7 @@ export default class Statistics extends AbstractComponent {
         },
       }
     });
+    return myChart;
   }
 
   _getFavoriteGenre(movies) {
