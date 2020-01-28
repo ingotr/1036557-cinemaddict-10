@@ -68,13 +68,12 @@ export default class Movies {
 
     const newComment = new CommentComponent(commentData);
 
-    // eslint-disable-next-line no-unused-vars
-    let moviesCommentList = this._movies[index].comments;
-    moviesCommentList = [].concat(moviesCommentList.unshift(newComment.getCommentData()));
+    let moviesCommentList = this._movies[index];
+    moviesCommentList = [].concat(moviesCommentList.comments.unshift(newComment.getCommentData()));
 
     this._dataChangeHandlers.forEach((handler) => handler());
 
-    return this._movies[index];
+    return moviesCommentList;
   }
 
   setDataChangeHandlers(handler) {

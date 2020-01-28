@@ -17,7 +17,7 @@ const STATISTIC_FILTER_RANGE = {
 
 const createStatisticTextListMarkup = (userStatistics) => {
   // eslint-disable-next-line no-unused-vars
-  const {favGenre, totalMoviesDuration, genresList, watchedMoviesCount} = userStatistics;
+  const {favGenre, totalMoviesDuration, watchedMoviesCount} = userStatistics;
   return (
     `<ul class="statistic__text-list">
       <li class="statistic__text-item">
@@ -218,6 +218,7 @@ export default class Statistics extends AbstractComponent {
         },
       }
     });
+    return myChart;
   }
 
   _getFavoriteGenre(movies) {
