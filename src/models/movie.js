@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import {getYearFromIso} from '../utils/common.js';
 export default class Movie {
   constructor(data) {
@@ -30,7 +29,6 @@ export default class Movie {
     this.userDetails.alreadyWatched = Boolean(this.userDetails[`already_watched`]);
     this.userDetails.watchingDate = this.userDetails[`watching_date`] ? new Date(this.userDetails[`watching_date`]) : null;
     this.userDetails.favorite = Boolean(this.userDetails[`favorite`]);
-
   }
 
   toRaw() {
