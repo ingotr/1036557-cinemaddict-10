@@ -23,18 +23,19 @@ const createMainMenuTemplate = (filters) => {
 };
 
 export default class MainMenu extends AbstractComponent {
-  constructor(filters) {
+  constructor(filters, onFilterChange) {
     super();
 
     this._filters = filters;
     this._activeFilterType = FilterType.ALL;
+    this._onFilterChange = onFilterChange;
   }
 
   getTemplate() {
     return createMainMenuTemplate(this._filters);
   }
 
-  setFilterChangeHandler(handler, menuClickHandler) {
+  setFilterChangeHandler(menuClickHandler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
@@ -52,13 +53,9 @@ export default class MainMenu extends AbstractComponent {
 
       evt.target.classList.add(`main-navigation__item--active`);
 
-      if (this._activeFilterType === filterType) {
-        return;
-      }
-
       this._activeFilterType = filterType;
 
-      handler(this._activeFilterType);
+      this._onFilterChange(this._activeFilterType);
 
       menuClickHandler(menuItem);
     });

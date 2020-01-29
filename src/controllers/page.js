@@ -420,10 +420,15 @@ export default class PageController {
   }
 
   _onFiltersChange() {
+    this.movies = this._moviesModel.getMovies();
     if (this._movies.length > 0) {
       this._removeMovies();
       this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARD.ON_START));
-      this._renderShowMoreButton();
+      if (this._movies.length > 5) {
+        this._renderShowMoreButton();
+      } else {
+        remove(this._showMoreButtonComponent);
+      }
       this._filterController.render();
     } else {
       render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);

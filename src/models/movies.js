@@ -9,6 +9,13 @@ export default class Movies {
 
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
+    this.setFilter.bind(this);
+
+    this.onFilterChange = this.onFilterChange.bind(this);
+  }
+
+  getActiveFilter() {
+    return this._activeFilterType;
   }
 
   getMovies() {
@@ -86,5 +93,10 @@ export default class Movies {
 
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
+  }
+
+  onFilterChange(filterType) {
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
   }
 }
