@@ -208,7 +208,7 @@ export default class PageController {
       this._renderTopRatedMovies(topRatedList);
       this._renderMostCommentedMovies(mostCommentedList);
     } else {
-      render(this._filmListContainerElement, this._noFilmsComponent, RenderPosition.BEFOREEND);
+      render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
     }
 
   }
@@ -416,10 +416,14 @@ export default class PageController {
   }
 
   _onFiltersChange() {
-    this._removeMovies();
-    this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARD.ON_START));
-    this._renderShowMoreButton();
-    this._filterController.render();
+    if (this._movies.length > 0) {
+      this._removeMovies();
+      this._renderMovies(this._moviesModel.getMovies().slice(0, SHOWING_CARD.ON_START));
+      this._renderShowMoreButton();
+      this._filterController.render();
+    } else {
+      render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
+    }
   }
 
   _onStatisticsFilterChange(statisticFilterType) {

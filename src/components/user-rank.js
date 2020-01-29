@@ -1,4 +1,5 @@
 import AbstractSmartComponent from './abstract-smart-component';
+import {createElement} from '../utils/render.js';
 
 const UserRanks = {
   NONE: {
@@ -34,11 +35,23 @@ export default class UserRank extends AbstractSmartComponent {
   constructor() {
     super();
 
-    this._rank = null;
+    this._rank = ``;
   }
 
   getRank() {
     return this._rank;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    if (this._rank === ``) {
+      this.hide();
+    }
+
+    return this._element;
   }
 
   getTemplate() {
