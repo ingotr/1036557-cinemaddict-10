@@ -13,6 +13,12 @@ const createGenresMarkup = (genre) => {
   );
 };
 
+const createInputMarkup = (name, isChecked) => {
+  return (
+    `<input type="checkbox" class="film-details__control-input visually-hidden" id="${name}" name="${name}" ${isChecked ? `checked` : ``}>`
+  );
+};
+
 const createPopUpTemplate = (popup) => {
   const {comments, filmInfo, userDetails} = popup;
   const {
@@ -32,7 +38,7 @@ const createPopUpTemplate = (popup) => {
 
   const {date, releaseCountry} = release;
 
-  const {personalRating} = userDetails;
+  const {personalRating, watchlist, alreadyWatched, favorite} = userDetails;
 
   const formattedRuntime = getFormattedRuntime(runtime);
 
@@ -44,6 +50,10 @@ const createPopUpTemplate = (popup) => {
 
   let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
     description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;
+
+  const addToWatchlistInput = createInputMarkup(`watchlist`, watchlist);
+  const markAsWatchedInput = createInputMarkup(`watched`, alreadyWatched);
+  const markAsFavoriteInput = createInputMarkup(`favorite`, favorite);
 
   return (
     `<section class="film-details">
@@ -113,13 +123,13 @@ const createPopUpTemplate = (popup) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            ${addToWatchlistInput}
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            ${markAsWatchedInput}
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            ${markAsFavoriteInput}
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>

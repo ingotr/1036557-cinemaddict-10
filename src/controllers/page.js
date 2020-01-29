@@ -134,6 +134,10 @@ export default class PageController {
       return;
     }
 
+    if (this._movies.length <= SHOWING_CARD.ON_START) {
+      return;
+    }
+
     render(this._filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
     this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
