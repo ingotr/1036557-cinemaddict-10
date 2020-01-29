@@ -4,10 +4,12 @@ import FilmsComponent from '../components/films.js';
 import FilmsListComponent from '../components/films-list';
 import NoFilmsComponent from '../components/no-films';
 import StatisticsComponent from '../components/statistics.js';
+import UserRankComponent from '../components/user-rank.js';
 
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
+import {getWatchedMovies} from '../utils/filter.js';
 import {EMOJI_ID, StatisticFilterId} from '../const.js';
 
 const SHOWING_CARD = {
@@ -106,6 +108,7 @@ export default class PageController {
     this._filmsComponent = new FilmsComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
+    this._userRankComponent = new UserRankComponent();
     this._filmListContainerElement = null;
     this._filmTopRatedElement = null;
     this._filmMostCommentedElement = null;
@@ -189,6 +192,11 @@ export default class PageController {
     this._filmListContainerElement = this._filmsComponent.getElement().querySelector(`.films-list__container`);
     this._filmTopRatedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra .films-list__container`);
     this._filmMostCommentedElement = this._filmsComponent.getElement().querySelector(`.films-list--extra:last-child .films-list__container`);
+
+    const headerElement = document.querySelector(`.header`);
+    const watchedMoviesLength = getWatchedMovies(this._movies).length;
+    this._userRankComponent.setUserRank(watchedMoviesLength);
+    render(headerElement, this._userRankComponent.getElement(), RenderPosition.BEFOREEND);
 
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
@@ -327,6 +335,15 @@ export default class PageController {
     return true;
   }
 
+  _updateUserRank() {
+    this._movies = this._moviesModel.getMovies();
+    const watchedMoviesLength = getWatchedMovies(this._movies).length;
+    Promise.resolve(this._userRankComponent.setUserRank(watchedMoviesLength))
+    .then(()=> {
+      this._userRankComponent.rerender();
+    });
+  }
+
   _onDataChange(movieController, oldData, newData) {
     this._api.updateMovie(oldData.id, newData)
       .then((updatedMovie) => {
@@ -336,6 +353,8 @@ export default class PageController {
           movieController.render(updatedMovie);
           this._updateMovies();
         }
+
+        this._updateUserRank();
 
         this._api.getComments(updatedMovie.id)
         .then((value) => {

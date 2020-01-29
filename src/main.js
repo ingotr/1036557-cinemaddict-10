@@ -2,10 +2,8 @@ import Api from './api/index.js';
 import Store from './api/store.js';
 import StoreComments from './api/store-comments.js';
 import Provider from './api/provider.js';
-import UserRankComponent from './components/user-rank.js';
 import MoviesModel from './models/movies.js';
 import PageControllerComponent from './controllers/page.js';
-import {render, RenderPosition} from './utils/render.js';
 
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v1`;
@@ -45,12 +43,9 @@ const store = new Store(STORE_NAME, window.localStorage);
 const storeComments = new StoreComments(STORE_COMMENTS_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store, storeComments);
 
-const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 
 const moviesModel = new MoviesModel();
-
-render(headerElement, new UserRankComponent().getElement(), RenderPosition.BEFOREEND);
 
 const pageController = new PageControllerComponent(mainElement, moviesModel, apiWithProvider);
 

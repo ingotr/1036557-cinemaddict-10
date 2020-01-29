@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const UserRanks = {
   NONE: {
@@ -7,7 +7,7 @@ const UserRanks = {
   },
   NOVICE: {
     countMin: 1,
-    countMax: 11,
+    countMax: 10,
     title: `novice`,
   },
   FAN: {
@@ -21,25 +21,7 @@ const UserRanks = {
   },
 };
 
-const getUserRank = (watchedMovies) => {
-  const rank = ``;
-
-  if ((watchedMovies >= UserRanks.NOVICE.countMin) && (watchedMovies <= UserRanks.NOVICE.countMax)) {
-    return UserRanks.NOVICE;
-  }
-  if ((watchedMovies >= UserRanks.FAN.countMin) && (watchedMovies <= UserRanks.FAN.countMax)) {
-    return UserRanks.FAN;
-  }
-  if (watchedMovies >= UserRanks.BUFF.countMin) {
-    return UserRanks.BUFF;
-  }
-
-  return rank;
-};
-
-const createUserRankTemplate = () => {
-  const rank = getUserRank();
-
+const createUserRankTemplate = (rank) => {
   return (
     `<section class="header__profile profile">
       <p class="profile__rating">${rank}</p>
@@ -48,8 +30,32 @@ const createUserRankTemplate = () => {
   );
 };
 
-export default class UserRank extends AbstractComponent {
+export default class UserRank extends AbstractSmartComponent {
+  constructor() {
+    super();
+
+    this._rank = null;
+  }
+
+  getRank() {
+    return this._rank;
+  }
+
   getTemplate() {
-    return createUserRankTemplate();
+    return createUserRankTemplate(this._rank);
+  }
+
+  setUserRank(watchedMovies) {
+    if ((watchedMovies >= UserRanks.NOVICE.countMin) && (watchedMovies <= UserRanks.NOVICE.countMax)) {
+      this._rank = UserRanks.NOVICE.title;
+    } else {
+      if ((watchedMovies >= UserRanks.FAN.countMin) && (watchedMovies <= UserRanks.FAN.countMax)) {
+        this._rank = UserRanks.FAN.title;
+      } else {
+        if (watchedMovies >= UserRanks.BUFF.countMin) {
+          this._rank = UserRanks.BUFF.title;
+        }
+      }
+    }
   }
 }
