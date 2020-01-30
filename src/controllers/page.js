@@ -10,7 +10,7 @@ import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieControllerComponent from './movie.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {getWatchedMovies} from '../utils/filter.js';
-import {EMOJI_ID, StatisticFilterId} from '../const.js';
+import {EmojiId, StatisticFilterId} from '../const.js';
 
 const HIDDEN_CLASS = `visually-hidden`;
 
@@ -131,49 +131,6 @@ export default class PageController {
     this._moviesModel.setFilterChangeHandlers(this._onFiltersChange);
   }
 
-  _renderShowMoreButton() {
-    const movies = this._moviesModel.getMovies();
-    remove(this._showMoreButtonComponent);
-
-    if (showingCardCount >= movies.length) {
-      return;
-    }
-
-    if (movies.length <= SHOWING_CARD.ON_START) {
-      return;
-    }
-
-    render(this._filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-
-    this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
-  }
-
-  hide() {
-    this._filmsComponent.hide();
-  }
-
-  show() {
-    this._filmsComponent.show();
-  }
-
-  hideLoadingScreen() {
-    this._filmsComponent.hideLoadingTitle(this._filmsComponent);
-  }
-
-  renderCustomFilms(filmList, filmListContainer) {
-    if (filmList.length > 0) {
-      return filmList.map((film) => {
-        const movieController = new MovieControllerComponent(this._filmListContainerElement,
-            this._filmsComponent, this._onDataChange, this._onFiltersChange,
-            this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange, this._onEmojiChange);
-
-        movieController.render(film, filmListContainer);
-        return movieController;
-      });
-    }
-    return [];
-  }
-
   render() {
     this._movies = this._moviesModel.getMovies();
 
@@ -225,12 +182,55 @@ export default class PageController {
 
   }
 
+  hide() {
+    this._filmsComponent.hide();
+  }
+
+  show() {
+    this._filmsComponent.show();
+  }
+
+  hideLoadingScreen() {
+    this._filmsComponent.hideLoadingTitle(this._filmsComponent);
+  }
+
+  renderCustomFilms(filmList, filmListContainer) {
+    if (filmList.length > 0) {
+      return filmList.map((film) => {
+        const movieController = new MovieControllerComponent(this._filmListContainerElement,
+            this._filmsComponent, this._onDataChange, this._onFiltersChange,
+            this._onUserRatingChange, this._onViewChange, this._onCommentsCountChange, this._onEmojiChange);
+
+        movieController.render(film, filmListContainer);
+        return movieController;
+      });
+    }
+    return [];
+  }
+
   setCurrentFilterTarget(target) {
     this._currentFilterTargetElement = target;
   }
 
   getCurrentFilterTarget() {
     return this._currentFilterTargetElement;
+  }
+
+  _renderShowMoreButton() {
+    const movies = this._moviesModel.getMovies();
+    remove(this._showMoreButtonComponent);
+
+    if (showingCardCount >= movies.length) {
+      return;
+    }
+
+    if (movies.length <= SHOWING_CARD.ON_START) {
+      return;
+    }
+
+    render(this._filmListContainerElement, this._showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+
+    this._showMoreButtonComponent.setClickHandler(this._onShowMoreButtonClick);
   }
 
   _removeMovies() {
@@ -305,6 +305,25 @@ export default class PageController {
     movieController.renderPopup();
   }
 
+  _renderFilteredMovies(movies, topRatedList, mostCommentedList) {
+    this._renderMovies(movies.slice(0, SHOWING_CARD.ON_START));
+
+    if (this._movies.length > 5) {
+      this._renderShowMoreButton();
+    } else {
+      remove(this._showMoreButtonComponent);
+    }
+
+    this._renderTopRatedMovies(topRatedList);
+    this._renderMostCommentedMovies(mostCommentedList);
+  }
+
+  _renderNoMoviesPlumber() {
+    render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
+    this._filmTopRatedElement.parentElement.classList.add(HIDDEN_CLASS);
+    this._filmMostCommentedElement.parentElement.classList.add(HIDDEN_CLASS);
+  }
+
   _updateMovies() {
     const movies = this._moviesModel.getMovies();
     this._removeMovies();
@@ -319,6 +338,25 @@ export default class PageController {
     this._renderNewMoviesData();
     const commentsList = commentsListElement;
     commentsList.innerHTML = ``;
+  }
+
+  _updateUserRank() {
+    this._movies = this._moviesModel.getMovies();
+    const watchedMoviesLength = getWatchedMovies(this._movies).length;
+    Promise.resolve(this._userRankComponent.setUserRank(watchedMoviesLength))
+    .then(()=> {
+      this._userRankComponent.rerender();
+    });
+  }
+
+  _updateTopRatedFilms(movies) {
+    this._filmTopRatedElement.parentElement.classList.remove(HIDDEN_CLASS);
+    return getTopRatedFilms(movies);
+  }
+
+  _updateMostCommentedFilms(movies) {
+    this._filmMostCommentedElement.parentElement.classList.remove(HIDDEN_CLASS);
+    return getMostCommentedFilms(movies);
   }
 
   _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, commentData) {
@@ -362,15 +400,6 @@ export default class PageController {
         });
     }
     return true;
-  }
-
-  _updateUserRank() {
-    this._movies = this._moviesModel.getMovies();
-    const watchedMoviesLength = getWatchedMovies(this._movies).length;
-    Promise.resolve(this._userRankComponent.setUserRank(watchedMoviesLength))
-    .then(()=> {
-      this._userRankComponent.rerender();
-    });
   }
 
   _onDataChange(movieController, oldData, newData) {
@@ -445,35 +474,6 @@ export default class PageController {
     });
   }
 
-  _updateTopRatedFilms(movies) {
-    this._filmTopRatedElement.parentElement.classList.remove(HIDDEN_CLASS);
-    return getTopRatedFilms(movies);
-  }
-
-  _updateMostCommentedFilms(movies) {
-    this._filmMostCommentedElement.parentElement.classList.remove(HIDDEN_CLASS);
-    return getMostCommentedFilms(movies);
-  }
-
-  _renderFilteredMovies(movies, topRatedList, mostCommentedList) {
-    this._renderMovies(movies.slice(0, SHOWING_CARD.ON_START));
-
-    if (this._movies.length > 5) {
-      this._renderShowMoreButton();
-    } else {
-      remove(this._showMoreButtonComponent);
-    }
-
-    this._renderTopRatedMovies(topRatedList);
-    this._renderMostCommentedMovies(mostCommentedList);
-  }
-
-  _renderNoMoviesPlumber() {
-    render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
-    this._filmTopRatedElement.parentElement.classList.add(HIDDEN_CLASS);
-    this._filmMostCommentedElement.parentElement.classList.add(HIDDEN_CLASS);
-  }
-
   _onFiltersChange() {
     showingCardCount = SHOWING_CARD.ON_START;
 
@@ -514,22 +514,22 @@ export default class PageController {
 
   _onEmojiChange(emojiType, bigEmojiContainer) {
     switch (emojiType) {
-      case EMOJI_ID.SMILE.ID:
-        bigEmojiContainer.src = EMOJI_ID.SMILE.SRC;
+      case EmojiId.SMILE.ID:
+        bigEmojiContainer.src = EmojiId.SMILE.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.SMILE.VALUE;
-      case EMOJI_ID.SLEEPING.ID:
-        bigEmojiContainer.src = EMOJI_ID.SLEEPING.SRC;
+        return EmojiId.SMILE.VALUE;
+      case EmojiId.SLEEPING.ID:
+        bigEmojiContainer.src = EmojiId.SLEEPING.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.SLEEPING.VALUE;
-      case EMOJI_ID.GRINNING.ID:
-        bigEmojiContainer.src = EMOJI_ID.GRINNING.SRC;
+        return EmojiId.SLEEPING.VALUE;
+      case EmojiId.GRINNING.ID:
+        bigEmojiContainer.src = EmojiId.GRINNING.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.GRINNING.VALUE;
-      case EMOJI_ID.ANGRY.ID:
-        bigEmojiContainer.src = EMOJI_ID.ANGRY.SRC;
+        return EmojiId.GRINNING.VALUE;
+      case EmojiId.ANGRY.ID:
+        bigEmojiContainer.src = EmojiId.ANGRY.SRC;
         bigEmojiContainer.classList.remove(`visually-hidden`);
-        return EMOJI_ID.ANGRY.VALUE;
+        return EmojiId.ANGRY.VALUE;
     }
     return emojiType;
   }

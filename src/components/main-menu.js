@@ -33,7 +33,7 @@ const createMainMenuTemplate = (filters, currentFilterTarget) => {
   const [watchlist, history, favorites] = filters;
   const filterTarget = currentFilterTarget;
 
-  let filtersClassBuffer = {
+  let FiltersClassBuffer = {
     ALL: ``,
     WATCHLIST: ``,
     HISTORY: ``,
@@ -45,16 +45,16 @@ const createMainMenuTemplate = (filters, currentFilterTarget) => {
     const targetFilterType = filterTarget.dataset.filterType;
     const filterClass = filterTarget.classList;
 
-    getCurrentFilterClass(filtersClassBuffer, targetFilterType, filterClass);
+    getCurrentFilterClass(FiltersClassBuffer, targetFilterType, filterClass);
   }
 
   return (
     `<nav class="main-navigation">
-      <a id="#all movies" href="#all movies" data-filter-type="${FilterType.ALL}" class="main-navigation__item ${filtersClassBuffer.ALL}">All movies</a>
-      <a id="#watchlist" href="#watchlist" data-filter-type="${FilterType.WATCHLIST}" class="main-navigation__item ${filtersClassBuffer.WATCHLIST}">Watchlist <span class="main-navigation__item-count">${watchlist.count}</span></a>
-      <a id="#history" href="#history" data-filter-type="${FilterType.HISTORY}" class="main-navigation__item ${filtersClassBuffer.HISTORY}">History <span class="main-navigation__item-count">${history.count}</span></a>
-      <a id="#favorites" href="#favorites" data-filter-type="${FilterType.FAVORITES}" class="main-navigation__item ${filtersClassBuffer.FAVORITES}">Favorites <span class="main-navigation__item-count">${favorites.count}</span></a>
-      <a id="#stats" href="#stats" class="main-navigation__item main-navigation__item--additional ${filtersClassBuffer.STATS}">Stats</a>
+      <a id="#all movies" href="#all movies" data-filter-type="${FilterType.ALL}" class="main-navigation__item ${FiltersClassBuffer.ALL}">All movies</a>
+      <a id="#watchlist" href="#watchlist" data-filter-type="${FilterType.WATCHLIST}" class="main-navigation__item ${FiltersClassBuffer.WATCHLIST}">Watchlist <span class="main-navigation__item-count">${watchlist.count}</span></a>
+      <a id="#history" href="#history" data-filter-type="${FilterType.HISTORY}" class="main-navigation__item ${FiltersClassBuffer.HISTORY}">History <span class="main-navigation__item-count">${history.count}</span></a>
+      <a id="#favorites" href="#favorites" data-filter-type="${FilterType.FAVORITES}" class="main-navigation__item ${FiltersClassBuffer.FAVORITES}">Favorites <span class="main-navigation__item-count">${favorites.count}</span></a>
+      <a id="#stats" href="#stats" class="main-navigation__item main-navigation__item--additional ${FiltersClassBuffer.STATS}">Stats</a>
     </nav>`
   );
 };

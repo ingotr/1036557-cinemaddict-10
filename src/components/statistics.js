@@ -111,6 +111,10 @@ export default class Statistics extends AbstractComponent {
     };
   }
 
+  setStatisticsFiltersHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, handler);
+  }
+
   renderStatistics(statisticFilterChoice) {
     let moviesList = this._watchedMovies;
 
@@ -140,10 +144,6 @@ export default class Statistics extends AbstractComponent {
     } else {
       ctx.classList.add(`visually-hidden`);
     }
-  }
-
-  setStatisticsFiltersHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, handler);
   }
 
   _renderStatisticsCharts(list) {

@@ -4,7 +4,7 @@ import CommentComponent from '../components/comment.js';
 import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
-import {EMOJI_IDS, RADIX_DECIMAL} from '../const.js';
+import {EmojiIds, RADIX_DECIMAL} from '../const.js';
 import {getCurrentDate, getCurrentDateIsoFormat, debounce} from '../utils/common.js';
 
 const DEBOUNCE_TIMEOUT = 1000;
@@ -48,6 +48,18 @@ export default class MovieController {
     this._ratingChangeButton = null;
   }
 
+  getCurrentDeletingComment() {
+    return this._currentDelectingComment;
+  }
+
+  getCreatingNewCommentForm() {
+    return this._createNewCommentForm;
+  }
+
+  getRatingChangeButton() {
+    return this._ratingChangeButton;
+  }
+
   render(movie, container = this._container) {
     const oldCardComponent = this._cardComponent;
     const oldPopupComponent = this._popupComponent;
@@ -79,7 +91,7 @@ export default class MovieController {
       const onCtrlEnterPress = (event) => {
         keysPressed[event.keyCode] = true;
 
-        const isEmojiExistInList = Object.values(EMOJI_IDS).includes(this._emptyCommentEmoji);
+        const isEmojiExistInList = Object.values(EmojiIds).includes(this._emptyCommentEmoji);
 
         const commentArea = this._popupComponent.getElement().querySelector(`.film-details__comment-input`);
         commentArea.removeAttribute(`disabled`);
@@ -234,11 +246,6 @@ export default class MovieController {
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
   }
 
-  _removeComments(list) {
-    const commentsList = list;
-    commentsList.innerHTML = ``;
-  }
-
   renderComments(popupCommentsList, commentsListElement) {
     const popupComponent = this._popupComponent;
 
@@ -267,16 +274,17 @@ export default class MovieController {
     this.renderComments(popupCommentsList, commentsListElement);
   }
 
-  getCurrentDeletingComment() {
-    return this._currentDelectingComment;
+  newCommentDeliveryError(target) {
+    target.style = `border: 1px solid red`;
   }
 
-  getCreatingNewCommentForm() {
-    return this._createNewCommentForm;
-  }
+  shake() {
+    this._popupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
 
-  getRatingChangeButton() {
-    return this._ratingChangeButton;
+    setTimeout(() => {
+      this._popupComponent.getElement().style.animation = ``;
+
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _addCommentsHandlers(currentComment, commentIndex, commentContainer) {
@@ -290,6 +298,11 @@ export default class MovieController {
 
       this._onCommentsCountChange(this, this._cardComponent, null, commentIndex, commentContainer, null);
     });
+  }
+
+  _removeComments(list) {
+    const commentsList = list;
+    commentsList.innerHTML = ``;
   }
 
   _replaceCardToPopup() {
@@ -308,18 +321,5 @@ export default class MovieController {
 
       this._replacePopupToCard();
     }
-  }
-
-  newCommentDeliveryError(target) {
-    target.style = `border: 1px solid red`;
-  }
-
-  shake() {
-    this._popupComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-
-    setTimeout(() => {
-      this._popupComponent.getElement().style.animation = ``;
-
-    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

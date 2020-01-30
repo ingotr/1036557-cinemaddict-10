@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 import {getFormattedRuntime, getYearFromIso} from '../utils/common.js';
-import {DESCRIPTION} from '../const.js';
+import {Description} from '../const.js';
 
 const createButtonMarkup = (name, description, isActive) => {
   return (
@@ -29,8 +29,8 @@ const createDefaultCardTemplate = (card) => {
 
   const formattedDate = getYearFromIso(date);
 
-  let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
-    description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;
+  let currentDescription = (description.length > Description.MAX_LENGTH) ?
+    description.slice(0, Description.MAX_LENGTH) + Description.ELLIPSIS : description;
 
   const addToWatchlistButton = createButtonMarkup(`add-to-watchlist`, `Add to watchlist`, watchlist);
   const markAsWatchedButton = createButtonMarkup(`mark-as-watched`, `Mark as watched`, alreadyWatched);

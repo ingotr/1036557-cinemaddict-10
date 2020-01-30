@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {DescriptionItems, MonthNames} from '../const.js';
 
-const MAX = {
+const Max = {
   DESCRIPTION_LENGTH: 3,
   RATING: 9,
   RUNTIME: 299,
@@ -19,7 +19,7 @@ const getRandomElement = (arr) => {
 };
 
 const getRandomDescription = () => {
-  const currentLength = getRandomIntegerNumber(1, MAX.DESCRIPTION_LENGTH);
+  const currentLength = getRandomIntegerNumber(1, Max.DESCRIPTION_LENGTH);
   let description = [];
   for (let i = 0; i < currentLength; i++) {
     description[i] = DescriptionItems[i];
@@ -29,7 +29,7 @@ const getRandomDescription = () => {
 };
 
 const getRandomRating = () => {
-  return Math.fround(Math.random() * MAX.RATING).toFixed(1);
+  return Math.fround(Math.random() * Max.RATING).toFixed(1);
 };
 
 const getRandomDate = () => {
@@ -84,11 +84,11 @@ const getFormattedRuntime = (runtime) => {
 };
 
 const getRandomDuration = () => {
-  return getRandomIntegerNumber(0, MAX.RUNTIME);
+  return getRandomIntegerNumber(0, Max.RUNTIME);
 };
 
 const getRandomCommentsNumber = () => {
-  return getRandomIntegerNumber(0, MAX.COMMENTS_NUMBER);
+  return getRandomIntegerNumber(0, Max.COMMENTS_NUMBER);
 };
 
 const getYearFromIso = (isoDate) => {

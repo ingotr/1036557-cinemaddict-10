@@ -1,6 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import {getFormattedRuntime, getDateFromIso} from '../utils/common.js';
-import {DESCRIPTION} from '../const.js';
+import {Description} from '../const.js';
 
 const GenreTitle = {
   LONG: `Genres`,
@@ -48,8 +48,8 @@ const createPopUpTemplate = (popup) => {
 
   let genreListTitle = genre.length > 1 ? GenreTitle.LONG : GenreTitle.SHORT;
 
-  let currentDescription = (description.length > DESCRIPTION.MAX_LENGTH) ?
-    description.slice(0, DESCRIPTION.MAX_LENGTH) + DESCRIPTION.ELLIPSIS : description;
+  let currentDescription = (description.length > Description.MAX_LENGTH) ?
+    description.slice(0, Description.MAX_LENGTH) + Description.ELLIPSIS : description;
 
   const addToWatchlistInput = createInputMarkup(`watchlist`, watchlist);
   const markAsWatchedInput = createInputMarkup(`watched`, alreadyWatched);

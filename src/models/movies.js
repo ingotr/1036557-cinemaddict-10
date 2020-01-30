@@ -36,6 +36,14 @@ export default class Movies {
     this._filterChangeHandlers.forEach((handler) => handler());
   }
 
+  setDataChangeHandlers(handler) {
+    this._dataChangeHandlers.push(handler);
+  }
+
+  setFilterChangeHandlers(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
   updateMovie(movieId, newMovie) {
     const index = this._movies.findIndex((movie) => movie.id === movieId);
 
@@ -81,14 +89,6 @@ export default class Movies {
     this._dataChangeHandlers.forEach((handler) => handler());
 
     return moviesCommentList;
-  }
-
-  setDataChangeHandlers(handler) {
-    this._dataChangeHandlers.push(handler);
-  }
-
-  setFilterChangeHandlers(handler) {
-    this._filterChangeHandlers.push(handler);
   }
 
   _callHandlers(handlers) {
