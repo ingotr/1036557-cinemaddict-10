@@ -1,26 +1,28 @@
-import {getRandomUserRank} from '../mock/user-rank.js';
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component';
+import {createElement} from '../utils/render.js';
 
-const getUserRank = () => {
-  const count = getRandomUserRank();
-  let rank = ``;
-
-  if ((count >= 1) && (count <= 10)) {
-    rank = `novice`;
-  }
-  if ((count >= 11) && (count <= 20)) {
-    rank = `fan`;
-  }
-  if (count >= 21) {
-    rank = `movie buff`;
-  }
-
-  return rank;
+const UserRanks = {
+  NONE: {
+    count: 0,
+    title: ``,
+  },
+  NOVICE: {
+    countMin: 1,
+    countMax: 10,
+    title: `novice`,
+  },
+  FAN: {
+    countMin: 11,
+    countMax: 20,
+    title: `fan`,
+  },
+  BUFF: {
+    countMin: 21,
+    title: `movie buff`,
+  },
 };
 
-const createUserRankTemplate = () => {
-  const rank = getUserRank();
-
+const createUserRankTemplate = (rank) => {
   return (
     `<section class="header__profile profile">
       <p class="profile__rating">${rank}</p>
@@ -29,8 +31,44 @@ const createUserRankTemplate = () => {
   );
 };
 
-export default class UserRank extends AbstractComponent {
+export default class UserRank extends AbstractSmartComponent {
+  constructor() {
+    super();
+
+    this._rank = ``;
+  }
+
+  getRank() {
+    return this._rank;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    if (this._rank === ``) {
+      this.hide();
+    }
+
+    return this._element;
+  }
+
   getTemplate() {
-    return createUserRankTemplate();
+    return createUserRankTemplate(this._rank);
+  }
+
+  setUserRank(watchedMovies) {
+    if ((watchedMovies >= UserRanks.NOVICE.countMin) && (watchedMovies <= UserRanks.NOVICE.countMax)) {
+      this._rank = UserRanks.NOVICE.title;
+    } else {
+      if ((watchedMovies >= UserRanks.FAN.countMin) && (watchedMovies <= UserRanks.FAN.countMax)) {
+        this._rank = UserRanks.FAN.title;
+      } else {
+        if (watchedMovies >= UserRanks.BUFF.countMin) {
+          this._rank = UserRanks.BUFF.title;
+        }
+      }
+    }
   }
 }

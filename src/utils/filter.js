@@ -13,7 +13,7 @@ const getNotInWatchlistMovies = (movies) => {
 };
 
 const getWatchedMovies = (movies) => {
-  return movies.filter((movie) => movie.userDetails.already_watched);
+  return movies.filter((movie) => movie.userDetails.alreadyWatched);
 };
 
 const getFavoriteMovies = (movies) => {
@@ -21,18 +21,23 @@ const getFavoriteMovies = (movies) => {
 };
 
 const getMoviesByFilter = (movies, filterType) => {
+  let moviesByFilter = movies;
   switch (filterType) {
     case FilterType.ALL:
-      return getAllMovies(movies);
+      moviesByFilter = getAllMovies(movies);
+      break;
     case FilterType.WATCHLIST:
-      return getInWatchlistMovies(movies);
+      moviesByFilter = getInWatchlistMovies(movies);
+      break;
     case FilterType.HISTORY:
-      return getWatchedMovies(movies);
+      moviesByFilter = getWatchedMovies(movies);
+      break;
     case FilterType.FAVORITES:
-      return getFavoriteMovies(getNotInWatchlistMovies(movies));
+      moviesByFilter = getFavoriteMovies(movies);
+      break;
   }
 
-  return movies;
+  return moviesByFilter;
 };
 
 export {getAllMovies, getInWatchlistMovies, getNotInWatchlistMovies,

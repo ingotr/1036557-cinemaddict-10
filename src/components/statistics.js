@@ -2,13 +2,13 @@ import AbstractComponent from './abstract-component.js';
 import Chart from 'chart.js';
 import ChartJsDatalabels from 'chartjs-plugin-datalabels';
 import {getWatchedMovies} from '../utils/filter.js';
-import {GenreItems, STATISTIC_FILTERS_ID} from '../const.js';
+import {GenreItems, StatisticFilterId} from '../const.js';
 import {getFormattedRuntime, getCurrentDate, getTimeDuration} from '../utils/common.js';
 import moment from 'moment';
 
 const CHART_DEFAULT_FONT_SIZE = 20;
 const FIRST_FIVE_GENRES = 5;
-const STATISTIC_FILTER_RANGE = {
+const StatisticFilterRange = {
   TODAY: 1,
   WEEK: 7,
   MONTH: 30,
@@ -111,22 +111,26 @@ export default class Statistics extends AbstractComponent {
     };
   }
 
+  setStatisticsFiltersHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, handler);
+  }
+
   renderStatistics(statisticFilterChoice) {
     let moviesList = this._watchedMovies;
 
-    if (statisticFilterChoice !== STATISTIC_FILTERS_ID.ALL_TIME) {
+    if (statisticFilterChoice !== StatisticFilterId.ALL_TIME) {
       switch (statisticFilterChoice) {
-        case STATISTIC_FILTERS_ID.TODAY:
-          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.TODAY, `day`);
+        case StatisticFilterId.TODAY:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.TODAY, `day`);
           break;
-        case STATISTIC_FILTERS_ID.WEEK:
-          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.WEEK, `days`);
+        case StatisticFilterId.WEEK:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.WEEK, `days`);
           break;
-        case STATISTIC_FILTERS_ID.MONTH:
-          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.MONTH, `days`);
+        case StatisticFilterId.MONTH:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.MONTH, `days`);
           break;
-        case STATISTIC_FILTERS_ID.YEAR:
-          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, STATISTIC_FILTER_RANGE.YEAR, `days`);
+        case StatisticFilterId.YEAR:
+          moviesList = this._getMoviesByBetweenDates(this._watchedMovies, StatisticFilterRange.YEAR, `days`);
           break;
       }
     }
@@ -140,10 +144,6 @@ export default class Statistics extends AbstractComponent {
     } else {
       ctx.classList.add(`visually-hidden`);
     }
-  }
-
-  setStatisticsFiltersHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, handler);
   }
 
   _renderStatisticsCharts(list) {

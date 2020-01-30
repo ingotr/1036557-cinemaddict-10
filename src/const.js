@@ -88,7 +88,7 @@ const FilterType = {
   ALL: `all movies`,
 };
 
-const EMOJI_ID = {
+const EmojiId = {
   SMILE: {
     ID: `emoji-smile`,
     VALUE: `smile`,
@@ -111,14 +111,14 @@ const EMOJI_ID = {
   },
 };
 
-const EMOJI_IDS = {
+const EmojiIds = {
   SMILE: `smile`,
   SLEEPING: `sleeping`,
   GRINNING: `puke`,
   ANGRY: `angry`,
 };
 
-const STATISTIC_FILTERS_ID = {
+const StatisticFilterId = {
   ALL_TIME: `statistic-all-time`,
   TODAY: `statistic-today`,
   WEEK: `statistic-week`,
@@ -128,11 +128,11 @@ const STATISTIC_FILTERS_ID = {
 
 const RADIX_DECIMAL = 10;
 
-const DESCRIPTION = {
+const Description = {
   MAX_LENGTH: 140,
   ELLIPSIS: `\&#8230`,
 };
 
 export {CARD_COUNT, NameItems, PosterItems, DescriptionItems,
-  GenreItems, MonthNames, FilterType, EMOJI_ID, EMOJI_IDS,
-  STATISTIC_FILTERS_ID, RADIX_DECIMAL, DESCRIPTION};
+  GenreItems, MonthNames, FilterType, EmojiId, EmojiIds,
+  StatisticFilterId, RADIX_DECIMAL, Description};

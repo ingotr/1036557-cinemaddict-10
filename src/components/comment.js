@@ -9,7 +9,7 @@ const DefaultData = {
 const createCommentMarkup = (commentary, externalData) => {
   const {author, comment, date, emotion} = commentary;
 
-  const encodedText = he.encode(comment);
+  const encodedText = he.decode(comment);
 
   const commentDateFromNow = moment(date).fromNow();
 

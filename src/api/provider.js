@@ -96,8 +96,8 @@ export default class Provider {
     if (this._isOnline()) {
       return this._api.createComment(movieId, comment)
       .then((newComment) => {
-        this._storeComments.setItem(movieId, Object.assign({}, commentByMovieId, newComment.toRAW()));
-        return newComment;
+        this._storeComments.setItem(movieId, Object.assign({}, commentByMovieId, newComment));
+        return Promise.resolve(newComment);
       });
     }
 

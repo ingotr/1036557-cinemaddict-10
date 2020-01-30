@@ -4,7 +4,7 @@ import {render, replace, RenderPosition} from '../utils/render.js';
 import {getMoviesByFilter} from '../utils/filter.js';
 
 export default class FilterController {
-  constructor(container, moviesModel, statisticsComponent, pageController) {
+  constructor(container, moviesModel, statisticsComponent, pageController, currentFilterTargetElement) {
     this._container = container;
     this._moviesModel = moviesModel;
     this._statisticsComponent = statisticsComponent;
@@ -15,14 +15,14 @@ export default class FilterController {
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
 
+    this._currentFilterTargetElement = currentFilterTargetElement;
+
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onMenuChange = this._onMenuChange.bind(this);
-
-    this._moviesModel.setDataChangeHandlers(this._onDataChange);
   }
 
-  render() {
+  render(currentFilterTargetElement = null) {
     const container = this._container;
     const allMovies = this._moviesModel.getMoviesAll();
     const filters = Object.values(FilterType).map((filterType) => {
@@ -35,9 +35,8 @@ export default class FilterController {
 
     const oldComponent = this._filterComponent;
 
-    this._filterComponent = new FilterComponent(filters);
-    this._filterComponent.setFilterChangeHandler(this._onFilterChange, this._onMenuChange);
-
+    this._filterComponent = new FilterComponent(filters, this._onFilterChange, currentFilterTargetElement);
+    this._filterComponent.setFilterChangeHandler(this._onMenuChange);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
@@ -50,10 +49,11 @@ export default class FilterController {
     this.render();
   }
 
-  _onFilterChange(filterType) {
-    this._moviesModel.setFilter(filterType);
-    this._activeFilterType = filterType;
-    this._onDataChange();
+  _onFilterChange(filterType, target) {
+    this._moviesModel.onFilterChange(filterType);
+    this._pageController.setCurrentFilterTarget(target);
+    this._currentFilterTargetElement = target;
+    this.render(target);
   }
 
   _onMenuChange(menuItem) {
