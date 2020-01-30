@@ -116,6 +116,8 @@ export default class PageController {
     this._filmMostCommentedElement = null;
     this._mainMenuComponent = null;
 
+    this._currentFilterTargetElement = null;
+
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFiltersChange = this._onFiltersChange.bind(this);
@@ -176,11 +178,12 @@ export default class PageController {
     this._movies = this._moviesModel.getMovies();
 
     this._statisticsComponent = new StatisticsComponent(this._moviesModel);
-    this._filterController = new FilterController(this._container, this._moviesModel, this._statisticsComponent, this);
+    this._filterController = new FilterController(this._container, this._moviesModel,
+        this._statisticsComponent, this, this._currentFilterTargetElement);
 
     const container = this._container;
 
-    this._filterController.render();
+    this._filterController.render(this._currentFilterTargetElement);
 
     render(container, this._sortComponent.getElement(), RenderPosition.BEFOREEND);
     render(container, this._filmsComponent.getElement(), RenderPosition.BEFOREEND);
@@ -220,6 +223,14 @@ export default class PageController {
       render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
     }
 
+  }
+
+  setCurrentFilterTarget(target) {
+    this._currentFilterTargetElement = target;
+  }
+
+  getCurrentFilterTarget() {
+    return this._currentFilterTargetElement;
   }
 
   _removeMovies() {
@@ -452,7 +463,7 @@ export default class PageController {
     } else {
       remove(this._showMoreButtonComponent);
     }
-    this._filterController.render();
+
     this._renderTopRatedMovies(topRatedList);
     this._renderMostCommentedMovies(mostCommentedList);
   }
@@ -474,6 +485,7 @@ export default class PageController {
       const mostCommentedList = this._updateMostCommentedFilms(movies);
 
       this._renderFilteredMovies(movies, topRatedList, mostCommentedList);
+      this._filterController.render(this._currentFilterTargetElement);
     } else {
       this._renderNoMoviesPlumber();
     }
