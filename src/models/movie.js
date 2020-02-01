@@ -14,6 +14,9 @@ export default class Movie {
     this.filmInfo.director = this.filmInfo[`director`];
     this.filmInfo.actors = this.filmInfo[`actors`];
     this.filmInfo.writers = this.filmInfo[`writers`];
+    delete this.filmInfo[`alternative_title`];
+    delete this.filmInfo[`total_rating`];
+    delete this.filmInfo[`age_rating`];
 
     this.filmInfo.release = this.filmInfo[`release`];
     this.filmInfo.release.year = getYearFromIso(this.filmInfo.release[`date`]);
@@ -22,6 +25,7 @@ export default class Movie {
     this.filmInfo.runtime = this.filmInfo[`runtime`];
     this.filmInfo.genre = this.filmInfo[`genre`];
     this.filmInfo.description = this.filmInfo[`description`];
+    delete this.filmInfo[`releasy_country`];
 
     this.userDetails = data[`user_details`];
     this.userDetails.personalRating = this.userDetails[`personal_rating`];
@@ -29,6 +33,9 @@ export default class Movie {
     this.userDetails.alreadyWatched = Boolean(this.userDetails[`already_watched`]);
     this.userDetails.watchingDate = this.userDetails[`watching_date`] ? new Date(this.userDetails[`watching_date`]) : null;
     this.userDetails.favorite = Boolean(this.userDetails[`favorite`]);
+    delete this.userDetails[`personal_rating`];
+    delete this.userDetails[`already_watched`];
+    delete this.userDetails[`watching_date`];
   }
 
   toRaw() {

@@ -32,6 +32,7 @@ export default class MovieController {
 
     this._cardComponent = null;
     this._popupComponent = null;
+    this._movie = null;
 
     this._onDataChange = onDataChange;
     this._onFiltersChange = onFiltersChange;
@@ -77,6 +78,10 @@ export default class MovieController {
       this._popupComponent.getElement().remove();
       this._popupComponent.removeElement();
     });
+  }
+
+  setThisMovie(movie) {
+    this._movie = movie;
   }
 
   render(movie, container = this._container) {
@@ -225,13 +230,22 @@ export default class MovieController {
     };
 
     const markWatchedButtonClickHandlerPopup = () => {
-      const newMovie = MovieModel.clone(movie);
+      const oldMovie = this._movie;
+      const newMovie = MovieModel.clone(oldMovie);
+      oldMovie.userDetails.alreadyWatched = !oldMovie.userDetails.alreadyWatched;
       newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
-      markWatchedHandler(newMovie.userDetails.alreadyWatched);
+      markWatchedHandler(!newMovie.userDetails.alreadyWatched);
 
-      this._onDataChange(this, movie, newMovie);
+      this._onDataChange(this, oldMovie, newMovie);
       this._onFiltersChange();
+
+      if (this._movie.userDetails.alreadyWatched === false) {
+        this._movie.userDetails.personalRating = RATING_ZERO;
+        popupUserRating.classList.remove(`visually-hidden`);
+      } else {
+        popupUserRating.classList.add(`visually-hidden`);
+      }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
     };
@@ -259,9 +273,8 @@ export default class MovieController {
       this._ratingChangeButton = target;
       const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.personalRating = parseInt(target.value, RADIX_DECIMAL);
-      newMovie.userDetails.alreadyWatched = true;
 
-      if (newMovie.userDetails.alreadyWatched) {
+      if (this._movie.userDetails.alreadyWatched) {
         newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
       } else {
         newMovie.userDetails.watchingDate = null;

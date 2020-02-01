@@ -411,6 +411,8 @@ export default class PageController {
       .then((updatedMovie) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, updatedMovie);
 
+        movieController.setThisMovie(updatedMovie);
+
         this._updateUserRank();
 
         this._api.getComments(updatedMovie.id)
