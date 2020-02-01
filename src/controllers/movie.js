@@ -5,10 +5,11 @@ import MovieModel from '../models/movie.js';
 import he from 'he';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {EmojiIds, RADIX_DECIMAL} from '../const.js';
-import {getCurrentDate, getCurrentDateIsoFormat, debounce} from '../utils/common.js';
+import {getCurrentDateIsoFormat, debounce} from '../utils/common.js';
 
 const DEBOUNCE_TIMEOUT = 1000;
 const SHAKE_ANIMATION_TIMEOUT = 600;
+const RATING_ZERO = 0;
 
 const Mode = {
   DEFAULT: `default`,
@@ -31,6 +32,7 @@ export default class MovieController {
 
     this._cardComponent = null;
     this._popupComponent = null;
+    this._movie = null;
 
     this._onDataChange = onDataChange;
     this._onFiltersChange = onFiltersChange;
@@ -40,12 +42,18 @@ export default class MovieController {
     this._onEmojiChange = onEmojiChange;
 
     this._emptyCommentEmoji = ``;
+    this._emptyEmojiContainer = ``;
 
     this._setDefaultView = this._setDefaultView;
 
     this._currentDelectingComment = null;
     this._createNewCommentForm = null;
     this._ratingChangeButton = null;
+    this._commentArea = null;
+  }
+
+  getPopup() {
+    return this._popupComponent;
   }
 
   getCurrentDeletingComment() {
@@ -58,6 +66,22 @@ export default class MovieController {
 
   getRatingChangeButton() {
     return this._ratingChangeButton;
+  }
+
+  getEmptyEmojiContainer() {
+    return this._emptyEmojiContainer;
+  }
+
+  setPopupCloseButtonClickHandler() {
+    this._popupComponent.setCloseButtonClickHandler(() => {
+      this._replacePopupToCard();
+      this._popupComponent.getElement().remove();
+      this._popupComponent.removeElement();
+    });
+  }
+
+  setThisMovie(movie) {
+    this._movie = movie;
   }
 
   render(movie, container = this._container) {
@@ -136,12 +160,7 @@ export default class MovieController {
         });
       });
 
-      popup.setCloseButtonClickHandler(() => {
-        this._replacePopupToCard();
-
-        popup.getElement().remove();
-        popup.removeElement();
-      });
+      document.addEventListener(`keydown`, onEscKeyPress);
     };
 
     const addToWatchlistButtonHanlder = () => {
@@ -163,7 +182,7 @@ export default class MovieController {
       newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
       if (newMovie.userDetails.alreadyWatched) {
-        newMovie.userDetails.watchingDate = getCurrentDate();
+        newMovie.userDetails.watchingDate = getCurrentDateIsoFormat();
       }
 
       this._onDataChange(this, movie, newMovie);
@@ -192,14 +211,40 @@ export default class MovieController {
       debounce(addToWatchlistButtonHanlder(), DEBOUNCE_TIMEOUT);
     });
 
-    const markWatchedButtonClickHandlerPopup = () => {
+    this._popupComponent.setUndoRatingButtonClickHandler(() => {
       const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.alreadyWatched = false;
+      newMovie.userDetails.personalRating = RATING_ZERO;
+
+      this._onFiltersChange();
+      this._onDataChange(this, movie, newMovie);
+
+      popupUserRating.classList.add(`visually-hidden`);
+    });
+
+    const markWatchedHandler = (checked = true) => {
+      const popupElement = this._popupComponent.getElement();
+      const watchedInputElement = popupElement.querySelector(`#watched`);
+
+      watchedInputElement.toggleAttribute(`checked`, checked);
+    };
+
+    const markWatchedButtonClickHandlerPopup = () => {
+      const oldMovie = this._movie;
+      const newMovie = MovieModel.clone(oldMovie);
+      oldMovie.userDetails.alreadyWatched = !oldMovie.userDetails.alreadyWatched;
       newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
-      if (newMovie.userDetails.alreadyWatched) {
-        newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
+      markWatchedHandler(!newMovie.userDetails.alreadyWatched);
+
+      this._onDataChange(this, oldMovie, newMovie);
+      this._onFiltersChange();
+
+      if (this._movie.userDetails.alreadyWatched === false) {
+        this._movie.userDetails.personalRating = RATING_ZERO;
+        popupUserRating.classList.remove(`visually-hidden`);
       } else {
-        newMovie.userDetails.watchingDate = null;
+        popupUserRating.classList.add(`visually-hidden`);
       }
 
       popupMiddleContainer.classList.toggle(`visually-hidden`);
@@ -210,8 +255,16 @@ export default class MovieController {
       debounce(markWatchedButtonClickHandlerPopup(), DEBOUNCE_TIMEOUT);
     });
 
+    const setFavoriteButtonClickHandlerPopup = () => {
+      const newMovie = MovieModel.clone(movie);
+      newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
+
+      this._onFiltersChange();
+      this._onDataChange(this, movie, newMovie);
+    };
+
     this._popupComponent.setFavoriteButtonClickHandler(() => {
-      debounce(setFavoriteButtonClickHandler(), DEBOUNCE_TIMEOUT);
+      debounce(setFavoriteButtonClickHandlerPopup(), DEBOUNCE_TIMEOUT);
     });
 
     this._popupComponent.setUserRatingChangeHandler((evt) => {
@@ -220,6 +273,12 @@ export default class MovieController {
       this._ratingChangeButton = target;
       const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.personalRating = parseInt(target.value, RADIX_DECIMAL);
+
+      if (this._movie.userDetails.alreadyWatched) {
+        newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
+      } else {
+        newMovie.userDetails.watchingDate = null;
+      }
 
       popupUserRating.classList.remove(`visually-hidden`);
       target.setAttribute(`disabled`, `true`);
@@ -239,6 +298,7 @@ export default class MovieController {
     if (oldCardComponent && oldPopupComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
+      addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
     } else {
       render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
     }
@@ -246,8 +306,22 @@ export default class MovieController {
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
   }
 
+  renderNewCommentForm() {
+    let newCommentForm = this.getCreatingNewCommentForm();
+    newCommentForm.value = ``;
+  }
+
+  renderCommentsCount(count) {
+    const popupElement = this._popupComponent.getElement();
+    const commentsCountElement = popupElement.querySelector(`.film-details__comments-count`);
+
+    commentsCountElement.innerHTML = `${count}`;
+  }
+
   renderComments(popupCommentsList, commentsListElement) {
     const popupComponent = this._popupComponent;
+
+    this.renderCommentsCount(popupCommentsList.length);
 
     popupCommentsList.slice(0, popupCommentsList.length)
     .forEach((comment) => {
@@ -260,6 +334,7 @@ export default class MovieController {
 
     popupComponent.setEmojiItemClickHandlers(() => {
       const bigEmojiContainer = popupComponent.getElement().querySelector(`.big-emoji`);
+      this._emptyEmojiContainer = bigEmojiContainer;
       this._emptyCommentEmoji = this._onEmojiChange(event.target.id, bigEmojiContainer);
     });
   }
@@ -271,7 +346,17 @@ export default class MovieController {
     const commentsListElement = popupElement.querySelector(`.film-details__comments-list`);
     const popupCommentsList = popupData.comments;
 
+    this.setPopupCloseButtonClickHandler();
+
+    if (popupData.userDetails.alreadyWatched) {
+      this.renderUserRating(popupElement);
+    }
     this.renderComments(popupCommentsList, commentsListElement);
+  }
+
+  renderUserRating(popupElement) {
+    const popupUserRating = popupElement.querySelector(`.film-details__user-rating`);
+    popupUserRating.classList.remove(`visually-hidden`);
   }
 
   newCommentDeliveryError(target) {

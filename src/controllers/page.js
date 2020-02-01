@@ -131,6 +131,14 @@ export default class PageController {
     this._moviesModel.setFilterChangeHandlers(this._onFiltersChange);
   }
 
+  getCurrentFilterTarget() {
+    return this._currentFilterTargetElement;
+  }
+
+  setCurrentFilterTarget(target) {
+    this._currentFilterTargetElement = target;
+  }
+
   render() {
     this._movies = this._moviesModel.getMovies();
 
@@ -206,14 +214,6 @@ export default class PageController {
       });
     }
     return [];
-  }
-
-  setCurrentFilterTarget(target) {
-    this._currentFilterTargetElement = target;
-  }
-
-  getCurrentFilterTarget() {
-    return this._currentFilterTargetElement;
   }
 
   _renderShowMoreButton() {
@@ -299,10 +299,10 @@ export default class PageController {
     this._renderMostCommentedMovies(mostCommentedList);
   }
 
-  _renderNewPopupData(movieController, sourceOfNewData) {
-    const newDataIndex = this._movies.findIndex((it) => it.id === sourceOfNewData);
-    movieController.render(this._movies[newDataIndex]);
-    movieController.renderPopup();
+  _renderNewPopupData(movieController, sourceOfNewData, commentsListElement) {
+    const popupCommentsList = sourceOfNewData.comments;
+
+    movieController.renderComments(popupCommentsList, commentsListElement);
   }
 
   _renderFilteredMovies(movies, topRatedList, mostCommentedList) {
@@ -361,14 +361,14 @@ export default class PageController {
 
   _onCommentsCountChange(movieController, oldData, newData, commentIndex, commentsListElement, commentData) {
     if (newData === null) {
-      const currentMovie = oldData.getCard();
+      const oldMovie = oldData.getCard();
       const currentDeletingComment = movieController.getCurrentDeletingComment();
-      this._api.deleteComment(commentIndex, currentMovie)
+      this._api.deleteComment(commentIndex, oldMovie)
         .then(() => {
-          this._moviesModel.deleteComment(oldData.getCard().id, commentIndex);
+          this._moviesModel.deleteComment(oldMovie.id, commentIndex);
 
           this._updateMovieInterface(commentsListElement);
-          this._renderNewPopupData(movieController, oldData.getCard().id);
+          this._renderNewPopupData(movieController, oldMovie, commentsListElement);
           currentDeletingComment.setDeleteButtonUnlocked();
         })
         .catch(() => {
@@ -382,16 +382,20 @@ export default class PageController {
 
     if (oldData === null) {
       const creatingNewCommentForm = movieController.getCreatingNewCommentForm();
-      const movie = newData.getCard();
+      const newMovie = newData.getCard();
       const newComment = commentData;
+      const bigEmojiContainer = movieController.getEmptyEmojiContainer();
 
-      this._api.createComment(movie.id, newComment)
+      this._api.createComment(newMovie.id, newComment)
         .then((updatedComment) => {
-          this._moviesModel.addComment(newData.getCard().id, updatedComment);
+          this._moviesModel.addComment(newMovie.id, updatedComment);
 
           this._updateMovieInterface(commentsListElement);
-          this._renderNewPopupData(movieController, newData.getCard().id);
+          this._renderNewPopupData(movieController, newMovie, commentsListElement);
+
           creatingNewCommentForm.removeAttribute(`disabled`);
+          creatingNewCommentForm.value = ``;
+          bigEmojiContainer.classList.add(`visually-hidden`);
         })
         .catch(() => {
           movieController.shake(movieController);
@@ -407,16 +411,16 @@ export default class PageController {
       .then((updatedMovie) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, updatedMovie);
 
-        if (isSuccess) {
-          movieController.render(updatedMovie);
-          this._updateMovies();
-        }
+        movieController.setThisMovie(updatedMovie);
 
         this._updateUserRank();
 
         this._api.getComments(updatedMovie.id)
         .then((value) => {
           updatedMovie.comments = value;
+          if (isSuccess) {
+            this._updateMovies();
+          }
         });
       });
   }

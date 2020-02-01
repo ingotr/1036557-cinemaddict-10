@@ -283,7 +283,12 @@ export default class Popup extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-details__inner`).addEventListener(`submit`, handler);
   }
 
+  setUndoRatingButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, handler);
+  }
+
   _subscribeOnEvents() {
+    this.setCloseButtonClickHandler();
     this.setAddToWatchlistButtonCLickHandler();
     this.setMarkAsWatchedButtonClickHandler();
     this.setFavoriteButtonClickHandler();
