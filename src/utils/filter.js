@@ -1,7 +1,8 @@
 import {FilterType} from '../const.js';
 
 const getAllMovies = (movies) => {
-  return movies;
+  const allMovies = movies.sort((a, b) => a.id - b.id);
+  return allMovies;
 };
 
 const getInWatchlistMovies = (movies) => {

@@ -176,6 +176,7 @@ export default class PageController {
     const topRatedList = getTopRatedFilms(this._movies);
     const mostCommentedList = getMostCommentedFilms(this._movies);
 
+    this._movies = this._movies.sort((a, b) => a.id - b.id);
     if (this._movies.length > 0) {
       this._renderMovies((this._movies.slice(0, showingCardCount)));
       if (this._movies.length > 2) {
@@ -187,7 +188,6 @@ export default class PageController {
     } else {
       render(this._filmListContainerElement, this._noFilmsComponent.getElement(), RenderPosition.BEFOREEND);
     }
-
   }
 
   hide() {
@@ -411,7 +411,6 @@ export default class PageController {
       .then((updatedMovie) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, updatedMovie);
 
-        movieController.setThisMovie(updatedMovie);
 
         this._updateUserRank();
 
@@ -456,6 +455,8 @@ export default class PageController {
     showingCardCount = showingCardCount + SHOWING_CARD.COUNT_BY_BUTTON;
 
     this._renderMovies(movies.slice(prevCardCount, showingCardCount));
+    remove(this._showMoreButtonComponent);
+    this._renderShowMoreButton();
 
     if (showingCardCount >= this._movies.length) {
       remove(this._showMoreButtonComponent);
