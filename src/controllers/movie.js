@@ -169,7 +169,6 @@ export default class MovieController {
       newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
       this._onDataChange(this, movie, newMovie);
-      this._onFiltersChange();
     };
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
@@ -186,7 +185,6 @@ export default class MovieController {
       }
 
       this._onDataChange(this, movie, newMovie);
-      this._onFiltersChange();
     };
 
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
@@ -199,7 +197,6 @@ export default class MovieController {
       newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
 
       this._onDataChange(this, movie, newMovie);
-      this._onFiltersChange();
     };
 
     this._cardComponent.setFavoriteButtonClickHandler(() => {
@@ -216,7 +213,6 @@ export default class MovieController {
       newMovie.userDetails.alreadyWatched = false;
       newMovie.userDetails.personalRating = RATING_ZERO;
 
-      this._onFiltersChange();
       this._onDataChange(this, movie, newMovie);
 
       popupUserRating.classList.add(`visually-hidden`);
@@ -226,28 +222,33 @@ export default class MovieController {
       const popupElement = this._popupComponent.getElement();
       const watchedInputElement = popupElement.querySelector(`#watched`);
 
-      watchedInputElement.toggleAttribute(`checked`, checked);
+      watchedInputElement.toggleAttribute(`checked`, !checked);
     };
 
     const markWatchedButtonClickHandlerPopup = () => {
-      const oldMovie = this._movie;
-      const newMovie = MovieModel.clone(oldMovie);
-      oldMovie.userDetails.alreadyWatched = !oldMovie.userDetails.alreadyWatched;
-      newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
+      let newMovie = {};
+      Promise.resolve(newMovie = MovieModel.clone(this._movie))
+        .then(() => {
+          newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
+        })
+        .then(() => {
+          markWatchedHandler(!newMovie.userDetails.alreadyWatched);
 
-      markWatchedHandler(!newMovie.userDetails.alreadyWatched);
+          if (newMovie.userDetails.alreadyWatched === false) {
+            newMovie.userDetails.personalRating = RATING_ZERO;
+            popupUserRating.classList.remove(`visually-hidden`);
+          } else {
+            popupUserRating.classList.add(`visually-hidden`);
+          }
 
-      this._onDataChange(this, oldMovie, newMovie);
-      this._onFiltersChange();
-
-      if (this._movie.userDetails.alreadyWatched === false) {
-        this._movie.userDetails.personalRating = RATING_ZERO;
-        popupUserRating.classList.remove(`visually-hidden`);
-      } else {
-        popupUserRating.classList.add(`visually-hidden`);
-      }
-
-      popupMiddleContainer.classList.toggle(`visually-hidden`);
+          popupMiddleContainer.classList.toggle(`visually-hidden`);
+        })
+        .then(() => {
+          this._onDataChange(this, this._movie, newMovie);
+        })
+        .then(() => {
+          this.setThisMovie(newMovie);
+        });
     };
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
@@ -259,7 +260,6 @@ export default class MovieController {
       const newMovie = MovieModel.clone(movie);
       newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
 
-      this._onFiltersChange();
       this._onDataChange(this, movie, newMovie);
     };
 
@@ -271,14 +271,10 @@ export default class MovieController {
       event.preventDefault();
       const target = evt.target;
       this._ratingChangeButton = target;
-      const newMovie = MovieModel.clone(movie);
+      const newMovie = MovieModel.clone(this._movie);
       newMovie.userDetails.personalRating = parseInt(target.value, RADIX_DECIMAL);
 
-      if (this._movie.userDetails.alreadyWatched) {
-        newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
-      } else {
-        newMovie.userDetails.watchingDate = null;
-      }
+      newMovie.userDetails.watchingDate = `${getCurrentDateIsoFormat()}`;
 
       popupUserRating.classList.remove(`visually-hidden`);
       target.setAttribute(`disabled`, `true`);
@@ -300,7 +296,7 @@ export default class MovieController {
       replace(this._popupComponent, oldPopupComponent);
       addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
     } else {
-      render(container, this._cardComponent.getElement(), RenderPosition.AFTERBEGIN);
+      render(container, this._cardComponent.getElement(), RenderPosition.BEFOREEND);
     }
 
     addEventListenerToComponent(this._popupContainer, this._cardComponent, this._popupComponent);
