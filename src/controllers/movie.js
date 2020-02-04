@@ -169,6 +169,7 @@ export default class MovieController {
       newMovie.userDetails.watchlist = !newMovie.userDetails.watchlist;
 
       this._onDataChange(this, movie, newMovie);
+      this._onFiltersChange();
     };
 
     this._cardComponent.setAddToWatchlistButtonCLickHandler(() => {
@@ -185,6 +186,7 @@ export default class MovieController {
       }
 
       this._onDataChange(this, movie, newMovie);
+      this._onFiltersChange();
     };
 
     this._cardComponent.setMarkAsWatchedButtonClickHandler(() => {
@@ -197,6 +199,7 @@ export default class MovieController {
       newMovie.userDetails.favorite = !newMovie.userDetails.favorite;
 
       this._onDataChange(this, movie, newMovie);
+      this._onFiltersChange();
     };
 
     this._cardComponent.setFavoriteButtonClickHandler(() => {
@@ -226,29 +229,25 @@ export default class MovieController {
     };
 
     const markWatchedButtonClickHandlerPopup = () => {
-      let newMovie = {};
-      Promise.resolve(newMovie = MovieModel.clone(this._movie))
-        .then(() => {
-          newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
-        })
-        .then(() => {
-          markWatchedHandler(!newMovie.userDetails.alreadyWatched);
+      let newMovie = MovieModel.clone(this._movie);
 
-          if (newMovie.userDetails.alreadyWatched === false) {
-            newMovie.userDetails.personalRating = RATING_ZERO;
-            popupUserRating.classList.remove(`visually-hidden`);
-          } else {
-            popupUserRating.classList.add(`visually-hidden`);
-          }
+      newMovie.userDetails.alreadyWatched = !newMovie.userDetails.alreadyWatched;
 
-          popupMiddleContainer.classList.toggle(`visually-hidden`);
-        })
-        .then(() => {
-          this._onDataChange(this, this._movie, newMovie);
-        })
-        .then(() => {
-          this.setThisMovie(newMovie);
-        });
+      markWatchedHandler(!newMovie.userDetails.alreadyWatched);
+
+      if (newMovie.userDetails.alreadyWatched === false) {
+        newMovie.userDetails.personalRating = RATING_ZERO;
+        popupUserRating.classList.remove(`visually-hidden`);
+      } else {
+        popupUserRating.classList.add(`visually-hidden`);
+      }
+
+      popupMiddleContainer.classList.toggle(`visually-hidden`);
+
+      this._onDataChange(this, this._movie, newMovie);
+
+      this.setThisMovie(newMovie);
+
     };
 
     this._popupComponent.setMarkAsWatchedButtonClickHandler(() => {
